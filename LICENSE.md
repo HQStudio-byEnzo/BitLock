@@ -1,7 +1,7 @@
 # Business Source License 1.1
 
 ## Parameters
-* **Licensor:** Tensor
+* **Licensor:** HQ Studio
 * **Development Object:** BitLock Vault (including all source code, modules, and associated documentation)
 * **Change License:** Apache License, Version 2.0
 * **Change Date:** 2030-01-01

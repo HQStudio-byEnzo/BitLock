@@ -11,7 +11,7 @@
       <div class="space-y-6 text-surface-300">
         <section class="legal-card">
           <h2 class="text-2xl font-semibold text-white mb-4">1. Website publisher</h2>
-          <p>BitLock is published by Enzo Izinga, acting as an individual on behalf of Tensor Team.</p>
+          <p>BitLock is published by Enzo Izinga, acting as an individual on behalf of HQ Studio.</p>
           <ul class="list-disc list-inside space-y-2 ml-4">
             <li><strong>Contact:</strong> <a href="mailto:enzoizinga23@gmail.com" class="text-accent-400 hover:text-accent-300">enzoizinga23@gmail.com</a></li>
           </ul>
