@@ -39,18 +39,18 @@
 
       <dl class="runtime-spec" :aria-label="t('landing.runtimeTitle')">
         <div>
-          <dt>01 / runtime</dt>
+          <dt>{{ t('landing.runtimeRuntime') }}</dt>
           <dd>{{ t('landing.runtimeBrowser') }}</dd>
           <small>{{ t('landing.runtimeBrowserNote') }}</small>
         </div>
         <div>
-          <dt>02 / cipher</dt>
-          <dd>AES-256-GCM</dd>
-          <small>PBKDF2 · 600 000</small>
+          <dt>{{ t('landing.runtimeCipher') }}</dt>
+          <dd>{{ t('landing.runtimeCipherLabel') }}</dd>
+          <small>{{ t('landing.runtimeCipherSub') }}</small>
         </div>
         <div>
-          <dt>03 / storage</dt>
-          <dd>Turso · libSQL</dd>
+          <dt>{{ t('landing.runtimeStorage') }}</dt>
+          <dd>{{ t('landing.runtimeStorageLabel') }}</dd>
           <small>{{ t('landing.runtimeStorageNote') }}</small>
         </div>
       </dl>
@@ -164,7 +164,7 @@
     </section>
 
     <footer class="terminal-footer">
-      <p>BitLock v1 · Nuxt 3 · Turso · AES-256-GCM · PBKDF2 · BIP-39 · zero-knowledge · MIT</p>
+      <p>BitLock v1 · Chiffrement avancé · BIP-39 · Open-source · MIT</p>
       <nav :aria-label="t('landing.footerLabel')">
         <a href="https://github.com/KernelStudio-byEnzo/BitLock" target="_blank" rel="noopener noreferrer">{{ t('footer.sourceCode') }}</a>
         <NuxtLink to="/support">Support</NuxtLink>

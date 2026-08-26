@@ -96,7 +96,7 @@
           </div>
           <div>
             <dt>{{ t('dash.localDatabase') }}</dt>
-            <dd>Turso</dd>
+            <dd>{{ t('dash.localDatabaseValue') }}</dd>
           </div>
         </dl>
         <NuxtLink to="/dashboard/audit" class="dashboard-console__action">

@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 Disallow: /auth/
 Disallow: /dashboard/
+Disallow: /dashboard/*
 
-Sitemap: https://bitlock-two.vercel.app/sitemap.xml
+Sitemap: https://bitlock.hqmerchant.xyz/sitemap.xml
