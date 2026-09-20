@@ -1,7 +1,7 @@
 <template>
   <div class="section-shell max-w-4xl py-10 md:py-16 space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-white">{{ t('export.title') }}</h1>
+      <h1 class="text-2xl font-bold text-foreground">{{ t('export.title') }}</h1>
       <p class="text-surface-400 text-sm mt-1">{{ t('export.subtitle') }}</p>
     </div>
 
@@ -11,7 +11,7 @@
           <Icon name="lucide:download" class="w-5 h-5" />
         </div>
         <div>
-          <h2 class="text-lg font-semibold text-white">{{ t('export.exportTitle') }}</h2>
+          <h2 class="text-lg font-semibold text-foreground">{{ t('export.exportTitle') }}</h2>
           <p class="text-sm text-surface-400">{{ t('export.exportDesc') }}</p>
         </div>
       </div>
@@ -31,7 +31,7 @@
           <Icon name="lucide:upload" class="w-5 h-5" />
         </div>
         <div>
-          <h2 class="text-lg font-semibold text-white">{{ t('export.importTitle') }}</h2>
+          <h2 class="text-lg font-semibold text-foreground">{{ t('export.importTitle') }}</h2>
           <p class="text-sm text-surface-400">{{ t('export.importDesc') }}</p>
         </div>
       </div>
@@ -57,7 +57,7 @@
           <span v-else>{{ t('export.importBtn') }}</span>
           <input
             type="file"
-            accept=".bitlock,application/json"
+            accept=".qvault,.bitlock,application/json"
             class="hidden"
             @change="handleImport"
             :disabled="importing"
@@ -66,13 +66,13 @@
       </div>
 
       <!-- Import result -->
-      <div v-if="importResult" class="p-3 rounded-xl text-sm" :class="importResult.success ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'">
+      <div v-if="importResult" class="p-3 rounded-xl text-sm" :class="importResult.success ? 'bg-green-500/10 border border-green-500/20 text-green-700' : 'bg-red-500/10 border border-red-500/20 text-red-600'">
         {{ importResult.message }}
       </div>
     </div>
 
     <!-- Error -->
-    <div v-if="error" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+    <div v-if="error" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
       {{ error }}
     </div>
   </div>
@@ -220,7 +220,7 @@ async function handleExport() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `bitlock-backup-${new Date().toISOString().split('T')[0]}.bitlock`
+    a.download = `qvault-backup-${new Date().toISOString().split('T')[0]}.qvault`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)

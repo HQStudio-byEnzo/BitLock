@@ -2,7 +2,7 @@
   <div class="section-shell max-w-7xl py-10 md:py-16 space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-white">{{ t('passwords.title') }}</h1>
+        <h1 class="text-2xl font-bold text-foreground">{{ t('passwords.title') }}</h1>
         <p class="text-surface-400 text-sm mt-1">{{ t('passwords.subtitle') }}</p>
       </div>
       <button @click="showAddModal = true" class="btn-primary flex items-center gap-2">
@@ -12,7 +12,7 @@
     </div>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-400 animate-spin" />
+      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="filteredItems.length === 0" class="text-center py-16">

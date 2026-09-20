@@ -1,32 +1,33 @@
 <template>
-  <div class="section-shell max-w-4xl py-10 md:py-16 space-y-8">
-    <section class="hero-panel space-y-3">
-      <p class="eyebrow">{{ t('sidebar.settings') }}</p>
-      <h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">{{ t('settings.title') }}</h1>
-      <p class="text-surface-300 text-base md:text-lg max-w-2xl leading-relaxed">{{ t('settings.subtitle') }}</p>
-    </section>
+  <div class="section-shell max-w-3xl py-8 md:py-12 space-y-8">
+    <h1 class="font-display text-3xl font-semibold tracking-tight text-foreground">{{ t('settings.title') }}</h1>
 
-    <section class="glass-panel p-4 md:p-5 space-y-4">
-      <div class="flex flex-wrap gap-2">
-        <button
-          v-for="section in settingSections"
-          :key="section.id"
-          type="button"
-          class="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
-          :class="activeSection === section.id
-            ? 'border-accent-500/30 bg-accent-600/10 text-accent-300'
-            : 'border-surface-800 bg-surface-900/80 text-surface-400 hover:border-surface-700 hover:text-surface-100'"
-          @click="activeSection = section.id"
-        >
-          <Icon :name="section.icon" class="w-4 h-4" />
-          {{ section.label }}
-        </button>
+    <section class="profile">
+      <span class="profile__avatar" aria-hidden="true">{{ initial }}</span>
+      <div class="profile__text">
+        <h2>{{ user?.username || '—' }}</h2>
+        <p>{{ t('nav.localAccount') }}<template v-if="userInfo?.created_at"> · {{ formatDate(userInfo.created_at) }}</template></p>
       </div>
     </section>
 
+    <nav class="rows" aria-label="Sections des paramètres">
+      <button
+        v-for="section in settingSections"
+        :key="section.id"
+        type="button"
+        class="row"
+        :aria-pressed="activeSection === section.id"
+        @click="activeSection = section.id"
+      >
+        <Icon :name="section.icon" class="row__icon" />
+        <span class="row__label">{{ section.label }}</span>
+        <Icon name="lucide:chevron-right" class="row__chevron" />
+      </button>
+    </nav>
+
     <section v-if="activeSection === 'account'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:user" class="w-5 h-5 text-surface-400" />
           {{ t('settings.account') }}
         </h2>
@@ -43,7 +44,7 @@
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:key-round" class="w-5 h-5 text-surface-400" />
           {{ t('settings.changePwd') }}
         </h2>
@@ -90,10 +91,10 @@
             />
           </div>
 
-          <div v-if="pwdError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+          <div v-if="pwdError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
             {{ pwdError }}
           </div>
-          <div v-if="pwdSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+          <div v-if="pwdSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-700">
             {{ pwdSuccess }}
           </div>
 
@@ -107,7 +108,7 @@
 
     <section v-else-if="activeSection === 'security'" class="space-y-6">
       <section class="card space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:shield" class="w-5 h-5 text-surface-400" />
           {{ t('settings.security') }}
         </h2>
@@ -119,7 +120,7 @@
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:key-round" class="w-5 h-5 text-surface-400" />
           {{ t('settings.masterPwdTitle') }}
         </h2>
@@ -174,10 +175,10 @@
             />
           </div>
 
-          <div v-if="masterPwdError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+          <div v-if="masterPwdError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
             {{ masterPwdError }}
           </div>
-          <div v-if="masterPwdSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+          <div v-if="masterPwdSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-700">
             {{ masterPwdSuccess }}
           </div>
 
@@ -194,7 +195,7 @@
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-5">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:sliders-horizontal" class="w-5 h-5 text-surface-400" />
           {{ t('settings.securityPrefs') }}
         </h2>
@@ -251,26 +252,26 @@
           <button type="button" class="btn-secondary" @click="resetMasterOnboarding">{{ t('settings.resetOnboarding') }}</button>
         </div>
 
-        <div v-if="securitySaved" class="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+        <div v-if="securitySaved" class="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-700">
           {{ t('settings.saved') }}
         </div>
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2"><Icon name="lucide:fingerprint" class="w-5 h-5 text-accent-400" />{{ t('settings.passkeyTitle') }}</h2>
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2"><Icon name="lucide:fingerprint" class="w-5 h-5 text-accent-600" />{{ t('settings.passkeyTitle') }}</h2>
         <p class="text-sm text-surface-400">{{ t('settings.passkeyDesc') }}</p>
-        <p v-if="!passkeySupported" class="text-sm text-amber-300">{{ t('settings.passkeyUnsupported') }}</p>
+        <p v-if="!passkeySupported" class="text-sm text-amber-700">{{ t('settings.passkeyUnsupported') }}</p>
         <div v-else class="flex flex-wrap items-center gap-3">
           <span class="tech-status">{{ passkeyConfigured ? t('settings.passkeyActive') : t('settings.passkeyInactive') }}</span>
           <button v-if="!passkeyConfigured" type="button" class="btn-primary" :disabled="!isUnlocked || passkeyLoading" @click="enablePasskey">{{ t('settings.passkeyEnable') }}</button>
           <button v-else type="button" class="btn-secondary" @click="disablePasskey">{{ t('settings.passkeyDisable') }}</button>
         </div>
-        <p v-if="passkeyMessage" class="text-sm" :class="passkeyFailed ? 'text-red-400' : 'text-accent-300'">{{ passkeyMessage }}</p>
+        <p v-if="passkeyMessage" class="text-sm" :class="passkeyFailed ? 'text-red-600' : 'text-accent-600'">{{ passkeyMessage }}</p>
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-          <Icon name="lucide:unplug" class="w-5 h-5 text-accent-400" />
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Icon name="lucide:unplug" class="w-5 h-5 text-accent-600" />
           {{ t('settings.extensionTitle') }}
         </h2>
         <p class="text-sm text-surface-400">{{ t('settings.extensionDesc') }}</p>
@@ -284,7 +285,7 @@
           </button>
         </div>
         <div v-if="extensionToken" class="system-note space-y-3">
-          <p class="text-xs text-amber-300">{{ t('settings.extensionOnce') }}</p>
+          <p class="text-xs text-amber-700">{{ t('settings.extensionOnce') }}</p>
           <div class="flex flex-col sm:flex-row gap-2">
             <input :value="extensionToken" readonly class="input-field flex-1 font-mono text-xs" />
             <button type="button" class="btn-secondary" @click="copyExtensionToken">
@@ -292,13 +293,13 @@
             </button>
           </div>
         </div>
-        <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-400' : 'text-accent-300'">{{ extensionMessage }}</p>
+        <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-600' : 'text-accent-600'">{{ extensionMessage }}</p>
       </section>
     </section>
 
     <section v-else-if="activeSection === 'language'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:globe" class="w-5 h-5 text-surface-400" />
           {{ t('settings.language') }}
         </h2>
@@ -306,14 +307,14 @@
           <button
             @click="setLocale('fr')"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="locale === 'fr' ? 'bg-accent-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700 hover:border-surface-600'"
+            :class="locale === 'fr' ? 'bg-accent-600 text-primary-foreground' : 'bg-surface-800 text-surface-400 border border-surface-700 hover:border-surface-600'"
           >
             French
           </button>
           <button
             @click="setLocale('en')"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            :class="locale === 'en' ? 'bg-accent-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700 hover:border-surface-600'"
+            :class="locale === 'en' ? 'bg-accent-600 text-primary-foreground' : 'bg-surface-800 text-surface-400 border border-surface-700 hover:border-surface-600'"
           >
             English
           </button>
@@ -325,7 +326,7 @@
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+            <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
               <Icon name="lucide:keyboard" class="w-5 h-5 text-surface-400" />
               {{ t('settings.shortcuts') }}
             </h2>
@@ -345,7 +346,7 @@
           >
             <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p class="text-sm font-medium text-white">{{ t(action.labelKey) }}</p>
+                <p class="text-sm font-medium text-foreground">{{ t(action.labelKey) }}</p>
                 <p class="text-xs text-surface-500 mt-1">{{ t(action.descriptionKey) }}</p>
               </div>
               <div class="flex items-center gap-3">
@@ -375,7 +376,7 @@
           <button type="button" class="btn-secondary" @click="resetShortcuts">{{ t('settings.shortcutResetAll') }}</button>
         </div>
 
-        <div v-if="shortcutsSaved" class="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+        <div v-if="shortcutsSaved" class="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-700">
           {{ t('settings.shortcutsSaved') }}
         </div>
       </section>
@@ -383,7 +384,7 @@
 
     <section v-else-if="activeSection === 'support'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
           <Icon name="lucide:message-circle" class="w-5 h-5 text-surface-400" />
           {{ t('settings.support') }}
         </h2>
@@ -397,7 +398,7 @@
 
     <section v-else class="space-y-6">
       <section class="card border-red-500/20 space-y-4">
-        <h2 class="text-lg font-semibold text-red-400 flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-red-600 flex items-center gap-2">
           <Icon name="lucide:alert-triangle" class="w-5 h-5" />
           {{ t('settings.danger') }}
         </h2>
@@ -428,7 +429,7 @@
                 class="input-field"
                 :placeholder="t('settings.yourPassword')"
               />
-              <div v-if="deleteError" class="text-sm text-red-400">{{ deleteError }}</div>
+              <div v-if="deleteError" class="text-sm text-red-600">{{ deleteError }}</div>
               <div class="flex gap-2">
                 <button type="button" @click="handleDeleteAccount" :disabled="deleteLoading" class="btn-danger flex items-center gap-2">
                   <Icon name="lucide:trash-2" class="w-4 h-4" />
@@ -458,6 +459,8 @@ definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
 const { user, signOut } = useAuthClient()
 const { locale, setLocale, t } = useLang()
+const { formatDate: baseFormatDate } = useDateFormat()
+const initial = computed(() => (user.value?.username || '?').charAt(0).toUpperCase())
 const { fetchItems, reencryptVault } = useVault()
 const { masterPassword, clearMasterPassword, isUnlocked } = useMasterPassword()
 const { shortcuts, shortcutActions, loadShortcuts, saveShortcuts, resetShortcuts, formatShortcutCombo, editing } = useShortcutPreferences()
@@ -573,12 +576,7 @@ async function handleDeleteAccount() {
 }
 
 function formatDate(date: string | undefined) {
-  if (!date) return '—'
-  return new Date(date).toLocaleDateString(locale.value === 'fr' ? 'fr-FR' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  return baseFormatDate(date, { year: 'numeric', month: 'long', day: 'numeric' }, '—')
 }
 
 function handleSignOut() {
@@ -626,7 +624,7 @@ function resetMasterOnboarding() {
 async function enablePasskey() {
   if (!masterPassword.value) { passkeyFailed.value = true; passkeyMessage.value = t('settings.passkeyUnlockFirst'); return }
   passkeyLoading.value = true; passkeyMessage.value = ''; passkeyFailed.value = false
-  try { await setupPasskey(masterPassword.value, user.value?.username || 'BitLock user'); passkeyMessage.value = t('settings.passkeyEnabled') }
+  try { await setupPasskey(masterPassword.value, user.value?.username || 'QVault user'); passkeyMessage.value = t('settings.passkeyEnabled') }
   catch { passkeyFailed.value = true; passkeyMessage.value = t('settings.passkeyError') }
   finally { passkeyLoading.value = false }
 }
@@ -774,3 +772,100 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleShortcutCapture)
 })
 </script>
+
+<style scoped>
+.profile {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  text-align: center;
+}
+
+.profile__avatar {
+  align-items: center;
+  background: var(--color-paper-2);
+  border: 1px solid var(--color-rule);
+  border-radius: 999px;
+  color: var(--color-accent-strong);
+  display: grid;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  height: 5.5rem;
+  place-items: center;
+  width: 5.5rem;
+}
+
+.profile__text h2 {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.profile__text p {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin-top: var(--space-1);
+}
+
+.rows {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px oklch(0.2 0.01 107 / 0.05);
+  overflow: hidden;
+}
+
+.row {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-rule);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9375rem;
+  gap: var(--space-related);
+  min-height: 3.25rem;
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  transition: background-color var(--dur-base) var(--ease-out);
+  width: 100%;
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row:hover {
+  background: var(--color-paper-2);
+}
+
+.row[aria-pressed='true'] {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+  font-weight: 500;
+}
+
+.row__icon {
+  flex: 0 0 auto;
+  height: 1.125rem;
+  width: 1.125rem;
+}
+
+.row__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.row__chevron {
+  color: var(--color-text-faint);
+  flex: 0 0 auto;
+  height: 1rem;
+  width: 1rem;
+}
+</style>
+

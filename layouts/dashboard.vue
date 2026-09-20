@@ -1,111 +1,106 @@
 <template>
-  <div class="dashboard-shell relative flex">
-    <aside class="app-sidebar">
-      <div class="app-sidebar__brand">
-        <NuxtLink to="/" class="tech-brand" aria-label="Back to landing page">
-          <UiBitLockLogo :size="30" />
-          <span>BitLock</span>
-          <small>vault / 01</small>
-        </NuxtLink>
-      </div>
+  <div class="dash">
+    <a href="#main" class="skip-link">Aller au contenu principal</a>
 
-      <div class="app-sidebar__context">
-        <strong>online workspace</strong>
-        <small>{{ t('dash.overview') }}</small>
-      </div>
+    <aside class="dash__side">
+      <NuxtLink to="/" class="dash__brand" aria-label="QVault">
+        <UiQVaultLogo :size="30" />
+        <span>QVault</span>
+      </NuxtLink>
 
-      <nav class="app-nav" aria-label="Dashboard navigation">
-        <section v-for="group in navGroups" :key="group.label" class="app-nav__group">
-          <p class="app-nav__label">{{ t(group.label) }}</p>
+      <nav class="dash__nav" aria-label="Navigation principale">
+        <section v-for="group in navGroups" :key="group.label" class="dash__group">
+          <p class="dash__groupLabel">{{ t(group.label) }}</p>
           <NuxtLink
             v-for="item in group.items"
             :key="item.to"
             :to="item.to"
-            class="app-nav__link"
+            class="dash__link"
             :aria-current="isActive(item.to) ? 'page' : undefined"
           >
-            <Icon :name="item.icon" class="h-[18px] w-[18px]" />
+            <Icon :name="item.icon" class="dash__linkIcon" />
             <span>{{ t(item.label) }}</span>
           </NuxtLink>
         </section>
       </nav>
 
-      <div class="app-sidebar__user">
-        <span class="app-user-mark">{{ user?.username?.charAt(0)?.toUpperCase() || '?' }}</span>
-        <span class="min-w-0">
-          <strong>@{{ user?.username }}</strong>
+      <div class="dash__user">
+        <span class="dash__avatar" aria-hidden="true">{{ initial }}</span>
+        <span class="dash__userText">
+          <strong>{{ user?.username || '—' }}</strong>
           <small>{{ t('nav.localAccount') }}</small>
         </span>
-        <button type="button" class="icon-button" :aria-label="t('nav.signout')" @click="signOut">
+        <button type="button" class="dash__signout" :aria-label="t('nav.signout')" @click="signOut">
           <Icon name="lucide:log-out" class="h-4 w-4" />
         </button>
       </div>
     </aside>
 
-    <div class="app-column">
-      <header class="app-mobile-bar">
-        <div class="app-mobile-bar__brand">
-          <button type="button" class="icon-button" aria-label="Open navigation" @click="mobileMenuOpen = true">
-            <Icon name="lucide:menu" class="h-5 w-5" />
-          </button>
-          <NuxtLink to="/" class="tech-brand" aria-label="Back to landing page">
-            <UiBitLockLogo :size="26" />
-            <span>BitLock</span>
-          </NuxtLink>
-        </div>
-        <button type="button" class="icon-button" :aria-label="t('nav.signout')" @click="signOut">
+    <div class="dash__col">
+      <header class="dash__topbar">
+        <button type="button" class="dash__menu" aria-label="Ouvrir la navigation" @click="mobileMenuOpen = true">
+          <Icon name="lucide:menu" class="h-5 w-5" />
+        </button>
+        <NuxtLink to="/" class="dash__brand" aria-label="QVault">
+          <UiQVaultLogo :size="26" />
+          <span>QVault</span>
+        </NuxtLink>
+        <button type="button" class="dash__menu" :aria-label="t('nav.signout')" @click="signOut">
           <Icon name="lucide:log-out" class="h-4 w-4" />
         </button>
       </header>
 
-      <Teleport to="body">
-        <Transition name="fade">
-          <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Dashboard navigation">
-            <button class="modal-backdrop absolute inset-0 w-full" aria-label="Close navigation" @click="mobileMenuOpen = false" />
-            <aside class="app-mobile-sheet">
-              <div class="app-mobile-sheet__head">
-                <span class="tech-status">online workspace</span>
-                <button type="button" class="icon-button" aria-label="Close navigation" @click="mobileMenuOpen = false">
-                  <Icon name="lucide:x" class="h-5 w-5" />
-                </button>
-              </div>
-              <nav aria-label="Mobile dashboard navigation">
-                <section v-for="group in navGroups" :key="group.label" class="app-nav__group">
-                  <p class="app-nav__label">{{ t(group.label) }}</p>
-                  <NuxtLink
-                    v-for="item in group.items"
-                    :key="item.to"
-                    :to="item.to"
-                    class="app-nav__link"
-                    :aria-current="isActive(item.to) ? 'page' : undefined"
-                    @click="mobileMenuOpen = false"
-                  >
-                    <Icon :name="item.icon" class="h-[18px] w-[18px]" />
-                    <span>{{ t(item.label) }}</span>
-                  </NuxtLink>
-                </section>
-              </nav>
-            </aside>
-          </div>
-        </Transition>
-      </Teleport>
-
-      <main class="app-main">
+      <main id="main" tabindex="-1" class="dash__panel">
         <slot />
       </main>
     </div>
 
     <Teleport to="body">
       <Transition name="fade">
-        <aside v-if="showWarning" class="app-toast" role="status">
+        <div v-if="mobileMenuOpen" ref="mobileSheetEl" tabindex="-1" class="dash-sheet" role="dialog" aria-modal="true" aria-label="Navigation">
+          <button class="dash-sheet__backdrop" aria-label="Fermer la navigation" @click="mobileMenuOpen = false" />
+          <aside class="dash-sheet__card">
+            <div class="dash-sheet__head">
+              <NuxtLink to="/" class="dash__brand" @click="mobileMenuOpen = false">
+                <UiQVaultLogo :size="28" />
+                <span>QVault</span>
+              </NuxtLink>
+              <button type="button" class="dash__menu" aria-label="Fermer la navigation" @click="mobileMenuOpen = false">
+                <Icon name="lucide:x" class="h-5 w-5" />
+              </button>
+            </div>
+            <nav class="dash__nav" aria-label="Navigation mobile">
+              <section v-for="group in navGroups" :key="group.label" class="dash__group">
+                <p class="dash__groupLabel">{{ t(group.label) }}</p>
+                <NuxtLink
+                  v-for="item in group.items"
+                  :key="item.to"
+                  :to="item.to"
+                  class="dash__link"
+                  :aria-current="isActive(item.to) ? 'page' : undefined"
+                  @click="mobileMenuOpen = false"
+                >
+                  <Icon :name="item.icon" class="dash__linkIcon" />
+                  <span>{{ t(item.label) }}</span>
+                </NuxtLink>
+              </section>
+            </nav>
+          </aside>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <Teleport to="body">
+      <Transition name="fade">
+        <aside v-if="showWarning" class="dash-toast" role="status">
           <div class="flex items-start gap-3">
-            <Icon name="lucide:alert-triangle" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <Icon name="lucide:clock" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
             <div>
               <strong class="block text-sm">{{ t('autolock.title') }}</strong>
-              <p class="mt-1 text-xs text-surface-300">
+              <p class="mt-1 text-xs text-surface-500">
                 {{ t('autolock.desc').replace('{seconds}', String(remainingSeconds)) }}
               </p>
-              <button type="button" class="btn-secondary mt-3 min-h-0 py-2" @click="resetTimers">
+              <button type="button" class="btn-secondary mt-3" @click="resetTimers">
                 {{ t('autolock.stay') }}
               </button>
             </div>
@@ -116,10 +111,10 @@
 
     <Teleport to="body">
       <Transition name="fade">
-        <button v-if="shielded" type="button" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-surface-950 text-center" @click="reveal">
-          <UiBitLockLogo :size="58" />
+        <button v-if="shielded" type="button" class="dash-shield" @click="reveal">
+          <UiQVaultLogo :size="58" />
           <strong class="mt-5 text-xl text-surface-50">{{ t('privacy.title') }}</strong>
-          <span class="mt-2 text-sm text-surface-400">{{ t('privacy.reveal') }}</span>
+          <span class="mt-2 text-sm text-surface-500">{{ t('privacy.reveal') }}</span>
         </button>
       </Transition>
     </Teleport>
@@ -137,34 +132,38 @@ const { t } = useLang()
 useAppShortcuts()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const mobileSheetEl = ref<HTMLElement | null>(null)
+useModalFocus(mobileSheetEl, () => { mobileMenuOpen.value = false }, { active: mobileMenuOpen })
 const { showWarning, remainingSeconds, resetTimers } = useAutoLock()
 const { shielded, reveal } = usePrivacyShield()
 
+const initial = computed(() => (user.value?.username || '?').charAt(0).toUpperCase())
+
 const mainNavItems = [
-  { to: '/dashboard', label: 'sidebar.dashboard', icon: 'lucide:layout-dashboard' },
+  { to: '/dashboard', label: 'sidebar.dashboard', icon: 'lucide:house' },
   { to: '/dashboard/vault', label: 'sidebar.vault', icon: 'lucide:vault' },
-  { to: '/dashboard/links', label: 'sidebar.links', icon: 'lucide:link' },
   { to: '/dashboard/passwords', label: 'sidebar.passwords', icon: 'lucide:key-round' },
-  { to: '/dashboard/notes', label: 'sidebar.notes', icon: 'lucide:notebook-tabs' },
-  { to: '/dashboard/totp', label: 'sidebar.totp', icon: 'lucide:timer-reset' },
+  { to: '/dashboard/notes', label: 'sidebar.notes', icon: 'lucide:notebook-pen' },
+  { to: '/dashboard/totp', label: 'sidebar.totp', icon: 'lucide:shield-check' },
 ]
 
 const toolNavItems = [
-  { to: '/dashboard/password-generator', label: 'sidebar.passwordGenerator', icon: 'lucide:wand-sparkles' },
-  { to: '/dashboard/seed-generator', label: 'sidebar.seedGenerator', icon: 'lucide:scroll-text' },
+  { to: '/dashboard/password-generator', label: 'sidebar.passwordGenerator', icon: 'lucide:sparkles' },
+  { to: '/dashboard/seed-generator', label: 'sidebar.seedGenerator', icon: 'lucide:list-ordered' },
   { to: '/dashboard/audit', label: 'sidebar.audit', icon: 'lucide:shield-alert' },
 ]
 
 const securityNavItems = [
+  { to: '/dashboard/links', label: 'sidebar.links', icon: 'lucide:link' },
   { to: '/dashboard/crypto', label: 'sidebar.crypto', icon: 'lucide:bitcoin' },
-  { to: '/dashboard/recovery-codes', label: 'sidebar.recoveryCode', icon: 'lucide:ticket-check' },
-  { to: '/dashboard/export', label: 'sidebar.export', icon: 'lucide:download' },
+  { to: '/dashboard/recovery-codes', label: 'sidebar.recoveryCode', icon: 'lucide:life-buoy' },
   { to: '/dashboard/organization', label: 'sidebar.organization', icon: 'lucide:folder-tree' },
   { to: '/dashboard/history', label: 'sidebar.history', icon: 'lucide:history' },
+  { to: '/dashboard/export', label: 'sidebar.export', icon: 'lucide:download' },
   { to: '/dashboard/transfer', label: 'sidebar.transfer', icon: 'lucide:scan-line' },
 ]
 
-const settingsNavItems = [
+const accountNavItems = [
   { to: '/support', label: 'sidebar.support', icon: 'lucide:heart-handshake' },
   { to: '/dashboard/settings', label: 'sidebar.settings', icon: 'lucide:settings' },
 ]
@@ -173,7 +172,7 @@ const navGroups = [
   { label: 'sidebar.groupMain', items: mainNavItems },
   { label: 'sidebar.groupTools', items: toolNavItems },
   { label: 'sidebar.groupSecurity', items: securityNavItems },
-  { label: 'sidebar.settings', items: settingsNavItems },
+  { label: 'sidebar.groupAccount', items: accountNavItems },
 ]
 
 function isActive(path: string) {
@@ -185,3 +184,262 @@ watch(() => route.path, () => {
   mobileMenuOpen.value = false
 })
 </script>
+
+<style scoped>
+.dash {
+  background: var(--color-canvas);
+  color: var(--color-text);
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.dash__side {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 17.5rem;
+  gap: var(--space-2);
+  height: 100dvh;
+  padding: var(--space-5) var(--space-4);
+}
+
+.dash__brand {
+  align-items: center;
+  color: var(--color-ink);
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  gap: var(--space-tight);
+  padding: var(--space-1) var(--space-tight) var(--space-3);
+  text-decoration: none;
+}
+
+.dash__nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--space-5);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dash__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dash__groupLabel {
+  color: var(--color-text-faint);
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-1);
+  padding-inline: var(--space-tight);
+  text-transform: uppercase;
+}
+
+.dash__link {
+  align-items: center;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  display: flex;
+  font-size: 0.875rem;
+  gap: var(--space-related);
+  padding: var(--space-tight) var(--space-related);
+  text-decoration: none;
+  transition: background-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+
+.dash__link:hover {
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+}
+
+.dash__link[aria-current='page'] {
+  background: var(--color-panel);
+  box-shadow: 0 1px 2px oklch(0.2 0.01 107 / 0.06);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.dash__linkIcon {
+  flex: 0 0 auto;
+  height: 1.125rem;
+  width: 1.125rem;
+}
+
+.dash__user {
+  align-items: center;
+  border-top: 1px solid var(--color-rule);
+  display: flex;
+  gap: var(--space-related);
+  margin-top: var(--space-2);
+  padding: var(--space-3) var(--space-tight) 0;
+}
+
+.dash__avatar {
+  align-items: center;
+  background: var(--color-accent-soft);
+  border-radius: 999px;
+  color: var(--color-accent-strong);
+  display: grid;
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-weight: 600;
+  height: 2.25rem;
+  place-items: center;
+  width: 2.25rem;
+}
+
+.dash__userText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash__userText strong {
+  color: var(--color-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash__userText small {
+  color: var(--color-text-faint);
+  font-size: 0.6875rem;
+}
+
+.dash__signout,
+.dash__menu {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.dash__signout:hover,
+.dash__menu:hover {
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+}
+
+.dash__col {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+}
+
+.dash__topbar {
+  align-items: center;
+  display: none;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-1) var(--space-3);
+}
+
+.dash__panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 2px oklch(0.2 0.01 107 / 0.05);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  outline: none;
+}
+
+.dash-sheet {
+  display: flex;
+  inset: 0;
+  position: fixed;
+  z-index: 50;
+}
+
+.dash-sheet__backdrop {
+  background: var(--color-overlay);
+  border: 0;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.dash-sheet__card {
+  background: var(--color-panel);
+  border-end-end-radius: var(--radius-xl);
+  border-start-end-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100%;
+  max-width: 19rem;
+  padding: var(--space-4);
+  position: relative;
+  width: 84%;
+}
+
+.dash-sheet__head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dash-toast {
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  bottom: var(--space-4);
+  box-shadow: var(--shadow-modal);
+  color: var(--color-text);
+  inset-inline: var(--space-4);
+  margin-inline: auto;
+  max-width: 24rem;
+  padding: var(--space-4);
+  position: fixed;
+  z-index: 60;
+}
+
+.dash-shield {
+  align-items: center;
+  background: var(--color-canvas);
+  border: 0;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  text-align: center;
+  z-index: 100;
+}
+
+@media (max-width: 64rem) {
+  .dash__side {
+    display: none;
+  }
+
+  .dash__topbar {
+    display: flex;
+  }
+
+  .dash__col {
+    padding: var(--space-2) var(--space-2) var(--space-2);
+  }
+
+  .dash__panel {
+    border-radius: var(--radius-lg);
+  }
+}
+</style>

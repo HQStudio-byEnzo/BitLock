@@ -2,6 +2,24 @@ import type { H3Event } from 'h3'
 
 export const LEGAL_TERMS_VERSION = '2026-06-03'
 
+/**
+ * Consent records are kept for audit purposes; the IP is truncated to reduce the
+ * personal-data footprint while still evidencing the origin network.
+ */
+export function truncateIp(ip: string | null | undefined): string | null {
+  if (!ip) return null
+  const value = ip.trim()
+  if (!value) return null
+  if (value.includes('.')) {
+    const parts = value.split('.')
+    if (parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.0`
+  }
+  if (value.includes(':')) {
+    return `${value.split(':').slice(0, 4).join(':')}::`
+  }
+  return value
+}
+
 export async function getLegalAcceptance(event: H3Event, userId: string) {
   const db = useDB(event)
   const result = await db.execute({
@@ -31,7 +49,7 @@ export async function setLegalAcceptance(event: H3Event, userId: string) {
       userId,
       LEGAL_TERMS_VERSION,
       getRequestHeader(event, 'user-agent') || null,
-      getRequestIP(event) || null,
+      truncateIp(getRequestIP(event)),
     ],
   })
 }

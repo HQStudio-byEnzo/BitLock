@@ -8,4 +8,5 @@ export default defineNuxtPlugin(() => {
   if (saved && (saved === 'fr' || saved === 'en')) {
     locale.value = saved
   }
+  document.documentElement.lang = locale.value
 })

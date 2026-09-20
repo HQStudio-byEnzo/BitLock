@@ -3,7 +3,7 @@
     <section class="hero-panel flex flex-col sm:flex-row sm:items-end justify-between gap-5">
       <div>
         <p class="eyebrow">{{ t('notes.eyebrow') }}</p>
-        <h1 class="mt-3 text-3xl md:text-4xl font-semibold text-white">{{ t('notes.title') }}</h1>
+        <h1 class="mt-3 text-3xl md:text-4xl font-semibold text-foreground">{{ t('notes.title') }}</h1>
         <p class="mt-3 text-surface-300">{{ t('notes.subtitle') }}</p>
       </div>
       <button class="btn-primary self-start" @click="showAdd = true"><Icon name="lucide:plus" class="w-4 h-4" /> {{ t('notes.add') }}</button>
@@ -11,8 +11,8 @@
 
     <div v-if="loading" class="glass-panel p-10 text-center text-surface-400">{{ t('common.loading') }}</div>
     <div v-else-if="notes.length === 0" class="glass-panel p-10 text-center">
-      <Icon name="lucide:notebook-tabs" class="w-10 h-10 mx-auto text-accent-400" />
-      <p class="mt-4 text-white">{{ t('notes.empty') }}</p>
+      <Icon name="lucide:notebook-tabs" class="w-10 h-10 mx-auto text-accent-600" />
+      <p class="mt-4 text-foreground">{{ t('notes.empty') }}</p>
       <p class="mt-1 text-sm text-surface-400">{{ t('notes.emptyHint') }}</p>
     </div>
     <div v-else class="grid gap-3 md:grid-cols-2">

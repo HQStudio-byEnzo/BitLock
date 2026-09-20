@@ -14,19 +14,19 @@
         <p class="text-sm font-medium text-surface-200 truncate">
           {{ item.label || t('vault.untitled') }}
         </p>
-        <span v-if="item.is_encrypted" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-400 border border-accent-500/20">
+        <span v-if="item.is_encrypted" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-600 border border-accent-500/20">
           <Icon name="lucide:lock" class="w-2.5 h-2.5" />
         </span>
       </div>
       <p class="text-xs text-surface-500 mt-0.5">
-        {{ typeLabels[item.type] }} · {{ formatDate(item.created_at) }}
+        {{ typeLabels[item.type] }} · {{ formatDate(item.created_at, { day: 'numeric', month: 'short', year: 'numeric' }) }}
       </p>
       <a
         v-if="safeUrl && !item.is_encrypted"
         :href="safeUrl"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-xs text-accent-400 hover:text-accent-300 truncate block mt-0.5"
+        class="text-xs text-accent-600 hover:text-accent-700 truncate block mt-0.5"
       >
         {{ safeUrl }}
       </a>
@@ -38,8 +38,9 @@
       <button
         v-if="item.is_encrypted"
         @click="$emit('decrypt', item)"
-        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-accent-400 transition-colors"
+        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-accent-600 transition-colors"
         :title="t('vault.decrypt')"
+        :aria-label="t('vault.decrypt')"
       >
         <Icon name="lucide:eye" class="w-4 h-4" />
       </button>
@@ -48,8 +49,9 @@
       <button
         v-else
         @click="copyPayload"
-        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-green-400 transition-colors"
+        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-green-700 transition-colors"
         :title="copied ? t('vault.copied') : t('vault.copy')"
+        :aria-label="copied ? t('vault.copied') : t('vault.copy')"
       >
         <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" />
       </button>
@@ -58,7 +60,9 @@
       <button
         @click="$emit('toggle-favorite')"
         class="p-2 rounded-lg hover:bg-surface-700 transition-colors"
-        :class="item.favorite ? 'text-yellow-400' : 'text-surface-400 hover:text-yellow-400'"
+        :class="item.favorite ? 'text-amber-500' : 'text-surface-400 hover:text-amber-500'"
+        :aria-label="item.favorite ? t('vault.unfavorite') : t('vault.favorite')"
+        :aria-pressed="item.favorite"
       >
         <Icon :name="item.favorite ? 'lucide:star' : 'lucide:star'" class="w-4 h-4" :class="item.favorite ? 'fill-current' : ''" />
       </button>
@@ -66,7 +70,8 @@
       <!-- Delete -->
       <button
         @click="$emit('delete', item)"
-        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-red-400 transition-colors"
+        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-red-600 transition-colors"
+        :aria-label="t('vault.deleteAction')"
       >
         <Icon name="lucide:trash-2" class="w-4 h-4" />
       </button>
@@ -88,7 +93,8 @@ defineEmits<{
   'decrypt': [item: VaultItem]
 }>()
 
-const { t, locale } = useLang()
+const { t } = useLang()
+const { formatDate } = useDateFormat()
 const { copySecurely } = useSecureClipboard()
 const copied = ref(false)
 
@@ -114,29 +120,21 @@ const typeLabels = computed(() => ({
 const typeStyles = computed(() => {
   switch (props.item.type) {
     case 'link':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:link', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:link', text: 'text-accent-600' }
     case 'password':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:key-round', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:key-round', text: 'text-accent-600' }
     case 'crypto':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:bitcoin', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:bitcoin', text: 'text-accent-600' }
     case 'recovery':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:ticket-check', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:ticket-check', text: 'text-accent-600' }
     case 'note':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:notebook-tabs', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:notebook-tabs', text: 'text-accent-600' }
     case 'totp':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:timer-reset', text: 'text-accent-400' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:timer-reset', text: 'text-accent-600' }
     default:
       return { bg: 'bg-surface-700', icon: 'lucide:file', text: 'text-surface-400' }
   }
 })
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString(locale.value === 'fr' ? 'fr-FR' : 'en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 async function copyPayload() {
   try {

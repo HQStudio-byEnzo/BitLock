@@ -4,7 +4,7 @@
       <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div class="max-w-2xl">
           <p class="eyebrow">{{ t('sidebar.vault') }}</p>
-          <h1 class="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-white">{{ t('vault.title') }}</h1>
+          <h1 class="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">{{ t('vault.title') }}</h1>
           <p class="text-surface-300 text-base md:text-lg mt-3 leading-relaxed">{{ t('vault.subtitle') }}</p>
         </div>
         <button @click="showAddModal = true" class="btn-primary inline-flex items-center gap-2 self-start">
@@ -22,6 +22,7 @@
           v-model="searchQuery"
           type="text"
           :placeholder="t('vault.search')"
+          :aria-label="t('vault.search')"
           class="input-field pl-10"
         />
       </div>
@@ -30,11 +31,12 @@
           v-for="filter in filters"
           :key="filter.value"
           @click="activeFilter = filter.value"
+          :aria-pressed="activeFilter === filter.value"
           class="px-3 py-2 rounded-2xl text-sm font-medium transition-colors border"
           :class="[
             activeFilter === filter.value
-              ? 'bg-accent-600 text-white border-accent-500/30'
-              : 'bg-white/[0.03] text-surface-400 border-white/10 hover:text-surface-200 hover:border-white/20'
+              ? 'bg-accent-600 text-primary-foreground border-accent-500/30'
+              : 'bg-foreground/[0.03] text-surface-400 border-border hover:text-surface-200 hover:border-foreground/25'
           ]"
         >
           {{ filter.label }}
@@ -45,7 +47,7 @@
           v-for="chip in searchChips"
           :key="chip.query"
           @click="searchQuery = chip.query"
-          class="px-2.5 py-1 rounded-full text-xs bg-white/[0.03] text-surface-400 border border-white/10 hover:text-surface-200 hover:border-white/20 transition-colors"
+          class="px-2.5 py-1 rounded-full text-xs bg-foreground/[0.03] text-surface-400 border border-border hover:text-surface-200 hover:border-foreground/25 transition-colors"
         >
           {{ chip.label }}
         </button>
@@ -54,7 +56,7 @@
 
     <!-- Items list -->
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-400 animate-spin" />
+      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="visibleItems.length === 0" class="text-center py-16">
@@ -160,10 +162,6 @@ const visibleItems = computed(() => {
 
     return query.split(/\s+/).every(term => haystack.includes(term))
   })
-})
-
-watch(activeFilter, () => {
-  fetchItems()
 })
 
 function onItemAdded() {

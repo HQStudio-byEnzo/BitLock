@@ -1,16 +1,6 @@
 <template>
-  <div class="min-h-screen text-white">
-    <header class="tool-header">
-      <div class="tool-header__inner section-shell max-w-7xl">
-        <NuxtLink to="/" class="tech-brand">
-          <UiBitLockLogo :size="30" />
-          <span>BitLock</span>
-        </NuxtLink>
-        <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="btn-primary">
-          {{ loggedIn ? t('hero.dashboardCta') : t('generator.cta') }}
-        </NuxtLink>
-      </div>
-    </header>
+  <div class="min-h-screen text-foreground">
+    <UiPublicNav />
 
     <main class="section-shell max-w-7xl py-10 md:py-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8">
       <section>
@@ -21,7 +11,7 @@
         <div class="glass-panel p-5 md:p-6 space-y-6">
           <div class="space-y-2">
             <label class="text-sm text-surface-400">{{ t('seedGenerator.generatedLabel') }}</label>
-            <textarea :value="seedPhrase" readonly rows="4" class="input-field font-mono text-base resize-none"></textarea>
+            <textarea :value="seedPhrase" readonly rows="4" :aria-label="t('seedGenerator.generatedLabel')" class="input-field font-mono text-base resize-none"></textarea>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -31,23 +21,23 @@
             </label>
             <div class="metric-tile">
               <p class="text-sm text-surface-400">{{ t('seedGenerator.securityHintTitle') }}</p>
-              <p class="text-sm font-semibold text-white mt-2">{{ t('seedGenerator.securityHintValue') }}</p>
+              <p class="text-sm font-semibold text-foreground mt-2">{{ t('seedGenerator.securityHintValue') }}</p>
             </div>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3">
             <button class="btn-primary flex-1" @click="regenerate">{{ t('seedGenerator.generate') }}</button>
-            <button class="btn-secondary" @click="copySeed">
+            <button class="btn-secondary" :aria-label="t('vault.copy')" @click="copySeed">
               <Icon name="lucide:copy" class="w-4 h-4" />
             </button>
           </div>
 
-          <p v-if="copied" class="text-sm text-emerald-300">{{ t('seedGenerator.copied') }}</p>
+          <p v-if="copied" role="status" class="text-sm text-emerald-700">{{ t('seedGenerator.copied') }}</p>
         </div>
       </section>
 
       <aside class="glass-panel p-5 md:p-6 h-fit space-y-4">
-        <h2 class="text-xl font-semibold text-white">{{ t('seedGenerator.bestPractices') }}</h2>
+        <h2 class="text-xl font-semibold text-foreground">{{ t('seedGenerator.bestPractices') }}</h2>
         <ul class="space-y-3 text-sm text-surface-300">
           <li>{{ t('seedGenerator.practice1') }}</li>
           <li>{{ t('seedGenerator.practice2') }}</li>

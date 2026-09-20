@@ -3,9 +3,9 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 modal-backdrop" @click="$emit('close')"></div>
 
-      <div class="relative w-full max-w-md modal-shell p-5 md:p-6 animate-scale-in" role="dialog" aria-modal="true" :aria-label="t('vault.deleteTitle')">
+      <div ref="dialogEl" tabindex="-1" class="relative w-full max-w-md modal-shell p-5 md:p-6 animate-scale-in outline-none" role="dialog" aria-modal="true" :aria-label="t('vault.deleteTitle')">
         <div class="flex items-center justify-between mb-5">
-          <h2 class="text-lg font-semibold text-white">{{ t('vault.deleteTitle') }}</h2>
+          <h2 class="text-lg font-semibold text-foreground">{{ t('vault.deleteTitle') }}</h2>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
             <Icon name="lucide:x" class="w-5 h-5" />
           </button>
@@ -27,11 +27,10 @@
               class="input-field"
               :placeholder="t('vault.deletePasswordPlaceholder')"
               autocomplete="current-password"
-              autofocus
             />
           </div>
 
-          <div v-if="displayError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+          <div v-if="displayError" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
             {{ displayError }}
           </div>
 
@@ -64,8 +63,10 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useLang()
+const dialogEl = ref<HTMLElement | null>(null)
 const secret = ref('')
 const errorMsg = ref('')
+useModalFocus(dialogEl, () => emit('close'))
 const displayError = computed(() => props.errorMessage || errorMsg.value)
 const confirmText = computed(() => {
   const label = props.item.label || t('vault.untitled')

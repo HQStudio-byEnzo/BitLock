@@ -5,7 +5,7 @@
     class="fixed left-4 top-4 z-[100] icon-button md:left-6 md:top-6"
     aria-label="Return to landing page"
   >
-    <UiBitLockLogo :size="26" />
+    <UiQVaultLogo :size="26" />
   </NuxtLink>
 </template>
 

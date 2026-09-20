@@ -9,8 +9,8 @@
         <div class="space-y-2">
           <label class="text-sm text-surface-400">{{ t('generator.generatedLabel') }}</label>
           <div class="flex flex-col sm:flex-row gap-2">
-            <input :value="password" readonly class="input-field font-mono text-lg min-w-0" />
-            <button class="btn-secondary shrink-0" @click="copyPassword">
+            <input :value="password" readonly class="input-field font-mono text-lg min-w-0" :aria-label="t('generator.generatedLabel')" />
+            <button class="btn-secondary shrink-0" :aria-label="t('vault.copy')" @click="copyPassword">
               <Icon name="lucide:copy" class="w-5 h-5" />
             </button>
           </div>
@@ -23,28 +23,28 @@
           </label>
           <div class="metric-tile">
             <p class="text-sm text-surface-400">{{ t('generator.entropy') }}</p>
-            <p class="text-2xl font-semibold text-emerald-300">{{ passwordEntropy }} bits</p>
+            <p class="text-2xl font-semibold text-emerald-700">{{ passwordEntropy }} bits</p>
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label v-for="option in toggles" :key="option.key" class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          <label v-for="option in toggles" :key="option.key" class="flex items-center gap-3 rounded-2xl border border-border bg-foreground/[0.03] p-3">
             <input v-model="options[option.key]" type="checkbox" class="rounded" />
             <span>{{ option.label }}</span>
           </label>
         </div>
 
         <button class="btn-primary w-full py-3" @click="regenerate">{{ t('generator.generate') }}</button>
-        <p v-if="copied" class="text-sm text-emerald-300">{{ t('generator.copied') }}</p>
+        <p v-if="copied" role="status" class="text-sm text-emerald-700">{{ t('generator.copied') }}</p>
       </div>
     </section>
 
     <aside class="space-y-4">
       <div class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-white">{{ t('dashboardGenerator.saveTitle') }}</h2>
+        <h2 class="text-xl font-semibold text-foreground">{{ t('dashboardGenerator.saveTitle') }}</h2>
         <p class="text-sm text-surface-400 leading-relaxed">{{ t('dashboardGenerator.saveDesc') }}</p>
 
-        <div v-if="!isUnlocked" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-200">
+        <div v-if="!isUnlocked" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-800">
           {{ t('dashboardGenerator.masterPasswordNeeded') }}
         </div>
 
@@ -73,10 +73,10 @@
           </div>
         </div>
 
-        <div v-if="saveError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+        <div v-if="saveError" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
           {{ saveError }}
         </div>
-        <div v-if="saveSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+        <div v-if="saveSuccess" role="status" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-700">
           {{ saveSuccess }}
         </div>
 

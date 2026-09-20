@@ -10,7 +10,12 @@ const STORAGE_KEY = 'bitlock.security.passkeyUnlock'
 
 function toBase64(value: ArrayBuffer | Uint8Array) {
   const bytes = value instanceof Uint8Array ? value : new Uint8Array(value)
-  return btoa(String.fromCharCode(...bytes))
+  let binary = ''
+  const chunkSize = 0x8000
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize))
+  }
+  return btoa(binary)
 }
 function fromBase64(value: string) { return Uint8Array.from(atob(value), char => char.charCodeAt(0)) }
 function randomBytes(length: number) { return crypto.getRandomValues(new Uint8Array(length)) }
@@ -47,7 +52,7 @@ export function usePasskeyUnlock() {
     const salt = randomBytes(32)
     const credential = await navigator.credentials.create({ publicKey: {
       challenge: randomBytes(32),
-      rp: { name: 'BitLock' },
+      rp: { name: 'QVault' },
       user: { id: randomBytes(32), name: displayName, displayName },
       pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
       timeout: 60_000,

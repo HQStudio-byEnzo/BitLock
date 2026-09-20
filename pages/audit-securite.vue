@@ -1,16 +1,6 @@
 <template>
-  <div class="min-h-screen text-white">
-    <header class="tool-header">
-      <div class="tool-header__inner section-shell max-w-7xl">
-        <NuxtLink to="/" class="tech-brand">
-          <UiBitLockLogo :size="30" />
-          <span>BitLock</span>
-        </NuxtLink>
-        <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="btn-primary">
-          {{ loggedIn ? t('hero.dashboardCta') : t('generator.cta') }}
-        </NuxtLink>
-      </div>
-    </header>
+  <div class="min-h-screen text-foreground">
+    <UiPublicNav />
 
     <main class="section-shell max-w-7xl py-10 md:py-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8">
       <section class="space-y-6">
@@ -39,11 +29,11 @@
             </div>
             <div class="metric-tile">
               <p class="text-sm text-surface-400">{{ t('audit.strength') }}</p>
-              <p class="mt-2 text-lg font-semibold text-white">{{ strengthLabel }}</p>
+              <p class="mt-2 text-lg font-semibold text-foreground">{{ strengthLabel }}</p>
             </div>
             <div class="metric-tile">
               <p class="text-sm text-surface-400">{{ t('audit.entropy') }}</p>
-              <p class="mt-2 text-lg font-semibold text-white">{{ entropyBits }} bits</p>
+              <p class="mt-2 text-lg font-semibold text-foreground">{{ entropyBits }} bits</p>
             </div>
           </div>
 
@@ -55,9 +45,9 @@
               :class="issue.level === 'good' ? 'border-emerald-500/20 bg-emerald-500/5' : issue.level === 'warn' ? 'border-amber-500/20 bg-amber-500/5' : 'border-red-500/20 bg-red-500/5'"
             >
               <div class="flex items-start gap-3">
-                <Icon :name="issue.icon" class="w-5 h-5 mt-0.5" :class="issue.level === 'good' ? 'text-emerald-400' : issue.level === 'warn' ? 'text-amber-400' : 'text-red-400'" />
+                <Icon :name="issue.icon" class="w-5 h-5 mt-0.5" :class="issue.level === 'good' ? 'text-emerald-400' : issue.level === 'warn' ? 'text-amber-400' : 'text-red-600'" />
                 <div>
-                  <p class="text-sm font-medium text-white">{{ issue.title }}</p>
+                  <p class="text-sm font-medium text-foreground">{{ issue.title }}</p>
                   <p class="text-sm text-surface-400 mt-1">{{ issue.desc }}</p>
                 </div>
               </div>
@@ -67,7 +57,7 @@
       </section>
 
       <aside class="glass-panel p-5 md:p-6 h-fit space-y-4">
-        <h2 class="text-xl font-semibold text-white">{{ t('audit.checklist') }}</h2>
+        <h2 class="text-xl font-semibold text-foreground">{{ t('audit.checklist') }}</h2>
         <ul class="space-y-3 text-sm text-surface-300">
           <li>{{ t('audit.practice1') }}</li>
           <li>{{ t('audit.practice2') }}</li>
@@ -117,14 +107,14 @@ const score = computed(() => {
   if (/\d/.test(password.value)) total += 15
   if (/[^A-Za-z0-9]/.test(password.value)) total += 15
   if (!/(.)\1{2,}/.test(password.value)) total += 5
-  if (!/123|abc|qwerty|password|admin|bitlock/i.test(password.value)) total += 5
+  if (!/123|abc|qwerty|password|admin|qvault/i.test(password.value)) total += 5
   return Math.min(100, total)
 })
 
 const scoreColor = computed(() => {
   if (score.value >= 80) return 'text-emerald-400'
   if (score.value >= 55) return 'text-amber-400'
-  return 'text-red-400'
+  return 'text-red-600'
 })
 
 const strengthLabel = computed(() => {
@@ -151,9 +141,9 @@ const passwordIssues = computed(() => [
   },
   {
     key: 'patterns',
-    icon: /123|abc|qwerty|password|admin|bitlock/i.test(password.value) ? 'lucide:x-circle' : 'lucide:check-circle-2',
-    level: /123|abc|qwerty|password|admin|bitlock/i.test(password.value) ? 'bad' : 'good',
-    title: /123|abc|qwerty|password|admin|bitlock/i.test(password.value) ? t('audit.patternBad') : t('audit.patternGood'),
+    icon: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? 'lucide:x-circle' : 'lucide:check-circle-2',
+    level: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? 'bad' : 'good',
+    title: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? t('audit.patternBad') : t('audit.patternGood'),
     desc: t('audit.patternDesc'),
   },
 ].filter(issue => password.value || issue.key === 'length'))

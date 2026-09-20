@@ -1,3 +1,22 @@
+function requestOrigin(event: Parameters<Parameters<typeof defineEventHandler>[0]>[0]) {
+  const forwardedHost = getRequestHeader(event, 'x-forwarded-host')
+  const host = forwardedHost || getRequestHeader(event, 'host')
+  const forwardedProto = getRequestHeader(event, 'x-forwarded-proto')
+  const protocol = forwardedProto || (process.env.NODE_ENV === 'production' ? 'https' : 'http')
+  return host ? `${protocol}://${host}` : null
+}
+
+function allowedOrigins(event: Parameters<Parameters<typeof defineEventHandler>[0]>[0]) {
+  const allowed = new Set<string>()
+  const configuredAppUrl = String(useRuntimeConfig().appUrl || '').trim()
+  if (configuredAppUrl) {
+    try { allowed.add(new URL(configuredAppUrl).origin) } catch { /* ignore malformed config */ }
+  }
+  const derived = requestOrigin(event)
+  if (derived) allowed.add(derived)
+  return allowed
+}
+
 export default defineEventHandler((event) => {
   removeResponseHeader(event, 'x-powered-by')
   if (getRequestURL(event).pathname.startsWith('/api/')) {
@@ -17,14 +36,14 @@ export default defineEventHandler((event) => {
   }
 
   const origin = getRequestHeader(event, 'origin')
-  if (!origin) return
+  if (!origin) {
+    // Fail closed: without an Origin header, only trust an explicit same-origin
+    // Sec-Fetch-Site signal from a browser.
+    if (fetchSite === 'same-origin' || fetchSite === 'same-site') return
+    throw createError({ statusCode: 403, message: 'Missing request origin.' })
+  }
 
-  const forwardedHost = getRequestHeader(event, 'x-forwarded-host')
-  const host = forwardedHost || getRequestHeader(event, 'host')
-  const forwardedProto = getRequestHeader(event, 'x-forwarded-proto')
-  const protocol = forwardedProto || (process.env.NODE_ENV === 'production' ? 'https' : 'http')
-
-  if (!host || origin !== `${protocol}://${host}`) {
+  if (!allowedOrigins(event).has(origin)) {
     throw createError({ statusCode: 403, message: 'Invalid request origin.' })
   }
 })

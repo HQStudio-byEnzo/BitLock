@@ -1,16 +1,6 @@
 <template>
-  <div class="min-h-screen text-white">
-    <header class="tool-header">
-      <div class="tool-header__inner section-shell max-w-7xl">
-        <NuxtLink to="/" class="tech-brand">
-          <UiBitLockLogo :size="30" />
-          <span>BitLock</span>
-        </NuxtLink>
-        <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="btn-primary">
-          {{ loggedIn ? t('hero.dashboardCta') : t('generator.cta') }}
-        </NuxtLink>
-      </div>
-    </header>
+  <div class="min-h-screen text-foreground">
+    <UiPublicNav />
     <main class="section-shell max-w-7xl py-10 md:py-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8">
       <section>
         <p class="eyebrow mb-4">{{ t('generator.badge') }}</p>
@@ -20,8 +10,8 @@
           <div>
             <label class="text-sm text-surface-400">{{ t('generator.generatedLabel') }}</label>
             <div class="mt-2 flex flex-col sm:flex-row gap-2">
-              <input :value="password" readonly class="input-field font-mono text-lg min-w-0" />
-              <button class="btn-secondary shrink-0" @click="copyPassword"><Icon name="lucide:copy" class="w-5 h-5" /></button>
+              <input :value="password" readonly :aria-label="t('generator.generatedLabel')" class="input-field font-mono text-lg min-w-0" />
+              <button class="btn-secondary shrink-0" :aria-label="t('vault.copy')" @click="copyPassword"><Icon name="lucide:copy" class="w-5 h-5" /></button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -31,17 +21,17 @@
             </label>
             <div class="metric-tile">
               <p class="text-sm text-surface-400">{{ t('generator.entropy') }}</p>
-              <p class="text-2xl font-semibold text-emerald-300">{{ passwordEntropy }} bits</p>
+              <p class="text-2xl font-semibold text-emerald-700">{{ passwordEntropy }} bits</p>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <label v-for="option in toggles" :key="option.key" class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+            <label v-for="option in toggles" :key="option.key" class="flex items-center gap-3 rounded-2xl border border-border bg-foreground/[0.03] p-3">
               <input v-model="options[option.key]" type="checkbox" class="rounded" />
               <span>{{ option.label }}</span>
             </label>
           </div>
           <button class="btn-primary w-full py-3" @click="regenerate">{{ t('generator.generate') }}</button>
-          <p v-if="copied" class="text-sm text-emerald-300">{{ t('generator.copied') }}</p>
+          <p v-if="copied" role="status" class="text-sm text-emerald-700">{{ t('generator.copied') }}</p>
         </div>
       </section>
       <aside class="glass-panel p-5 md:p-6 h-fit space-y-4">

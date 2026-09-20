@@ -31,7 +31,8 @@ export default defineNuxtConfig({
           'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
           'Cross-Origin-Opener-Policy': 'same-origin',
           'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-          'Content-Security-Policy': "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'; upgrade-insecure-requests",
+          // Content-Security-Policy is set per-request with a nonce in
+          // server/plugins/security-headers.ts.
         },
       },
     },
@@ -57,7 +58,7 @@ export default defineNuxtConfig({
         title: 'PokePings Free',
         description: 'Découvrez la version gratuite de PokePings.',
         url: 'https://whop.com/pokepings/pokepings-free?a=enzoizinga',
-        disclosure: 'Lien affilié PokePings — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié PokePings — QVault peut recevoir une commission.',
       },
       {
         id: 'pokepings-premium',
@@ -65,7 +66,7 @@ export default defineNuxtConfig({
         title: 'PokePings Premium',
         description: 'Accédez aux fonctionnalités Premium de PokePings.',
         url: 'https://whop.com/pokepings/pokepings-premium?a=enzoizinga',
-        disclosure: 'Lien affilié PokePings — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié PokePings — QVault peut recevoir une commission.',
       },
       {
         id: 'pokepings',
@@ -73,7 +74,7 @@ export default defineNuxtConfig({
         title: 'PokePings',
         description: 'Explorez PokePings et choisissez l’offre qui vous convient.',
         url: 'https://whop.com/pokepings?a=enzoizinga',
-        disclosure: 'Lien affilié PokePings — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié PokePings — QVault peut recevoir une commission.',
       },
       {
         id: 'toolsuite-vip',
@@ -81,7 +82,7 @@ export default defineNuxtConfig({
         title: 'ToolSuite VIP',
         description: 'Découvrez l’offre VIP de ToolSuite.',
         url: 'https://whop.com/toolsuite/buy-vip?a=enzoizinga',
-        disclosure: 'Lien affilié ToolSuite — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié ToolSuite — QVault peut recevoir une commission.',
       },
       {
         id: 'toolsuite',
@@ -89,7 +90,7 @@ export default defineNuxtConfig({
         title: 'ToolSuite',
         description: 'Explorez ToolSuite et ses offres disponibles.',
         url: 'https://whop.com/toolsuite?a=enzoizinga',
-        disclosure: 'Lien affilié ToolSuite — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié ToolSuite — QVault peut recevoir une commission.',
       },
       {
         id: 'steven-bloom-box',
@@ -97,7 +98,7 @@ export default defineNuxtConfig({
         title: 'Stevens Whop · Bloom Box',
         description: 'Découvrez l’offre Bloom Box Fresh Flowers Monthly.',
         url: 'https://whop.com/steven/bloom-box-fresh-flowers-monthly?a=enzoizinga',
-        disclosure: 'Lien affilié Stevens Whop — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié Stevens Whop — QVault peut recevoir une commission.',
       },
       {
         id: 'steven-politics-intel',
@@ -105,7 +106,7 @@ export default defineNuxtConfig({
         title: 'Stevens Whop · Politics Intel',
         description: 'Découvrez l’offre Politics Intel.',
         url: 'https://whop.com/steven/politics-intel?a=enzoizinga',
-        disclosure: 'Lien affilié Stevens Whop — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié Stevens Whop — QVault peut recevoir une commission.',
       },
       {
         id: 'steven-founder-advisory',
@@ -113,7 +114,7 @@ export default defineNuxtConfig({
         title: 'Stevens Whop · Founder Advisory',
         description: 'Découvrez l’offre Founder Advisory.',
         url: 'https://whop.com/steven/founder-advisory?a=enzoizinga',
-        disclosure: 'Lien affilié Stevens Whop — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié Stevens Whop — QVault peut recevoir une commission.',
       },
       {
         id: 'steven-trade-talk',
@@ -121,7 +122,7 @@ export default defineNuxtConfig({
         title: 'Stevens Whop · Trade Talk',
         description: 'Découvrez l’offre Trade Talk.',
         url: 'https://whop.com/steven/trade-talk?a=enzoizinga',
-        disclosure: 'Lien affilié Stevens Whop — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié Stevens Whop — QVault peut recevoir une commission.',
       },
       {
         id: 'stevens-whop',
@@ -129,18 +130,28 @@ export default defineNuxtConfig({
         title: 'Stevens Whop',
         description: 'Explorez les autres offres Stevens Whop.',
         url: 'https://whop.com/steven?a=enzoizinga',
-        disclosure: 'Lien affilié Stevens Whop — BitLock peut recevoir une commission.',
+        disclosure: 'Lien affilié Stevens Whop — QVault peut recevoir une commission.',
       },
     ]),
     // Public
     public: {
-      appName: 'BitLock',
+      appName: 'QVault',
     },
   },
 
   tailwindcss: {
     cssPath: '~/assets/css/main.css',
   },
+
+  css: [
+    '@fontsource-variable/geist',
+    '@fontsource-variable/geist-mono',
+    '@fontsource-variable/instrument-sans',
+    '@fontsource/ibm-plex-mono/400.css',
+    '@fontsource/ibm-plex-mono/500.css',
+    '@fontsource/ibm-plex-mono/600.css',
+    '@fontsource/ibm-plex-mono/700.css',
+  ],
 
   postcss: {
     plugins: {
@@ -154,35 +165,39 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'BitLock | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés',
-      titleTemplate: '%s | BitLock',
+      htmlAttrs: { lang: 'fr', class: 'dark' },
+      title: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés',
+      titleTemplate: '%s | QVault',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
-        { name: 'description', content: 'BitLock - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
+        { name: 'description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
         { name: 'keywords', content: 'gestionnaire mots de passe gratuit, coffre fort numérique, password manager gratuit, chiffrement zero-knowledge, stockage mots de passe sécurisé, stockage seed phrase, sauvegarde clé privée, coffre fort crypto, protection wallet, BIP39 seed phrase, stockage clés crypto sécurisé, protection données personnelles, password manager open source, gestionnaire mots de passe français, coffre fort numerique gratuit, proteger mots de passe' },
         { name: 'robots', content: 'index, follow' },
         { name: 'theme-color', content: '#0a0f0c' },
         { name: 'author', content: 'HQ Studio' },
         // Open Graph
         { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'BitLock' },
+        { property: 'og:site_name', content: 'QVault' },
         { property: 'og:url', content: 'https://bitlock.hqmerchant.xyz/' },
-        { property: 'og:title', content: 'BitLock | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
-        { property: 'og:description', content: 'BitLock - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
-        { property: 'og:image', content: 'https://bitlock.hqmerchant.xyz/bitlock-logo.svg' },
+        { property: 'og:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
+        { property: 'og:description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
+        { property: 'og:image', content: 'https://bitlock.hqmerchant.xyz/qvault-logo.svg' },
         { property: 'og:locale', content: 'fr_FR' },
         { property: 'og:locale:alternate', content: 'en_US' },
         // Twitter
         { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:title', content: 'BitLock | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
+        { name: 'twitter:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
         { name: 'twitter:description', content: 'Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge.' },
-        { name: 'twitter:image', content: 'https://bitlock.hqmerchant.xyz/bitlock-logo.svg' },
+        { name: 'twitter:image', content: 'https://bitlock.hqmerchant.xyz/qvault-logo.svg' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/bitlock-logo.svg' },
-        { rel: 'shortcut icon', type: 'image/svg+xml', href: '/bitlock-logo.svg' },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon-v2.png' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/qvault-logo.svg?v=2' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/qvault-icon-48.png?v=2' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/qvault-icon-32.png?v=2' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/qvault-icon-16.png?v=2' },
+        { rel: 'shortcut icon', href: '/qvault-icon-32.png?v=2' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-v2.png?v=2' },
         { rel: 'canonical', href: 'https://bitlock.hqmerchant.xyz/' },
       ],
       script: [
@@ -191,7 +206,7 @@ export default defineNuxtConfig({
           innerHTML: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
-            name: 'BitLock',
+            name: 'QVault',
             url: process.env.APP_URL || 'https://bitlock.hqmerchant.xyz/',
             applicationCategory: 'SecurityApplication',
             operatingSystem: 'Web',

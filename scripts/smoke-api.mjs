@@ -13,6 +13,10 @@ async function requestRaw(path, options = {}) {
   const headers = new Headers(options.headers)
   if (options.body) headers.set('content-type', 'application/json')
   if (cookie) headers.set('cookie', cookie)
+  if (options.method && options.method !== 'GET') {
+    headers.set('origin', baseURL)
+    headers.set('sec-fetch-site', 'same-origin')
+  }
   const response = await fetch(`${baseURL}${path}`, { ...options, headers })
   const setCookie = response.headers.get('set-cookie')
   if (setCookie) cookie = setCookie.split(';', 1)[0]
@@ -31,7 +35,7 @@ async function request(path, options = {}) {
 }
 
 async function cleanup() {
-  const url = process.env.SMOKE_DB_URL || process.env.TURSO_DB_URL || 'file:./bitlock-dev.db'
+  const url = process.env.SMOKE_DB_URL || process.env.TURSO_DB_URL || 'file:./qvault-dev.db'
   const authToken = process.env.TURSO_DB_TOKEN || ''
   const db = createClient(authToken ? { url, authToken } : { url })
   try {

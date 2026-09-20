@@ -1,15 +1,15 @@
 <template>
-  <div class="auth-shell">
+  <main class="auth-shell">
     <div class="auth-frame animate-fade-in">
       <header class="auth-header">
         <NuxtLink
           to="/"
           class="inline-flex items-center justify-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-4 focus-visible:ring-offset-surface-950 active:opacity-70"
-          aria-label="BitLock — accueil"
+          aria-label="QVault — accueil"
         >
-          <UiBitLockLogo :size="64" />
+          <UiQVaultLogo :size="64" />
         </NuxtLink>
-        <h1 class="mt-6 min-w-0 text-3xl font-semibold tracking-tight text-white">{{ t('auth.register.title') }}</h1>
+        <h1 class="mt-6 min-w-0 text-3xl font-semibold tracking-tight text-foreground">{{ t('auth.register.title') }}</h1>
         <p class="text-sm text-surface-400 mt-3">{{ t('auth.register.subtitle') }}</p>
       </header>
 
@@ -68,15 +68,17 @@
           <input v-model="form.acceptedTerms" type="checkbox" class="mt-1" required />
           <span class="leading-relaxed">
             {{ t('auth.register.acceptPrefix') }}
-            <NuxtLink to="/legal/cgu" class="text-accent-400 hover:text-accent-300">{{ t('footer.terms') }}</NuxtLink>,
-            <NuxtLink to="/legal/confidentialite" class="text-accent-400 hover:text-accent-300">{{ t('footer.privacy') }}</NuxtLink>,
-            {{ t('auth.register.acceptAnd') }}
-            <NuxtLink to="/legal/mentions-legales" class="text-accent-400 hover:text-accent-300">{{ t('footer.legalNotice') }}</NuxtLink>.
           </span>
         </label>
+        <p class="-mt-2 text-xs text-surface-400">
+          <NuxtLink to="/legal/cgu" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.terms') }}</NuxtLink>,
+          <NuxtLink to="/legal/confidentialite" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.privacy') }}</NuxtLink>,
+          {{ t('auth.register.acceptAnd') }}
+          <NuxtLink to="/legal/mentions-legales" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.legalNotice') }}</NuxtLink>.
+        </p>
 
         <!-- Error message -->
-        <div v-if="errorMsg" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400" role="alert">
+        <div v-if="errorMsg" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600" role="alert">
           {{ errorMsg }}
         </div>
 
@@ -95,7 +97,7 @@
       <div class="auth-footer">
         <p class="text-center text-sm text-surface-400">
           {{ t('auth.register.hasAccount') }}
-          <NuxtLink to="/auth/login" class="text-accent-400 hover:text-accent-300 font-medium">
+          <NuxtLink to="/auth/login" class="text-accent-600 hover:text-accent-700 font-medium">
             {{ t('auth.register.login') }}
           </NuxtLink>
         </p>
@@ -106,7 +108,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">

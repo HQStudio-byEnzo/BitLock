@@ -60,7 +60,7 @@ async function ensureBaseSchema(db: ReturnType<typeof createClient>) {
     'CREATE INDEX IF NOT EXISTS idx_vault_history_item ON vault_item_history(user_id, item_id, version DESC)',
     `CREATE TABLE IF NOT EXISTS master_verifiers (user_id TEXT PRIMARY KEY, payload TEXT NOT NULL, iv TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT (datetime('now')), FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS webauthn_credentials (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, credential_id TEXT NOT NULL, public_key TEXT NOT NULL, encrypted_unlock_key TEXT, unlock_iv TEXT, label TEXT NOT NULL DEFAULT 'Passkey', sign_count INTEGER NOT NULL DEFAULT 0, created_at TEXT DEFAULT (datetime('now')), UNIQUE(user_id, credential_id), FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
-    `CREATE TABLE IF NOT EXISTS extension_tokens (user_id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL DEFAULT (datetime('now')), last_used_at TEXT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
+    `CREATE TABLE IF NOT EXISTS extension_tokens (user_id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL DEFAULT (datetime('now')), last_used_at TEXT, expires_at TEXT, session_version INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS accepted_terms (user_id TEXT PRIMARY KEY, terms_version TEXT NOT NULL, accepted_at TEXT NOT NULL DEFAULT (datetime('now')), user_agent TEXT, ip_address TEXT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS rate_limits (key_hash TEXT PRIMARY KEY, count INTEGER NOT NULL, reset_at INTEGER NOT NULL)`,
     'CREATE INDEX IF NOT EXISTS idx_rate_limits_reset_at ON rate_limits(reset_at)',
@@ -132,6 +132,18 @@ async function migrateItems(db: ReturnType<typeof createClient>) {
   }
 }
 
+async function ensureExtensionTokenColumns(db: ReturnType<typeof createClient>) {
+  const info = await db.execute({ sql: "PRAGMA table_info('extension_tokens')" })
+  if (info.rows.length === 0) return
+  const columns = new Set(info.rows.map(row => String((row as any).name || '')))
+  if (!columns.has('expires_at')) {
+    await db.execute({ sql: 'ALTER TABLE extension_tokens ADD COLUMN expires_at TEXT' }).catch(() => {})
+  }
+  if (!columns.has('session_version')) {
+    await db.execute({ sql: 'ALTER TABLE extension_tokens ADD COLUMN session_version INTEGER NOT NULL DEFAULT 0' }).catch(() => {})
+  }
+}
+
 async function runVaultSchemaMigration(db: ReturnType<typeof createClient>) {
   await ensureBaseSchema(db)
   const userInfo = await db.execute({ sql: "PRAGMA table_info('users')" })
@@ -146,6 +158,7 @@ async function runVaultSchemaMigration(db: ReturnType<typeof createClient>) {
   }
   await migrateItems(db)
   await ensureItemIndexes(db)
+  await ensureExtensionTokenColumns(db)
   await seedDefaultVaults(db)
 }
 

@@ -217,8 +217,18 @@ export function useVault() {
 
     }
 
-    const history = await $fetch('/api/vault/history') as { history: Array<{ id: string; payload: string; iv: string | null; is_encrypted: boolean | number }> }
-    for (const snapshot of history.history.filter(entry => Boolean(entry.is_encrypted))) {
+    const historyEntries: Array<{ id: string; payload: string; iv: string | null; is_encrypted: boolean | number }> = []
+    const pageSize = 1000
+    for (let offset = 0; ; offset += pageSize) {
+      const page = await $fetch(`/api/vault/history?limit=${pageSize}&offset=${offset}`) as {
+        history: Array<{ id: string; payload: string; iv: string | null; is_encrypted: boolean | number }>
+      }
+      historyEntries.push(...page.history)
+      if (page.history.length < pageSize) break
+      await new Promise(resolve => setTimeout(resolve, 0))
+    }
+
+    for (const snapshot of historyEntries.filter(entry => Boolean(entry.is_encrypted))) {
       if (!snapshot.iv) throw new Error('Une ancienne version chiffrée est corrompue.')
       let envelope
       try {

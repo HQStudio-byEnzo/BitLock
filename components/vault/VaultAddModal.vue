@@ -4,7 +4,9 @@
       <div class="absolute inset-0 modal-backdrop" @click="$emit('close')"></div>
 
       <div
-        class="relative w-full modal-shell animate-scale-in"
+        ref="dialogEl"
+        tabindex="-1"
+        class="relative w-full modal-shell animate-scale-in outline-none"
         :class="isNote ? 'note-composer' : 'max-w-md p-5 md:p-6 max-h-[90vh] overflow-y-auto'"
         role="dialog"
         aria-modal="true"
@@ -13,7 +15,7 @@
         <div class="flex items-center justify-between" :class="isNote ? 'note-composer__header' : 'mb-6'">
           <div class="min-w-0">
             <p v-if="isNote" class="note-composer__eyebrow">{{ t('notes.editorEyebrow') }}</p>
-            <h2 class="text-lg font-semibold text-white">{{ isNote ? t('notes.editorTitle') : t('vault.addTitle') }}</h2>
+            <h2 class="text-lg font-semibold text-foreground">{{ isNote ? t('notes.editorTitle') : t('vault.addTitle') }}</h2>
           </div>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
             <Icon name="lucide:x" class="w-5 h-5" />
@@ -92,7 +94,7 @@
         <template v-else>
         <div
           v-if="needsEncryption && !isUnlocked"
-          class="mb-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-200 space-y-3"
+          class="mb-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-800 space-y-3"
         >
           <p>{{ t('vault.masterPwdNotice') }}</p>
           <div>
@@ -119,10 +121,11 @@
                 :key="tp.value"
                 type="button"
                 @click="form.type = tp.value"
+                :aria-pressed="form.type === tp.value"
                 class="p-3 rounded-2xl border text-center transition-colors text-sm"
                 :class="[
                   form.type === tp.value
-                    ? 'border-accent-500 bg-accent-500/10 text-accent-300'
+                    ? 'border-accent-500 bg-accent-500/10 text-accent-600'
                     : 'border-surface-700 bg-surface-800 text-surface-400 hover:border-surface-600'
                 ]"
               >
@@ -152,7 +155,7 @@
                 v-if="form.type === 'password'"
                 type="button"
                 @click="generatePasswordValue"
-                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-300 hover:bg-accent-600/30 transition-colors"
+                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-600 hover:bg-accent-600/30 transition-colors"
               >
                 {{ t('vault.generatePassword') }}
               </button>
@@ -160,17 +163,19 @@
                 v-if="form.type === 'crypto'"
                 type="button"
                 @click="generateSeed"
-                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-300 hover:bg-accent-600/30 transition-colors"
+                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-600 hover:bg-accent-600/30 transition-colors"
               >
                 {{ t('vault.generateSeed') }}
               </button>
-              <label
+              <button
                 v-if="form.type === 'recovery'"
-                class="text-xs px-2 py-1 rounded bg-surface-800 text-surface-300 hover:bg-surface-700 transition-colors cursor-pointer"
+                type="button"
+                class="text-xs px-2 py-1 rounded bg-surface-800 text-surface-300 hover:bg-surface-700 transition-colors"
+                @click="recoveryFileInput?.click()"
               >
                 {{ t('vault.importTxt') }}
-                <input type="file" accept=".txt,text/plain" class="hidden" @change="importTxt" />
-              </label>
+              </button>
+              <input ref="recoveryFileInput" type="file" accept=".txt,text/plain" class="hidden" @change="importTxt" />
             </div>
             <textarea
               id="payload"
@@ -213,7 +218,7 @@
             </label>
           </div>
 
-          <div v-if="error" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+          <div v-if="error" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
             {{ error }}
           </div>
 
@@ -252,6 +257,10 @@ const { generatePassword } = usePasswordGenerator()
 const { t } = useLang()
 const isSubmitting = ref(false)
 const masterPasswordInput = ref('')
+const dialogEl = ref<HTMLElement | null>(null)
+const recoveryFileInput = ref<HTMLInputElement | null>(null)
+
+useModalFocus(dialogEl, () => emit('close'))
 
 const form = reactive({
   type: props.defaultType || 'link' as 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp',

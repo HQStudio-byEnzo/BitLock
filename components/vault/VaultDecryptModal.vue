@@ -5,11 +5,11 @@
       <div class="absolute inset-0 modal-backdrop" @click="$emit('close')"></div>
 
       <!-- Modal -->
-      <div class="relative w-full max-w-md modal-shell p-5 md:p-6 animate-scale-in max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" :aria-label="t('vault.decrypt')">
+      <div ref="dialogEl" tabindex="-1" class="relative w-full max-w-md modal-shell p-5 md:p-6 animate-scale-in max-h-[90vh] overflow-y-auto outline-none" role="dialog" aria-modal="true" :aria-label="t('vault.decrypt')">
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-            <Icon name="lucide:unlock" class="w-5 h-5 text-accent-400" />
+          <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Icon name="lucide:unlock" class="w-5 h-5 text-accent-600" />
             {{ t('vault.decrypt') }}
           </h2>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
@@ -39,7 +39,7 @@
               />
             </div>
 
-            <div v-if="errorMsg" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+            <div v-if="errorMsg" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
               {{ errorMsg }}
             </div>
 
@@ -79,8 +79,8 @@
             </div>
 
             <div v-else-if="editing" class="space-y-3">
-              <input v-model="editLabel" class="input-field" :placeholder="t('vault.labelField')" />
-              <textarea v-model="editValue" rows="8" class="input-field resize-y font-mono text-sm" />
+              <input v-model="editLabel" class="input-field" :placeholder="t('vault.labelField')" :aria-label="t('vault.labelField')" />
+              <textarea v-model="editValue" rows="8" class="input-field resize-y font-mono text-sm" :aria-label="t('vault.decryptedContent')" />
             </div>
             <p v-else class="text-sm text-surface-100 font-mono break-all whitespace-pre-wrap">{{ decryptedValue }}</p>
           </div>
@@ -96,7 +96,7 @@
               {{ editing ? t('settings.cancel') : t('vault.close') }}
             </button>
           </div>
-          <p v-if="editMessage" class="text-sm" :class="editFailed ? 'text-red-400' : 'text-accent-300'">{{ editMessage }}</p>
+          <p v-if="editMessage" class="text-sm" :class="editFailed ? 'text-red-600' : 'text-accent-600'" role="status">{{ editMessage }}</p>
 
           <p class="text-xs text-surface-500 text-center">
             {{ t('vault.decryptNotice') }}
@@ -116,15 +116,18 @@ const props = defineProps<{
   item: VaultItem
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   close: []
 }>()
 
 const { t } = useLang()
+const dialogEl = ref<HTMLElement | null>(null)
 const { decryptItem, updateItem } = useVault()
 const { unlockMasterPassword, masterPassword: sessionMaster } = useMasterPassword()
 const { encrypt, serializeEncryptedPayload } = useCrypto()
 const { copySecurely } = useSecureClipboard()
+
+useModalFocus(dialogEl, () => emit('close'))
 
 const masterPassword = ref('')
 const decryptedValue = ref('')

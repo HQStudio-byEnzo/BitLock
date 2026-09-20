@@ -23,7 +23,7 @@ export function useDB(event?: H3Event) {
       message: 'TURSO_DB_URL is required in production.',
     })
   }
-  const url = configuredUrl || 'file:./bitlock-dev.db'
+  const url = configuredUrl || 'file:./qvault-dev.db'
   const authToken = String(config.tursoDbToken || '').trim()
 
   dbClient = createClient(authToken ? { url, authToken } : { url })
@@ -31,9 +31,11 @@ export function useDB(event?: H3Event) {
   if (!dbReadyPromise) {
     dbReadyPromise = (async () => {
       if (url.startsWith('file:')) {
-        await dbClient!.execute('PRAGMA foreign_keys = ON')
         await dbClient!.execute('PRAGMA busy_timeout = 5000')
       }
+      // Enforce foreign keys where the backend honors a connection-level pragma.
+      // Remote libSQL may ignore this, so callers must still scope every query by user_id.
+      await dbClient!.execute('PRAGMA foreign_keys = ON').catch(() => {})
       await ensureVaultSchema(dbClient!)
     })().finally(() => {
       dbReadyPromise = null

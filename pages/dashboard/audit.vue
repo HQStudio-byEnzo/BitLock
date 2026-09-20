@@ -2,7 +2,7 @@
   <div class="section-shell max-w-7xl py-10 md:py-16 space-y-6">
     <section class="hero-panel space-y-3">
       <p class="eyebrow">{{ t('sidebar.audit') }}</p>
-      <h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">{{ t('audit.title') }}</h1>
+      <h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">{{ t('audit.title') }}</h1>
       <p class="text-surface-300 text-base md:text-lg max-w-3xl leading-relaxed">{{ t('audit.subtitle') }}</p>
     </section>
 
@@ -13,20 +13,20 @@
       </div>
       <div class="glass-panel p-5">
         <p class="text-xs text-surface-500 mb-2">{{ t('audit.highAlerts') }}</p>
-        <p class="text-3xl font-bold text-red-400">{{ highIssues.length }}</p>
+        <p class="text-3xl font-bold text-red-600">{{ highIssues.length }}</p>
       </div>
       <div class="glass-panel p-5">
         <p class="text-xs text-surface-500 mb-2">{{ t('audit.toFix') }}</p>
-        <p class="text-3xl font-bold text-yellow-400">{{ mediumIssues.length }}</p>
+        <p class="text-3xl font-bold text-amber-500">{{ mediumIssues.length }}</p>
       </div>
       <div class="glass-panel p-5">
         <p class="text-xs text-surface-500 mb-2">{{ t('audit.elements') }}</p>
-        <p class="text-3xl font-bold text-white">{{ items.length }}</p>
+        <p class="text-3xl font-bold text-foreground">{{ items.length }}</p>
       </div>
     </div>
 
     <div class="glass-panel p-4 flex flex-col sm:flex-row sm:items-center gap-3 border-accent-500/20 bg-accent-500/5">
-      <Icon name="lucide:shield-check" class="w-5 h-5 text-accent-400 flex-shrink-0" />
+      <Icon name="lucide:shield-check" class="w-5 h-5 text-accent-600 flex-shrink-0" />
       <p class="text-sm text-surface-400 flex-1">{{ t('audit.notice') }}</p>
       <button type="button" class="btn-secondary" :disabled="passwordAuditLoading" @click="runPasswordAudit">
         <Icon name="lucide:key-round" class="w-4 h-4" />
@@ -34,12 +34,12 @@
       </button>
     </div>
 
-    <p v-if="passwordAuditMessage" class="text-sm" :class="passwordAuditError ? 'text-red-400' : 'text-green-400'" role="status">
+    <p v-if="passwordAuditMessage" class="text-sm" :class="passwordAuditError ? 'text-red-600' : 'text-green-700'" role="status">
       {{ passwordAuditMessage }}
     </p>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-400 animate-spin" />
+      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="issues.length === 0" class="text-center py-16">
@@ -61,15 +61,15 @@
               class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
               :class="issue.severity === 'high' ? 'bg-red-500/10' : issue.severity === 'medium' ? 'bg-yellow-500/10' : 'bg-surface-800'"
             >
-              <Icon :name="issue.icon" class="w-5 h-5" :class="issue.severity === 'high' ? 'text-red-400' : issue.severity === 'medium' ? 'text-yellow-400' : 'text-surface-400'" />
+              <Icon :name="issue.icon" class="w-5 h-5" :class="issue.severity === 'high' ? 'text-red-600' : issue.severity === 'medium' ? 'text-amber-500' : 'text-surface-400'" />
             </div>
             <div>
-              <p class="text-sm font-medium text-white">{{ issue.title }}</p>
+              <p class="text-sm font-medium text-foreground">{{ issue.title }}</p>
               <p class="text-sm text-surface-400 mt-1">{{ issue.description }}</p>
               <p class="text-xs text-surface-500 mt-2">{{ issue.action }}</p>
             </div>
           </div>
-          <span class="px-2.5 py-1 rounded-full text-xs font-medium" :class="issue.severity === 'high' ? 'bg-red-500/10 text-red-400' : issue.severity === 'medium' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-surface-800 text-surface-400'">
+          <span class="px-2.5 py-1 rounded-full text-xs font-medium" :class="issue.severity === 'high' ? 'bg-red-500/10 text-red-600' : issue.severity === 'medium' ? 'bg-yellow-500/10 text-amber-500' : 'bg-surface-800 text-surface-400'">
             {{ severityLabel[issue.severity] }}
           </span>
         </div>
@@ -202,9 +202,9 @@ const securityScore = computed(() => {
 })
 
 const scoreColor = computed(() => {
-  if (securityScore.value >= 80) return 'text-green-400'
-  if (securityScore.value >= 55) return 'text-yellow-400'
-  return 'text-red-400'
+  if (securityScore.value >= 80) return 'text-green-700'
+  if (securityScore.value >= 55) return 'text-amber-500'
+  return 'text-red-600'
 })
 
 function hasEncryptedPayload(item: VaultItem) {
@@ -247,7 +247,7 @@ function findDuplicates(itemsToGroup: VaultItem[], getKey: (item: VaultItem) => 
 
 function isWeakPassword(password: string) {
   const variety = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter(pattern => pattern.test(password)).length
-  return password.length < 12 || variety < 3 || /(password|admin|qwerty|12345|bitlock)/i.test(password)
+  return password.length < 12 || variety < 3 || /(password|admin|qwerty|12345|qvault)/i.test(password)
 }
 
 async function runPasswordAudit() {

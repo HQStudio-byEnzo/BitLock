@@ -1,16 +1,16 @@
 <template>
-  <div class="auth-shell">
+  <main class="auth-shell">
     <div class="auth-frame animate-fade-in">
       <header class="auth-header">
         <NuxtLink
           to="/"
           class="inline-flex items-center justify-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-4 focus-visible:ring-offset-surface-950 active:opacity-70"
-          aria-label="BitLock — accueil"
+          aria-label="QVault — accueil"
         >
-          <UiBitLockLogo :size="64" />
+          <UiQVaultLogo :size="64" />
         </NuxtLink>
         <div class="mt-6 min-w-0 space-y-2">
-          <h1 class="text-3xl font-semibold tracking-tight text-white">{{ t('locked.title') }}</h1>
+          <h1 class="text-3xl font-semibold tracking-tight text-foreground">{{ t('locked.title') }}</h1>
           <p class="text-sm text-surface-400">{{ t('locked.subtitle') }}</p>
         </div>
       </header>
@@ -36,7 +36,7 @@
             />
           </div>
 
-          <div v-if="errorMsg" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+          <div v-if="errorMsg" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
             {{ errorMsg }}
           </div>
 
@@ -49,12 +49,12 @@
           </button>
         </form>
 
-        <button type="button" class="mx-auto block min-h-11 text-center text-sm text-surface-400 hover:text-white transition-colors" @click="signOut">
+        <button type="button" class="mx-auto block min-h-11 text-center text-sm text-surface-400 hover:text-foreground transition-colors" @click="signOut">
           {{ t('locked.back') }}
         </button>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">

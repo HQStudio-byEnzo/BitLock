@@ -1,6 +1,6 @@
-# BitLock
+# QVault
 
-BitLock is an online zero-knowledge vault. Passwords, notes, TOTP secrets,
+QVault is an online zero-knowledge vault. Passwords, notes, TOTP secrets,
 crypto keys, and recovery codes are encrypted in the browser before they are
 sent to the server. The hosted database stores ciphertext and the metadata
 required to operate the account.
@@ -11,7 +11,7 @@ required to operate the account.
 - AES-256-GCM encryption with a PBKDF2-derived key
 - Passwords, links, encrypted notes, TOTP, crypto secrets, and recovery codes
 - Multiple vaults, folders, tags, favorites, search, and item history
-- Encrypted `.bitlock` backup import/export
+- Encrypted `.qvault` backup import/export
 - Password strength and reuse audit performed in the browser
 - Revocable browser-extension token
 - Voluntary Support page for disclosed sponsors and affiliate links
@@ -33,7 +33,7 @@ bun install
 bun run dev
 ```
 
-Without `TURSO_DB_URL`, development uses `bitlock-dev.db` in the project root.
+Without `TURSO_DB_URL`, development uses `qvault-dev.db` in the project root.
 The file is ignored by Git.
 
 Copy `.env.example` to `.env` and set a session password of at least 32
@@ -63,7 +63,7 @@ variable itself, only validated entries from `/api/support/catalog`.
     "title": "Partner name",
     "description": "What the visitor will find after opening the link.",
     "url": "https://partner.example/path",
-    "disclosure": "Affiliate link — BitLock may receive a commission."
+    "disclosure": "Affiliate link — QVault may receive a commission."
   }
 ]
 ```

@@ -3,28 +3,28 @@
     <Transition name="fade">
       <div v-if="visible" class="fixed inset-0 z-[80] flex items-center justify-center p-4">
         <div class="absolute inset-0 modal-backdrop"></div>
-        <div class="relative w-full max-w-lg modal-shell p-5 md:p-6" role="dialog" aria-modal="true" aria-label="Master password">
+        <div ref="dialogEl" tabindex="-1" class="relative w-full max-w-lg modal-shell p-5 md:p-6 outline-none" role="dialog" aria-modal="true" :aria-label="t('masterSetup.title')">
           <div class="flex items-start gap-4">
             <div class="feature-mark shrink-0">
               <Icon name="lucide:key-round" class="w-5 h-5" />
             </div>
             <div class="space-y-3">
               <div>
-                <h2 class="text-lg font-semibold text-white">{{ t('masterSetup.title') }}</h2>
+                <h2 class="text-lg font-semibold text-foreground">{{ t('masterSetup.title') }}</h2>
                 <p class="text-sm text-surface-400 mt-1">{{ t('masterSetup.desc') }}</p>
               </div>
 
               <div class="grid gap-2 text-sm text-surface-300">
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-400 mt-0.5" />
+                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleUnique') }}</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-400 mt-0.5" />
+                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleRecovery') }}</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-400 mt-0.5" />
+                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleRotation') }}</span>
                 </div>
               </div>
@@ -44,7 +44,7 @@
                   <span>{{ t('masterSetup.understood') }}</span>
                 </label>
 
-                <p v-if="error" class="text-sm text-red-400" role="alert">{{ error }}</p>
+                <p v-if="error" class="text-sm text-red-600" role="alert">{{ error }}</p>
 
                 <div class="flex flex-col sm:flex-row gap-2 pt-2">
                   <button type="submit" :disabled="!understood || saving" class="btn-primary">
@@ -70,9 +70,12 @@ const password = ref('')
 const confirmation = ref('')
 const error = ref('')
 const saving = ref(false)
+const dialogEl = ref<HTMLElement | null>(null)
 const { t } = useLang()
 const { unlockMasterPassword } = useMasterPassword()
 const { user } = useUserSession()
+
+useModalFocus(dialogEl, () => {}, { active: visible, closeOnEscape: false })
 
 function onboardingKey(name: 'done' | 'snoozed') {
   const owner = user.value?.id || user.value?.username || 'anonymous'

@@ -2,7 +2,7 @@
 
 ## Parameters
 * **Licensor:** HQ Studio
-* **Development Object:** BitLock Vault (including all source code, modules, and associated documentation)
+* **Development Object:** QVault Vault (including all source code, modules, and associated documentation)
 * **Change License:** Apache License, Version 2.0
 * **Change Date:** 2030-01-01
 * **Additional Use Grant:** You may use the Licensed Work for non-commercial purposes, for internal evaluation, or for personal development and testing. Production use for managing personal, non-commercial credentials and cryptographic assets is fully permitted.

@@ -2,7 +2,7 @@
  * POST /api/auth/register
  * Crée un compte strictement local sans adresse email.
  */
-import { LEGAL_TERMS_VERSION } from '~/server/utils/legal'
+import { LEGAL_TERMS_VERSION, truncateIp } from '~/server/utils/legal'
 
 export default defineEventHandler(async (event) => {
   await enforceRateLimit(event, 'auth-register', 5, 60 * 60 * 1000)
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
           id,
           LEGAL_TERMS_VERSION,
           getRequestHeader(event, 'user-agent') || null,
-          getRequestIP(event) || null,
+          truncateIp(getRequestIP(event)),
         ],
       },
       {

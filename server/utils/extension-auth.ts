@@ -20,12 +20,17 @@ export async function requireExtensionAuth(
 
   const db = useDB(event)
   const owner = await db.execute({
-    sql: 'SELECT user_id FROM extension_tokens WHERE token_hash = ?',
+    sql: `SELECT et.user_id
+          FROM extension_tokens et
+          JOIN users u ON u.id = et.user_id
+          WHERE et.token_hash = ?
+            AND (et.expires_at IS NULL OR et.expires_at > datetime('now'))
+            AND et.session_version = u.session_version`,
     args: [tokenHash],
   })
 
   if (!owner.rows.length) {
-    throw createError({ statusCode: 401, message: 'Jeton d’extension invalide ou révoqué.' })
+    throw createError({ statusCode: 401, message: 'Jeton d’extension invalide ou expiré.' })
   }
 
   await db.execute({

@@ -1,6 +1,5 @@
 <template>
   <div class="tech-site">
-    <UiBackToLanding />
     <slot />
   </div>
 </template>

@@ -125,6 +125,8 @@ CREATE TABLE IF NOT EXISTS extension_tokens (
   token_hash TEXT NOT NULL UNIQUE,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   last_used_at TEXT,
+  expires_at TEXT,
+  session_version INTEGER NOT NULL DEFAULT 0,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

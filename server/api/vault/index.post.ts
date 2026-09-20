@@ -44,9 +44,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     await db.batch(statements, 'write')
-  } catch (error) {
-    console.error('Failed to save vault item:', error)
-    throw createError({ statusCode: 500, message: 'Impossible d’enregistrer cet élément.' })
+  } catch (error: any) {
+    // Never log the statement or bound ciphertext; keep only a correlation id and error code.
+    const reference = crypto.randomUUID()
+    console.error(`[vault-create:${reference}]`, error?.code || error?.name || 'unknown-error')
+    throw createError({ statusCode: 500, message: `Impossible d’enregistrer cet élément. (réf. ${reference})` })
   }
   return { id, message: 'Élément ajouté.' }
 })

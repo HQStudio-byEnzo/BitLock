@@ -8,12 +8,37 @@ export default {
     './plugins/**/*.{js,ts}',
     './app.vue',
   ],
-  darkMode: 'class',
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {
-        white: 'oklch(var(--surface-50) / <alpha-value>)',
-        black: 'oklch(var(--surface-950) / <alpha-value>)',
+        background: 'oklch(var(--background) / <alpha-value>)',
+        foreground: 'oklch(var(--foreground) / <alpha-value>)',
+        card: 'oklch(var(--card) / <alpha-value>)',
+        'card-foreground': 'oklch(var(--card-foreground) / <alpha-value>)',
+        popover: 'oklch(var(--popover) / <alpha-value>)',
+        'popover-foreground': 'oklch(var(--popover-foreground) / <alpha-value>)',
+        primary: {
+          DEFAULT: 'oklch(var(--primary) / <alpha-value>)',
+          foreground: 'oklch(var(--primary-foreground) / <alpha-value>)',
+        },
+        secondary: {
+          DEFAULT: 'oklch(var(--secondary) / <alpha-value>)',
+          foreground: 'oklch(var(--secondary-foreground) / <alpha-value>)',
+        },
+        muted: {
+          DEFAULT: 'oklch(var(--muted) / <alpha-value>)',
+          foreground: 'oklch(var(--muted-foreground) / <alpha-value>)',
+        },
+        destructive: {
+          DEFAULT: 'oklch(var(--destructive) / <alpha-value>)',
+          foreground: 'oklch(var(--destructive-foreground) / <alpha-value>)',
+        },
+        border: 'oklch(var(--border) / <alpha-value>)',
+        input: 'oklch(var(--input) / <alpha-value>)',
+        ring: 'oklch(var(--ring) / <alpha-value>)',
         surface: {
           DEFAULT: 'oklch(var(--surface-950) / <alpha-value>)',
           50: 'oklch(var(--surface-50) / <alpha-value>)',
@@ -41,14 +66,26 @@ export default {
           800: 'oklch(var(--accent-800) / <alpha-value>)',
           900: 'oklch(var(--accent-900) / <alpha-value>)',
         },
+        chart: {
+          1: 'oklch(var(--chart-1) / <alpha-value>)',
+          2: 'oklch(var(--chart-2) / <alpha-value>)',
+          3: 'oklch(var(--chart-3) / <alpha-value>)',
+          4: 'oklch(var(--chart-4) / <alpha-value>)',
+          5: 'oklch(var(--chart-5) / <alpha-value>)',
+        },
       },
       fontFamily: {
-        sans: ['Segoe UI Variable', 'Segoe UI', 'Aptos', 'ui-sans-serif', 'sans-serif'],
-        mono: ['Cascadia Mono', 'SFMono-Regular', 'Consolas', 'ui-monospace', 'monospace'],
+        sans: ['"Geist Variable"', 'Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"IBM Plex Mono"', '"Instrument Sans Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        mono: ['"IBM Plex Mono"', '"Geist Mono Variable"', '"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       borderRadius: {
-        xl: '0.375rem',
-        '2xl': '0.625rem',
+        sm: 'var(--radius-sm)',
+        DEFAULT: 'var(--radius-md)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-xl)',
       },
       animation: {
         'fade-in': 'fadeIn 280ms cubic-bezier(0.16, 1, 0.3, 1)',

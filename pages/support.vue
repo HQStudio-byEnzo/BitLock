@@ -1,41 +1,24 @@
 <template>
   <main class="support-page">
-    <header class="terminal-nav">
-      <NuxtLink to="/" class="terminal-nav__brand" aria-label="BitLock — accueil">
-        <UiBitLockLogo :size="30" />
-        <span>bitlock</span>
-      </NuxtLink>
-      <nav class="terminal-nav__command" :aria-label="copy.navLabel">
-        <span class="terminal-nav__prompt">&gt;</span>
-        <a href="#partners">--partenaires</a>
-        <a href="#transparency">--transparence</a>
-        <span class="terminal-nav__caret" aria-hidden="true">▮</span>
-      </nav>
-      <div class="terminal-nav__actions">
-        <UiLangSwitch />
-        <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="terminal-nav__launch">
-          {{ loggedIn ? t('hero.dashboardCta') : t('nav.start') }}
-        </NuxtLink>
-      </div>
-    </header>
+    <UiPublicNav />
 
     <section class="support-hero">
       <div>
-        <p class="terminal-label">bitlock://support</p>
+        <p class="eyebrow">{{ t('sidebar.support') }}</p>
         <h1>{{ copy.title }}</h1>
         <p>{{ copy.subtitle }}</p>
       </div>
       <dl class="support-contract" aria-label="Contrat de confidentialité">
         <div>
-          <dt>01 / coffre</dt>
+          <dt>Coffre</dt>
           <dd>{{ copy.noVault }}</dd>
         </div>
         <div>
-          <dt>02 / tracking</dt>
+          <dt>Confidentialité</dt>
           <dd>{{ copy.noTracking }}</dd>
         </div>
         <div>
-          <dt>03 / choix</dt>
+          <dt>Choix</dt>
           <dd>{{ copy.voluntary }}</dd>
         </div>
       </dl>
@@ -95,8 +78,8 @@
       </ul>
     </section>
 
-    <footer class="terminal-footer">
-      <p>BitLock · support volontaire · zéro accès au coffre</p>
+    <footer class="support-footer">
+      <p>QVault · {{ copy.voluntary }}</p>
       <nav aria-label="Liens de pied de page">
         <NuxtLink to="/">{{ copy.home }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
@@ -125,7 +108,7 @@ const entries = computed(() => data.value?.entries || [])
 
 const copy = computed(() => locale.value === 'fr' ? {
   navLabel: 'Navigation Support',
-  title: 'Soutenir BitLock sans entrer dans votre coffre.',
+  title: 'Soutenir QVault sans entrer dans votre coffre.',
   subtitle: 'Regardez un contenu sponsorisé ou utilisez un lien affilié seulement si vous le souhaitez. Le coffre reste isolé de cette page.',
   noVault: 'Aucun accès aux secrets',
   noTracking: 'Aucun tracker tiers',
@@ -138,16 +121,16 @@ const copy = computed(() => locale.value === 'fr' ? {
   watch: 'Voir le sponsor',
   open: 'Voir l’offre',
   emptyTitle: 'Aucun partenaire actif.',
-  emptyDescription: 'BitLock n’affiche pas de lien de démonstration. Cette section sera activée quand un vrai partenaire aura été vérifié.',
+  emptyDescription: 'QVault n’affiche pas de lien de démonstration. Cette section sera activée quand un vrai partenaire aura été vérifié.',
   transparencyTitle: 'Le coffre ne finance pas sa sécurité avec vos données.',
-  transparencyDescription: 'La monétisation reste sur cette page publique et ne modifie ni le chiffrement ni le fonctionnement du dashboard.',
+  transparencyDescription: 'La monétisation reste sur cette page publique et ne modifie ni le chiffrement ni le fonctionnement du coffre.',
   ruleOne: 'Aucun contenu publicitaire dans le coffre ou les écrans d’authentification.',
   ruleTwo: 'Aucune ouverture automatique, lecture forcée ou redirection cachée.',
   ruleThree: 'Les commissions éventuelles sont signalées avant le clic.',
   home: 'Accueil',
 } : {
   navLabel: 'Support navigation',
-  title: 'Support BitLock without entering your vault.',
+  title: 'Support QVault without entering your vault.',
   subtitle: 'Watch sponsored content or use an affiliate link only when you choose to. The vault stays isolated from this page.',
   noVault: 'No access to secrets',
   noTracking: 'No third-party tracker',
@@ -160,7 +143,7 @@ const copy = computed(() => locale.value === 'fr' ? {
   watch: 'View sponsor',
   open: 'View offer',
   emptyTitle: 'No active partner.',
-  emptyDescription: 'BitLock does not display placeholder links. This section activates after a real partner has been reviewed.',
+  emptyDescription: 'QVault does not display placeholder links. This section activates after a real partner has been reviewed.',
   transparencyTitle: 'Your data does not pay for vault security.',
   transparencyDescription: 'Monetization stays on this public page and never changes encryption or dashboard behavior.',
   ruleOne: 'No ads inside the vault or authentication screens.',
@@ -195,8 +178,8 @@ const copy = computed(() => locale.value === 'fr' ? {
   max-width: 12ch;
 }
 
-.support-hero p:not(.terminal-label) {
-  color: var(--color-muted);
+.support-hero p:not(.eyebrow) {
+  color: var(--color-text-muted);
   max-width: 62ch;
 }
 
@@ -247,7 +230,7 @@ const copy = computed(() => locale.value === 'fr' ? {
 .support-transparency p,
 .support-row p,
 .support-empty p {
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   max-width: 65ch;
 }
 
@@ -270,7 +253,7 @@ const copy = computed(() => locale.value === 'fr' ? {
 }
 
 .support-row small {
-  color: var(--color-neutral);
+  color: var(--color-text-faint);
   display: block;
   font-family: var(--font-mono);
   margin-top: var(--space-tight);
@@ -284,7 +267,8 @@ const copy = computed(() => locale.value === 'fr' ? {
 .support-status {
   align-items: flex-start;
   background: var(--color-paper-2);
-  border: 1px solid var(--color-rule-strong);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
   color: var(--color-ink);
   display: flex;
   gap: var(--space-group);
@@ -334,5 +318,37 @@ const copy = computed(() => locale.value === 'fr' ? {
   .support-transparency {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   }
+}
+
+.support-footer {
+  align-items: center;
+  border-top: 1px solid var(--color-rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: space-between;
+  margin-top: var(--space-page);
+  padding: var(--space-8) clamp(var(--space-control), 5vw, var(--space-page));
+}
+
+.support-footer p {
+  color: var(--color-text-faint);
+  font-size: 0.8125rem;
+}
+
+.support-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.support-footer a {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.support-footer a:hover {
+  color: var(--color-ink);
 }
 </style>

@@ -3,10 +3,10 @@
     <Transition name="fade">
       <div v-if="visible" class="fixed inset-0 z-[90] flex items-center justify-center p-4">
         <div class="absolute inset-0 modal-backdrop"></div>
-        <div class="relative w-full max-w-2xl modal-shell p-5 md:p-6 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" :aria-label="t('legal.acceptTitle')">
+        <div ref="dialogEl" tabindex="-1" class="relative w-full max-w-2xl modal-shell p-5 md:p-6 max-h-[90vh] overflow-y-auto outline-none" role="dialog" aria-modal="true" :aria-label="t('legal.acceptTitle')">
           <div class="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h2 class="text-xl font-semibold text-white">{{ t('legal.acceptTitle') }}</h2>
+              <h2 class="text-xl font-semibold text-foreground">{{ t('legal.acceptTitle') }}</h2>
               <p class="text-sm text-surface-400 mt-1">
                 {{ t('legal.acceptDesc') }}
               </p>
@@ -48,7 +48,7 @@
             </button>
           </div>
 
-          <p v-if="error" class="mt-4 text-sm text-red-400">
+          <p v-if="error" class="mt-4 text-sm text-red-600" role="alert">
             {{ error }}
           </p>
         </div>
@@ -64,9 +64,12 @@ const visible = ref(false)
 const accepted = ref(false)
 const saving = ref(false)
 const error = ref('')
+const dialogEl = ref<HTMLElement | null>(null)
 
 const { t } = useLang()
 const { signOut } = useAuthClient()
+
+useModalFocus(dialogEl, () => {}, { active: visible, closeOnEscape: false })
 
 onMounted(async () => {
   try {

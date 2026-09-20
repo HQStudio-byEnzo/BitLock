@@ -8,26 +8,26 @@
       <div class="glass-panel p-5 md:p-6 space-y-6">
         <div class="space-y-2">
           <label class="text-sm text-surface-400">{{ t('seedGenerator.generatedLabel') }}</label>
-          <textarea :value="seedPhrase" readonly rows="4" class="input-field font-mono text-base resize-none"></textarea>
+          <textarea :value="seedPhrase" readonly rows="4" :aria-label="t('seedGenerator.generatedLabel')" class="input-field font-mono text-base resize-none"></textarea>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
           <button class="btn-primary flex-1" @click="regenerate">{{ t('seedGenerator.generate') }}</button>
-          <button class="btn-secondary" @click="copySeed">
+          <button class="btn-secondary" :aria-label="t('vault.copy')" @click="copySeed">
             <Icon name="lucide:copy" class="w-4 h-4" />
           </button>
         </div>
 
-        <p v-if="copied" class="text-sm text-emerald-300">{{ t('seedGenerator.copied') }}</p>
+        <p v-if="copied" role="status" class="text-sm text-emerald-700">{{ t('seedGenerator.copied') }}</p>
       </div>
     </section>
 
     <aside class="space-y-4">
       <div class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-xl font-semibold text-white">{{ t('seedGenerator.saveTitle') }}</h2>
+        <h2 class="text-xl font-semibold text-foreground">{{ t('seedGenerator.saveTitle') }}</h2>
         <p class="text-sm text-surface-400 leading-relaxed">{{ t('seedGenerator.saveDesc') }}</p>
 
-        <div v-if="!isUnlocked" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-200">
+        <div v-if="!isUnlocked" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-800">
           {{ t('seedGenerator.masterPasswordNeeded') }}
         </div>
 
@@ -41,10 +41,10 @@
           <input id="masterPassword" v-model="masterPasswordInput" type="password" class="input-field" :placeholder="t('seedGenerator.masterPasswordPlaceholder')" />
         </div>
 
-        <div v-if="saveError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+        <div v-if="saveError" role="alert" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600">
           {{ saveError }}
         </div>
-        <div v-if="saveSuccess" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+        <div v-if="saveSuccess" role="status" class="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-700">
           {{ saveSuccess }}
         </div>
 

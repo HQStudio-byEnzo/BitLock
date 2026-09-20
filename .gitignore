@@ -16,6 +16,7 @@ node_modules
 # Logs
 logs
 *.log
+dev.pid
 
 # Misc
 .DS_Store

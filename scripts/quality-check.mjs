@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { extname, join, relative } from 'node:path'
 
 const root = process.cwd()
-const ignored = new Set(['.git', '.nuxt', '.output', '.vercel', 'node_modules'])
+const ignored = new Set(['.git', '.nuxt', '.output', '.vercel', 'node_modules', '.agents'])
 const sourceExtensions = new Set(['.css', '.html', '.js', '.json', '.md', '.mjs', '.ts', '.vue'])
 const files = []
 
