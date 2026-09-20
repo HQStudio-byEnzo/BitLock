@@ -7,7 +7,7 @@
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-lg font-semibold text-foreground">{{ t('vault.deleteTitle') }}</h2>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
-            <Icon name="lucide:x" class="w-5 h-5" />
+            <Icon name="hugeicons:x" class="w-5 h-5" />
           </button>
         </div>
 

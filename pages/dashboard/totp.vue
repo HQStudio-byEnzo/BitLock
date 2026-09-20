@@ -6,11 +6,11 @@
         <h1 class="mt-3 text-3xl md:text-4xl font-semibold text-foreground">{{ t('totp.title') }}</h1>
         <p class="mt-3 text-surface-300">{{ t('totp.subtitle') }}</p>
       </div>
-      <button class="btn-primary self-start" @click="showAdd = true"><Icon name="lucide:plus" class="w-4 h-4" /> {{ t('totp.add') }}</button>
+      <button class="btn-primary self-start" @click="showAdd = true"><Icon name="hugeicons:plus" class="w-4 h-4" /> {{ t('totp.add') }}</button>
     </section>
 
     <div v-if="!isUnlocked" class="glass-panel p-5 flex flex-col sm:flex-row gap-4 sm:items-center">
-      <Icon name="lucide:lock-keyhole" class="w-6 h-6 text-amber-700" />
+      <Icon name="hugeicons:lock-keyhole" class="w-6 h-6 text-amber-700" />
       <p class="flex-1 text-sm text-surface-300">{{ t('totp.unlock') }}</p>
       <NuxtLink to="/auth/locked?redirect=/dashboard/totp" class="btn-secondary">{{ t('totp.unlockAction') }}</NuxtLink>
     </div>

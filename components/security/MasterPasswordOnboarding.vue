@@ -6,7 +6,7 @@
         <div ref="dialogEl" tabindex="-1" class="relative w-full max-w-lg modal-shell p-5 md:p-6 outline-none" role="dialog" aria-modal="true" :aria-label="t('masterSetup.title')">
           <div class="flex items-start gap-4">
             <div class="feature-mark shrink-0">
-              <Icon name="lucide:key-round" class="w-5 h-5" />
+              <Icon name="hugeicons:key-round" class="w-5 h-5" />
             </div>
             <div class="space-y-3">
               <div>
@@ -16,15 +16,15 @@
 
               <div class="grid gap-2 text-sm text-surface-300">
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
+                  <Icon name="hugeicons:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleUnique') }}</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
+                  <Icon name="hugeicons:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleRecovery') }}</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check" class="w-4 h-4 text-green-700 mt-0.5" />
+                  <Icon name="hugeicons:check" class="w-4 h-4 text-green-700 mt-0.5" />
                   <span>{{ t('masterSetup.ruleRotation') }}</span>
                 </div>
               </div>

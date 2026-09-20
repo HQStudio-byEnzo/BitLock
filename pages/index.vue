@@ -35,16 +35,16 @@
         <div class="lp-hero__actions">
           <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="btn-primary">
             {{ loggedIn ? t('dash.openVault') : t('hero.cta') }}
-            <Icon name="lucide:arrow-right" class="h-4 w-4" />
+            <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" />
           </NuxtLink>
           <NuxtLink v-if="!loggedIn" to="/auth/login" class="btn-secondary">
             {{ t('hero.login') }}
           </NuxtLink>
         </div>
         <ul class="lp-hero__points">
-          <li><Icon name="lucide:check" class="h-4 w-4" /> {{ t('hero.free') }}</li>
-          <li><Icon name="lucide:check" class="h-4 w-4" /> {{ t('hero.openSource') }}</li>
-          <li><Icon name="lucide:check" class="h-4 w-4" /> {{ t('hero.privateByDefault') }}</li>
+          <li><Icon name="hugeicons:check" class="h-4 w-4" /> {{ t('hero.free') }}</li>
+          <li><Icon name="hugeicons:check" class="h-4 w-4" /> {{ t('hero.openSource') }}</li>
+          <li><Icon name="hugeicons:check" class="h-4 w-4" /> {{ t('hero.privateByDefault') }}</li>
         </ul>
       </div>
 
@@ -62,7 +62,7 @@
           </li>
         </ul>
         <div class="lp-preview__foot">
-          <Icon name="lucide:lock-keyhole" class="h-4 w-4" />
+          <Icon name="hugeicons:lock-keyhole" class="h-4 w-4" />
           <span>Chiffré dans votre navigateur</span>
         </div>
       </div>
@@ -79,7 +79,7 @@
           <span class="lp-feature__icon"><Icon :name="feature.icon" class="h-5 w-5" /></span>
           <h3>{{ feature.title }}</h3>
           <p>{{ feature.summary }}</p>
-          <span class="lp-feature__link">{{ t('landing.readMore') }} <Icon name="lucide:arrow-right" class="h-4 w-4" /></span>
+          <span class="lp-feature__link">{{ t('landing.readMore') }} <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" /></span>
         </NuxtLink>
       </div>
     </section>
@@ -114,7 +114,7 @@
             <h3>{{ tool.title }}</h3>
             <p>{{ tool.description }}</p>
           </div>
-          <Icon name="lucide:arrow-up-right" class="h-4 w-4" />
+          <Icon name="hugeicons:arrow-up-right-01" class="h-4 w-4" />
         </NuxtLink>
       </div>
     </section>
@@ -127,7 +127,7 @@
           <p class="lp-section__lede">{{ t('landing.securityDesc') }}</p>
           <NuxtLink to="/audit-securite" class="btn-secondary">
             {{ t('landing.inspectSecurity') }}
-            <Icon name="lucide:arrow-right" class="h-4 w-4" />
+            <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" />
           </NuxtLink>
         </div>
         <ol class="lp-security__flow">
@@ -149,7 +149,7 @@
       </header>
       <div class="lp-faq">
         <details v-for="index in 4" :key="index">
-          <summary>{{ t(`faq.q${index}`) }} <Icon name="lucide:plus" class="h-4 w-4" /></summary>
+          <summary>{{ t(`faq.q${index}`) }} <Icon name="hugeicons:plus" class="h-4 w-4" /></summary>
           <p>{{ t(`faq.a${index}`) }}</p>
         </details>
       </div>
@@ -159,7 +159,7 @@
       <h2>{{ t('landing.finalTitle') }}</h2>
       <NuxtLink :to="loggedIn ? '/dashboard' : '/auth/register'" class="btn-primary">
         {{ loggedIn ? t('dash.openVault') : t('hero.cta') }}
-        <Icon name="lucide:arrow-right" class="h-4 w-4" />
+        <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" />
       </NuxtLink>
     </section>
 
@@ -189,22 +189,22 @@ const { loggedIn } = useUserSession()
 const { features } = useFeatureCatalog()
 
 const previewRows = [
-  { icon: 'lucide:key-round', label: 'Gmail', value: '••••••••' },
-  { icon: 'lucide:bitcoin', label: 'Portefeuille', value: 'Phrase de récupération' },
-  { icon: 'lucide:shield-check', label: 'Code 2FA', value: '482 193' },
-  { icon: 'lucide:notebook-pen', label: 'Note privée', value: 'Chiffrée' },
+  { icon: 'hugeicons:key-round', label: 'Gmail', value: '••••••••' },
+  { icon: 'hugeicons:bitcoin', label: 'Portefeuille', value: 'Phrase de récupération' },
+  { icon: 'hugeicons:shield-check', label: 'Code 2FA', value: '482 193' },
+  { icon: 'hugeicons:notebook-pen', label: 'Note privée', value: 'Chiffrée' },
 ]
 
 const workflow = computed(() => [
-  { icon: 'lucide:plus', title: t('landing.stepCaptureTitle'), description: t('landing.stepCaptureDesc') },
-  { icon: 'lucide:lock-keyhole', title: t('landing.stepEncryptTitle'), description: t('landing.stepEncryptDesc') },
-  { icon: 'lucide:search', title: t('landing.stepFindTitle'), description: t('landing.stepFindDesc') },
+  { icon: 'hugeicons:plus', title: t('landing.stepCaptureTitle'), description: t('landing.stepCaptureDesc') },
+  { icon: 'hugeicons:lock-keyhole', title: t('landing.stepEncryptTitle'), description: t('landing.stepEncryptDesc') },
+  { icon: 'hugeicons:search-01', title: t('landing.stepFindTitle'), description: t('landing.stepFindDesc') },
 ])
 
 const tools = computed(() => [
-  { to: '/generateur-mot-de-passe', icon: 'lucide:sparkles', title: t('tools.password.title'), description: t('tools.password.desc') },
-  { to: '/generateur-seed-phrase', icon: 'lucide:list-ordered', title: t('tools.seed.title'), description: t('tools.seed.desc') },
-  { to: '/audit-securite', icon: 'lucide:shield-check', title: t('tools.audit.title'), description: t('tools.audit.desc') },
+  { to: '/generateur-mot-de-passe', icon: 'hugeicons:sparkles', title: t('tools.password.title'), description: t('tools.password.desc') },
+  { to: '/generateur-seed-phrase', icon: 'hugeicons:list-ordered', title: t('tools.seed.title'), description: t('tools.seed.desc') },
+  { to: '/audit-securite', icon: 'hugeicons:shield-check', title: t('tools.audit.title'), description: t('tools.audit.desc') },
 ])
 
 const securityFlow = computed(() => [

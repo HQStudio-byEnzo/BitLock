@@ -12,22 +12,22 @@
               </p>
             </div>
             <div class="feature-mark shrink-0">
-              <Icon name="lucide:file-text" class="w-5 h-5" />
+              <Icon name="hugeicons:file-text" class="w-5 h-5" />
             </div>
           </div>
 
           <div class="modal-link-list mb-6">
             <NuxtLink to="/legal/cgu" class="modal-link-row">
               <span class="text-sm font-medium text-surface-200">{{ t('footer.terms') }}</span>
-              <Icon name="lucide:arrow-up-right" class="w-4 h-4 text-surface-500" />
+              <Icon name="hugeicons:arrow-up-right-01" class="w-4 h-4 text-surface-500" />
             </NuxtLink>
             <NuxtLink to="/legal/confidentialite" class="modal-link-row">
               <span class="text-sm font-medium text-surface-200">{{ t('footer.privacy') }}</span>
-              <Icon name="lucide:arrow-up-right" class="w-4 h-4 text-surface-500" />
+              <Icon name="hugeicons:arrow-up-right-01" class="w-4 h-4 text-surface-500" />
             </NuxtLink>
             <NuxtLink to="/legal/mentions-legales" class="modal-link-row">
               <span class="text-sm font-medium text-surface-200">{{ t('footer.legalNotice') }}</span>
-              <Icon name="lucide:arrow-up-right" class="w-4 h-4 text-surface-500" />
+              <Icon name="hugeicons:arrow-up-right-01" class="w-4 h-4 text-surface-500" />
             </NuxtLink>
           </div>
 

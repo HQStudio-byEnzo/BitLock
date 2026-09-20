@@ -39,6 +39,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@iconify-json/hugeicons": "^1.2.35",
     "@nuxtjs/tailwindcss": "^6.12.0",
     "@types/bcryptjs": "^2.4.6",
     "tailwindcss": "^3.4.0",

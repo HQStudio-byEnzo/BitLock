@@ -28,7 +28,7 @@
           <div class="flex flex-col sm:flex-row gap-3">
             <button class="btn-primary flex-1" @click="regenerate">{{ t('seedGenerator.generate') }}</button>
             <button class="btn-secondary" :aria-label="t('vault.copy')" @click="copySeed">
-              <Icon name="lucide:copy" class="w-4 h-4" />
+              <Icon name="hugeicons:copy" class="w-4 h-4" />
             </button>
           </div>
 

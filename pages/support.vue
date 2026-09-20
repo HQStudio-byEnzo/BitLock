@@ -31,7 +31,7 @@
       </header>
 
       <div v-if="pending" class="support-status" role="status">
-        <Icon name="lucide:loader-circle" class="h-5 w-5 animate-spin" />
+        <Icon name="hugeicons:loader-circle" class="h-5 w-5 animate-spin" />
         <span>{{ copy.loading }}</span>
       </div>
 
@@ -52,13 +52,13 @@
             class="btn-secondary"
           >
             {{ entry.kind === 'sponsor' ? copy.watch : copy.open }}
-            <Icon name="lucide:external-link" class="h-4 w-4" />
+            <Icon name="hugeicons:external-link" class="h-4 w-4" />
           </a>
         </article>
       </div>
 
       <div v-else class="support-empty">
-        <Icon name="lucide:badge-info" class="h-6 w-6" />
+        <Icon name="hugeicons:badge-info" class="h-6 w-6" />
         <div>
           <h3>{{ copy.emptyTitle }}</h3>
           <p>{{ copy.emptyDescription }}</p>
@@ -72,9 +72,9 @@
         <p>{{ copy.transparencyDescription }}</p>
       </div>
       <ul>
-        <li><Icon name="lucide:shield-check" class="h-5 w-5" /> {{ copy.ruleOne }}</li>
-        <li><Icon name="lucide:mouse-pointer-click" class="h-5 w-5" /> {{ copy.ruleTwo }}</li>
-        <li><Icon name="lucide:circle-dollar-sign" class="h-5 w-5" /> {{ copy.ruleThree }}</li>
+        <li><Icon name="hugeicons:shield-check" class="h-5 w-5" /> {{ copy.ruleOne }}</li>
+        <li><Icon name="hugeicons:mouse-pointer-click" class="h-5 w-5" /> {{ copy.ruleTwo }}</li>
+        <li><Icon name="hugeicons:circle-dollar-sign" class="h-5 w-5" /> {{ copy.ruleThree }}</li>
       </ul>
     </section>
 

@@ -9,11 +9,11 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Icon name="lucide:unlock" class="w-5 h-5 text-accent-600" />
+            <Icon name="hugeicons:lock-open" class="w-5 h-5 text-accent-600" />
             {{ t('vault.decrypt') }}
           </h2>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
-            <Icon name="lucide:x" class="w-5 h-5" />
+            <Icon name="hugeicons:x" class="w-5 h-5" />
           </button>
         </div>
 
@@ -87,11 +87,11 @@
 
           <div class="flex gap-2">
             <button v-if="!editing" type="button" @click="copyDecrypted" class="btn-primary flex-1 flex items-center justify-center gap-2">
-              <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" />
+              <Icon :name="copied ? 'hugeicons:check' : 'hugeicons:copy'" class="w-4 h-4" />
               {{ copied ? t('vault.copied') : passwordEntry ? t('vault.copyPassword') : t('vault.copy') }}
             </button>
-            <button v-if="!editing" type="button" @click="startEditing" class="btn-secondary flex-1"><Icon name="lucide:pencil" class="w-4 h-4" />{{ t('vault.edit') }}</button>
-            <button v-if="editing" type="button" @click="saveEdit" :disabled="saving" class="btn-primary flex-1"><Icon name="lucide:save" class="w-4 h-4" />{{ saving ? t('vault.saving') : t('vault.save') }}</button>
+            <button v-if="!editing" type="button" @click="startEditing" class="btn-secondary flex-1"><Icon name="hugeicons:pencil" class="w-4 h-4" />{{ t('vault.edit') }}</button>
+            <button v-if="editing" type="button" @click="saveEdit" :disabled="saving" class="btn-primary flex-1"><Icon name="hugeicons:save" class="w-4 h-4" />{{ saving ? t('vault.saving') : t('vault.save') }}</button>
             <button type="button" @click="editing ? cancelEdit() : $emit('close')" class="btn-secondary flex-1">
               {{ editing ? t('settings.cancel') : t('vault.close') }}
             </button>

@@ -15,7 +15,7 @@
           {{ item.label || t('vault.untitled') }}
         </p>
         <span v-if="item.is_encrypted" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-600 border border-accent-500/20">
-          <Icon name="lucide:lock" class="w-2.5 h-2.5" />
+          <Icon name="hugeicons:lock" class="w-2.5 h-2.5" />
         </span>
       </div>
       <p class="text-xs text-surface-500 mt-0.5">
@@ -42,7 +42,7 @@
         :title="t('vault.decrypt')"
         :aria-label="t('vault.decrypt')"
       >
-        <Icon name="lucide:eye" class="w-4 h-4" />
+        <Icon name="hugeicons:eye" class="w-4 h-4" />
       </button>
       
       <!-- Copy button (non-encrypted) -->
@@ -53,7 +53,7 @@
         :title="copied ? t('vault.copied') : t('vault.copy')"
         :aria-label="copied ? t('vault.copied') : t('vault.copy')"
       >
-        <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" />
+        <Icon :name="copied ? 'hugeicons:check' : 'hugeicons:copy'" class="w-4 h-4" />
       </button>
 
       <!-- Favorite -->
@@ -64,7 +64,7 @@
         :aria-label="item.favorite ? t('vault.unfavorite') : t('vault.favorite')"
         :aria-pressed="item.favorite"
       >
-        <Icon :name="item.favorite ? 'lucide:star' : 'lucide:star'" class="w-4 h-4" :class="item.favorite ? 'fill-current' : ''" />
+        <Icon :name="item.favorite ? 'hugeicons:star' : 'hugeicons:star'" class="w-4 h-4" :class="item.favorite ? 'fill-current' : ''" />
       </button>
 
       <!-- Delete -->
@@ -73,7 +73,7 @@
         class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-red-600 transition-colors"
         :aria-label="t('vault.deleteAction')"
       >
-        <Icon name="lucide:trash-2" class="w-4 h-4" />
+        <Icon name="hugeicons:trash" class="w-4 h-4" />
       </button>
     </div>
   </div>
@@ -120,19 +120,19 @@ const typeLabels = computed(() => ({
 const typeStyles = computed(() => {
   switch (props.item.type) {
     case 'link':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:link', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:link', text: 'text-accent-600' }
     case 'password':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:key-round', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:key-round', text: 'text-accent-600' }
     case 'crypto':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:bitcoin', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:bitcoin', text: 'text-accent-600' }
     case 'recovery':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:ticket-check', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:ticket-check', text: 'text-accent-600' }
     case 'note':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:notebook-tabs', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:notebook-tabs', text: 'text-accent-600' }
     case 'totp':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'lucide:timer-reset', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:timer-reset', text: 'text-accent-600' }
     default:
-      return { bg: 'bg-surface-700', icon: 'lucide:file', text: 'text-surface-400' }
+      return { bg: 'bg-surface-700', icon: 'hugeicons:file-01', text: 'text-surface-400' }
   }
 })
 

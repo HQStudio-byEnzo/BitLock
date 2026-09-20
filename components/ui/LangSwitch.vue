@@ -5,7 +5,7 @@
     class="icon-button text-[11px] font-mono"
     :aria-label="locale === 'fr' ? 'Switch to English' : 'Passer en français'"
   >
-    <Icon name="lucide:languages" class="w-4 h-4" />
+    <Icon name="hugeicons:languages" class="w-4 h-4" />
     <span>{{ locale === 'fr' ? 'FR' : 'EN' }}</span>
   </button>
 </template>

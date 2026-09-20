@@ -127,21 +127,21 @@ const strengthLabel = computed(() => {
 const passwordIssues = computed(() => [
   {
     key: 'length',
-    icon: password.value.length >= 12 ? 'lucide:check-circle-2' : 'lucide:alert-triangle',
+    icon: password.value.length >= 12 ? 'hugeicons:checkmark-circle-02' : 'hugeicons:triangle-alert',
     level: password.value.length >= 12 ? 'good' : 'warn',
     title: password.value.length >= 12 ? t('audit.lengthGood') : t('audit.lengthBad'),
     desc: t('audit.lengthDesc'),
   },
   {
     key: 'mix',
-    icon: /[a-z]/.test(password.value) && /[A-Z]/.test(password.value) && /\d/.test(password.value) && /[^A-Za-z0-9]/.test(password.value) ? 'lucide:shield-check' : 'lucide:shield-alert',
+    icon: /[a-z]/.test(password.value) && /[A-Z]/.test(password.value) && /\d/.test(password.value) && /[^A-Za-z0-9]/.test(password.value) ? 'hugeicons:shield-check' : 'hugeicons:shield-alert',
     level: /[a-z]/.test(password.value) && /[A-Z]/.test(password.value) && /\d/.test(password.value) && /[^A-Za-z0-9]/.test(password.value) ? 'good' : 'warn',
     title: /[a-z]/.test(password.value) && /[A-Z]/.test(password.value) && /\d/.test(password.value) && /[^A-Za-z0-9]/.test(password.value) ? t('audit.mixGood') : t('audit.mixBad'),
     desc: t('audit.mixDesc'),
   },
   {
     key: 'patterns',
-    icon: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? 'lucide:x-circle' : 'lucide:check-circle-2',
+    icon: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? 'hugeicons:cancel-circle' : 'hugeicons:checkmark-circle-02',
     level: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? 'bad' : 'good',
     title: /123|abc|qwerty|password|admin|qvault/i.test(password.value) ? t('audit.patternBad') : t('audit.patternGood'),
     desc: t('audit.patternDesc'),

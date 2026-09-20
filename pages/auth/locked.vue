@@ -45,7 +45,7 @@
             <span v-else>{{ t('locked.cta') }}</span>
           </button>
           <button v-if="passkeyConfigured" type="button" :disabled="isLoading" class="btn-secondary w-full py-2.5" @click="unlockWithPasskey">
-            <Icon name="lucide:fingerprint" class="w-4 h-4" /> {{ t('locked.passkey') }}
+            <Icon name="hugeicons:fingerprint-pattern" class="w-4 h-4" /> {{ t('locked.passkey') }}
           </button>
         </form>
 

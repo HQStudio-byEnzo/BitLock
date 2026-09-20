@@ -8,7 +8,7 @@
         <p class="mt-2 max-w-xl text-surface-500">{{ t('dash.commandDesc') }}</p>
       </div>
       <NuxtLink to="/dashboard/vault" class="btn-primary shrink-0">
-        <Icon name="lucide:vault" class="h-4 w-4" />
+        <Icon name="hugeicons:vault" class="h-4 w-4" />
         {{ t('dash.openVault') }}
       </NuxtLink>
     </header>
@@ -41,13 +41,13 @@
                 <strong class="block truncate text-sm font-medium text-surface-50">{{ item.label || t('vault.untitled') }}</strong>
                 <small class="text-xs text-surface-500">{{ typeLabel(item.type) }} · {{ formatDate(item.updated_at || item.created_at) }}</small>
               </span>
-              <Icon name="lucide:chevron-right" class="h-4 w-4 flex-none text-surface-400" />
+              <Icon name="hugeicons:chevron-right" class="h-4 w-4 flex-none text-surface-400" />
             </NuxtLink>
           </li>
         </ul>
         <div v-else class="flex flex-1 flex-col items-center justify-center gap-3 py-10 text-center">
           <span class="grid h-12 w-12 place-items-center rounded-full bg-surface-900 text-surface-500">
-            <Icon name="lucide:archive" class="h-5 w-5" />
+            <Icon name="hugeicons:archive" class="h-5 w-5" />
           </span>
           <div>
             <p class="font-medium text-surface-50">{{ t('dash.emptyTitle') }}</p>
@@ -79,7 +79,7 @@
         </dl>
 
         <NuxtLink to="/dashboard/audit" class="btn-secondary mt-auto w-full">
-          <Icon name="lucide:shield-check" class="h-4 w-4" />
+          <Icon name="hugeicons:shield-check" class="h-4 w-4" />
           {{ t('dash.runAudit') }}
         </NuxtLink>
       </section>
@@ -96,7 +96,7 @@
               <strong class="block text-sm font-medium text-surface-50">{{ action.title }}</strong>
               <small class="text-xs text-surface-500">{{ action.note }}</small>
             </span>
-            <Icon name="lucide:plus" class="ml-auto h-4 w-4 text-surface-400" />
+            <Icon name="hugeicons:plus" class="ml-auto h-4 w-4 text-surface-400" />
           </NuxtLink>
         </div>
       </section>
@@ -131,10 +131,10 @@ const metrics = computed(() => [
 ])
 
 const captureActions = computed(() => [
-  { to: '/dashboard/passwords', icon: 'lucide:key-round', title: t('dash.addPassword'), note: t('dash.capturePasswordNote') },
-  { to: '/dashboard/links', icon: 'lucide:link', title: t('dash.addLink'), note: t('dash.captureLinkNote') },
-  { to: '/dashboard/notes', icon: 'lucide:notebook-pen', title: t('dash.addNote'), note: t('dash.captureNoteNote') },
-  { to: '/dashboard/totp', icon: 'lucide:shield-check', title: t('dash.addTotp'), note: t('dash.captureTotpNote') },
+  { to: '/dashboard/passwords', icon: 'hugeicons:key-round', title: t('dash.addPassword'), note: t('dash.capturePasswordNote') },
+  { to: '/dashboard/links', icon: 'hugeicons:link', title: t('dash.addLink'), note: t('dash.captureLinkNote') },
+  { to: '/dashboard/notes', icon: 'hugeicons:notebook-pen', title: t('dash.addNote'), note: t('dash.captureNoteNote') },
+  { to: '/dashboard/totp', icon: 'hugeicons:shield-check', title: t('dash.addTotp'), note: t('dash.captureTotpNote') },
 ])
 
 function isStale(item: VaultItem) {
@@ -143,12 +143,12 @@ function isStale(item: VaultItem) {
 }
 
 const TYPE_ICONS: Record<VaultItem['type'], string> = {
-  link: 'lucide:link',
-  password: 'lucide:key-round',
-  crypto: 'lucide:bitcoin',
-  recovery: 'lucide:life-buoy',
-  note: 'lucide:notebook-pen',
-  totp: 'lucide:shield-check',
+  link: 'hugeicons:link',
+  password: 'hugeicons:key-round',
+  crypto: 'hugeicons:bitcoin',
+  recovery: 'hugeicons:life-buoy',
+  note: 'hugeicons:notebook-pen',
+  totp: 'hugeicons:shield-check',
 }
 
 const typeLabels = computed<Record<VaultItem['type'], string>>(() => ({

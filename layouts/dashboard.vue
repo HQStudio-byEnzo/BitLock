@@ -25,28 +25,43 @@
       </nav>
 
       <div class="dash__user">
-        <span class="dash__avatar" aria-hidden="true">{{ initial }}</span>
+        <span class="dash__avatar" aria-hidden="true">
+          <img v-if="avatar" :src="`/emoji/${avatar}.png`" alt="" class="dash__avatarImg" />
+          <template v-else>{{ initial }}</template>
+        </span>
         <span class="dash__userText">
           <strong>{{ user?.username || '—' }}</strong>
           <small>{{ t('nav.localAccount') }}</small>
         </span>
         <button type="button" class="dash__signout" :aria-label="t('nav.signout')" @click="signOut">
-          <Icon name="lucide:log-out" class="h-4 w-4" />
+          <Icon name="hugeicons:log-out" class="h-4 w-4" />
         </button>
       </div>
     </aside>
 
     <div class="dash__col">
-      <header class="dash__topbar">
-        <button type="button" class="dash__menu" aria-label="Ouvrir la navigation" @click="mobileMenuOpen = true">
-          <Icon name="lucide:menu" class="h-5 w-5" />
+      <header class="dash__bar">
+        <button type="button" class="dash__menu dash__menu--mobile" aria-label="Ouvrir la navigation" @click="mobileMenuOpen = true">
+          <Icon name="hugeicons:menu" class="h-5 w-5" />
         </button>
-        <NuxtLink to="/" class="dash__brand" aria-label="QVault">
+        <NuxtLink to="/" class="dash__brand dash__brand--mobile" aria-label="QVault">
           <UiQVaultLogo :size="26" />
           <span>QVault</span>
         </NuxtLink>
-        <button type="button" class="dash__menu" :aria-label="t('nav.signout')" @click="signOut">
-          <Icon name="lucide:log-out" class="h-4 w-4" />
+
+        <form class="dash__search" role="search" @submit.prevent="submitSearch">
+          <Icon name="hugeicons:search-01" class="dash__searchIcon" />
+          <input
+            v-model="searchQuery"
+            type="search"
+            class="dash__searchInput"
+            :placeholder="t('vault.search')"
+            :aria-label="t('vault.search')"
+          />
+        </form>
+
+        <button type="button" class="dash__menu dash__menu--mobile" :aria-label="t('nav.signout')" @click="signOut">
+          <Icon name="hugeicons:log-out" class="h-4 w-4" />
         </button>
       </header>
 
@@ -66,7 +81,7 @@
                 <span>QVault</span>
               </NuxtLink>
               <button type="button" class="dash__menu" aria-label="Fermer la navigation" @click="mobileMenuOpen = false">
-                <Icon name="lucide:x" class="h-5 w-5" />
+                <Icon name="hugeicons:x" class="h-5 w-5" />
               </button>
             </div>
             <nav class="dash__nav" aria-label="Navigation mobile">
@@ -94,7 +109,7 @@
       <Transition name="fade">
         <aside v-if="showWarning" class="dash-toast" role="status">
           <div class="flex items-start gap-3">
-            <Icon name="lucide:clock" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+            <Icon name="hugeicons:clock-01" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
             <div>
               <strong class="block text-sm">{{ t('autolock.title') }}</strong>
               <p class="mt-1 text-xs text-surface-500">
@@ -132,40 +147,47 @@ const { t } = useLang()
 useAppShortcuts()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const searchQuery = ref('')
 const mobileSheetEl = ref<HTMLElement | null>(null)
 useModalFocus(mobileSheetEl, () => { mobileMenuOpen.value = false }, { active: mobileMenuOpen })
+
+function submitSearch() {
+  const query = searchQuery.value.trim()
+  navigateTo(query ? `/dashboard/vault?q=${encodeURIComponent(query)}` : '/dashboard/vault')
+}
 const { showWarning, remainingSeconds, resetTimers } = useAutoLock()
 const { shielded, reveal } = usePrivacyShield()
 
 const initial = computed(() => (user.value?.username || '?').charAt(0).toUpperCase())
+const { avatar } = useAvatar()
 
 const mainNavItems = [
-  { to: '/dashboard', label: 'sidebar.dashboard', icon: 'lucide:house' },
-  { to: '/dashboard/vault', label: 'sidebar.vault', icon: 'lucide:vault' },
-  { to: '/dashboard/passwords', label: 'sidebar.passwords', icon: 'lucide:key-round' },
-  { to: '/dashboard/notes', label: 'sidebar.notes', icon: 'lucide:notebook-pen' },
-  { to: '/dashboard/totp', label: 'sidebar.totp', icon: 'lucide:shield-check' },
+  { to: '/dashboard', label: 'sidebar.dashboard', icon: 'hugeicons:house-01' },
+  { to: '/dashboard/vault', label: 'sidebar.vault', icon: 'hugeicons:vault' },
+  { to: '/dashboard/passwords', label: 'sidebar.passwords', icon: 'hugeicons:key-round' },
+  { to: '/dashboard/notes', label: 'sidebar.notes', icon: 'hugeicons:notebook-pen' },
+  { to: '/dashboard/totp', label: 'sidebar.totp', icon: 'hugeicons:shield-check' },
 ]
 
 const toolNavItems = [
-  { to: '/dashboard/password-generator', label: 'sidebar.passwordGenerator', icon: 'lucide:sparkles' },
-  { to: '/dashboard/seed-generator', label: 'sidebar.seedGenerator', icon: 'lucide:list-ordered' },
-  { to: '/dashboard/audit', label: 'sidebar.audit', icon: 'lucide:shield-alert' },
+  { to: '/dashboard/password-generator', label: 'sidebar.passwordGenerator', icon: 'hugeicons:sparkles' },
+  { to: '/dashboard/seed-generator', label: 'sidebar.seedGenerator', icon: 'hugeicons:list-ordered' },
+  { to: '/dashboard/audit', label: 'sidebar.audit', icon: 'hugeicons:shield-alert' },
 ]
 
 const securityNavItems = [
-  { to: '/dashboard/links', label: 'sidebar.links', icon: 'lucide:link' },
-  { to: '/dashboard/crypto', label: 'sidebar.crypto', icon: 'lucide:bitcoin' },
-  { to: '/dashboard/recovery-codes', label: 'sidebar.recoveryCode', icon: 'lucide:life-buoy' },
-  { to: '/dashboard/organization', label: 'sidebar.organization', icon: 'lucide:folder-tree' },
-  { to: '/dashboard/history', label: 'sidebar.history', icon: 'lucide:history' },
-  { to: '/dashboard/export', label: 'sidebar.export', icon: 'lucide:download' },
-  { to: '/dashboard/transfer', label: 'sidebar.transfer', icon: 'lucide:scan-line' },
+  { to: '/dashboard/links', label: 'sidebar.links', icon: 'hugeicons:link' },
+  { to: '/dashboard/crypto', label: 'sidebar.crypto', icon: 'hugeicons:bitcoin' },
+  { to: '/dashboard/recovery-codes', label: 'sidebar.recoveryCode', icon: 'hugeicons:life-buoy' },
+  { to: '/dashboard/organization', label: 'sidebar.organization', icon: 'hugeicons:folder-tree' },
+  { to: '/dashboard/history', label: 'sidebar.history', icon: 'hugeicons:history' },
+  { to: '/dashboard/export', label: 'sidebar.export', icon: 'hugeicons:download-01' },
+  { to: '/dashboard/transfer', label: 'sidebar.transfer', icon: 'hugeicons:scan-line' },
 ]
 
 const accountNavItems = [
-  { to: '/support', label: 'sidebar.support', icon: 'lucide:heart-handshake' },
-  { to: '/dashboard/settings', label: 'sidebar.settings', icon: 'lucide:settings' },
+  { to: '/dashboard/support', label: 'sidebar.support', icon: 'hugeicons:heart-handshake' },
+  { to: '/dashboard/settings', label: 'sidebar.settings', icon: 'hugeicons:settings-01' },
 ]
 
 const navGroups = [
@@ -292,6 +314,13 @@ watch(() => route.path, () => {
   height: 2.25rem;
   place-items: center;
   width: 2.25rem;
+  overflow: hidden;
+}
+
+.dash__avatarImg {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .dash__userText {
@@ -343,11 +372,56 @@ watch(() => route.path, () => {
   padding: var(--space-3) var(--space-3) var(--space-3) 0;
 }
 
-.dash__topbar {
+.dash__bar {
   align-items: center;
-  display: none;
-  justify-content: space-between;
+  display: flex;
+  gap: var(--space-3);
   padding: var(--space-2) var(--space-1) var(--space-3);
+}
+
+.dash__menu--mobile,
+.dash__brand--mobile {
+  display: none;
+}
+
+.dash__search {
+  align-items: center;
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex: 1;
+  gap: var(--space-2);
+  max-width: 30rem;
+  padding-inline: var(--space-3);
+  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+
+.dash__search:focus-within {
+  border-color: var(--color-accent-500);
+  box-shadow: 0 0 0 3px var(--color-focus);
+}
+
+.dash__searchIcon {
+  color: var(--color-text-faint);
+  flex: 0 0 auto;
+  height: 1.125rem;
+  width: 1.125rem;
+}
+
+.dash__searchInput {
+  background: transparent;
+  border: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  min-height: 2.25rem;
+  outline: none;
+  width: 100%;
+}
+
+.dash__searchInput::placeholder {
+  color: var(--color-text-faint);
 }
 
 .dash__panel {
@@ -359,6 +433,7 @@ watch(() => route.path, () => {
   min-height: 0;
   overflow-y: auto;
   outline: none;
+  scrollbar-gutter: stable;
 }
 
 .dash-sheet {
@@ -430,8 +505,13 @@ watch(() => route.path, () => {
     display: none;
   }
 
-  .dash__topbar {
-    display: flex;
+  .dash__menu--mobile,
+  .dash__brand--mobile {
+    display: inline-flex;
+  }
+
+  .dash__bar {
+    padding-inline: 0;
   }
 
   .dash__col {

@@ -4,7 +4,7 @@
     <main class="legal-shell">
       <div class="mb-12">
         <NuxtLink to="/" class="inline-flex items-center gap-2 mb-6 text-accent-600 hover:text-accent-700">
-          <Icon name="lucide:arrow-left" class="w-4 h-4" />
+          <Icon name="hugeicons:arrow-left-01" class="w-4 h-4" />
           <span>{{ t('common.back') }}</span>
         </NuxtLink>
         <h1 class="text-4xl font-bold text-foreground mb-2">{{ t('legal.notices.title') }}</h1>

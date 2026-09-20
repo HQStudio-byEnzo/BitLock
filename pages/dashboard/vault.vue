@@ -8,7 +8,7 @@
           <p class="text-surface-300 text-base md:text-lg mt-3 leading-relaxed">{{ t('vault.subtitle') }}</p>
         </div>
         <button @click="showAddModal = true" class="btn-primary inline-flex items-center gap-2 self-start">
-          <Icon name="lucide:plus" class="w-4 h-4" />
+          <Icon name="hugeicons:plus" class="w-4 h-4" />
           {{ t('vault.add') }}
         </button>
       </div>
@@ -16,15 +16,12 @@
 
     <!-- Filters -->
     <div class="glass-panel p-4 md:p-5 space-y-3">
-      <div class="relative flex-1">
-        <Icon name="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-        <input
-          v-model="searchQuery"
-          type="text"
-          :placeholder="t('vault.search')"
-          :aria-label="t('vault.search')"
-          class="input-field pl-10"
-        />
+      <div v-if="searchQuery" class="flex items-center gap-2 text-sm text-surface-500">
+        <Icon name="hugeicons:search-01" class="h-4 w-4 flex-none" />
+        <span class="truncate">{{ t('vault.search') }} « {{ searchQuery }} »</span>
+        <button type="button" class="ml-auto text-accent-600 hover:text-accent-700" @click="searchQuery = ''">
+          {{ t('common.clear') }}
+        </button>
       </div>
       <div class="flex flex-wrap gap-2">
         <button
@@ -56,11 +53,11 @@
 
     <!-- Items list -->
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="visibleItems.length === 0" class="text-center py-16">
-      <Icon name="lucide:vault" class="w-12 h-12 text-surface-600 mx-auto mb-4" />
+      <Icon name="hugeicons:vault" class="w-12 h-12 text-surface-600 mx-auto mb-4" />
       <p class="text-surface-400">{{ items.length === 0 ? t('vault.empty') : t('vault.noResult') }}</p>
       <p class="text-sm text-surface-500 mt-1">{{ items.length === 0 ? t('vault.emptyHint') : t('vault.noResultHint') }}</p>
     </div>
@@ -117,8 +114,12 @@ const showAddModal = ref(false)
 const decryptTarget = ref<any>(null)
 const deleteTarget = ref<any>(null)
 const deleteError = ref('')
-const searchQuery = ref('')
+const searchQuery = ref(typeof route.query.q === 'string' ? route.query.q : '')
 const activeFilter = ref('')
+
+watch(() => route.query.q, (value) => {
+  searchQuery.value = typeof value === 'string' ? value : ''
+})
 
 const filters = computed(() => [
   { label: t('vault.filterAll'), value: '' },

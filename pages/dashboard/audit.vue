@@ -26,10 +26,10 @@
     </div>
 
     <div class="glass-panel p-4 flex flex-col sm:flex-row sm:items-center gap-3 border-accent-500/20 bg-accent-500/5">
-      <Icon name="lucide:shield-check" class="w-5 h-5 text-accent-600 flex-shrink-0" />
+      <Icon name="hugeicons:shield-check" class="w-5 h-5 text-accent-600 flex-shrink-0" />
       <p class="text-sm text-surface-400 flex-1">{{ t('audit.notice') }}</p>
       <button type="button" class="btn-secondary" :disabled="passwordAuditLoading" @click="runPasswordAudit">
-        <Icon name="lucide:key-round" class="w-4 h-4" />
+        <Icon name="hugeicons:key-round" class="w-4 h-4" />
         {{ passwordAuditLoading ? t('audit.passwordAuditRunning') : t('audit.passwordAuditAction') }}
       </button>
     </div>
@@ -39,11 +39,11 @@
     </p>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="issues.length === 0" class="text-center py-16">
-      <Icon name="lucide:shield-check" class="w-12 h-12 text-green-500 mx-auto mb-4" />
+      <Icon name="hugeicons:shield-check" class="w-12 h-12 text-green-500 mx-auto mb-4" />
       <p class="text-surface-300 font-medium">{{ t('audit.empty') }}</p>
       <p class="text-sm text-surface-500 mt-1">{{ t('audit.emptyHint') }}</p>
     </div>
@@ -128,7 +128,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: 'unencrypted',
       severity: 'high',
-      icon: 'lucide:unlock',
+      icon: 'hugeicons:lock-open',
       title: `${unencrypted.length} ${t('audit.unencryptedTitle')}`,
       description: t('audit.unencryptedDesc'),
       action: t('audit.unencryptedAction'),
@@ -139,7 +139,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: 'invalid-encrypted',
       severity: 'high',
-      icon: 'lucide:file-warning',
+      icon: 'hugeicons:file-corrupt',
       title: `${invalidEncrypted.length} ${t('audit.invalidTitle')}`,
       description: t('audit.invalidDesc'),
       action: t('audit.invalidAction'),
@@ -150,7 +150,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: 'password-missing-url',
       severity: 'medium',
-      icon: 'lucide:link-2-off',
+      icon: 'hugeicons:link-off-02',
       title: `${passwordWithoutUrl.length} ${t('audit.noUrlTitle')}`,
       description: t('audit.noUrlDesc'),
       action: t('audit.noUrlAction'),
@@ -161,7 +161,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: `duplicate-url-${group.key}`,
       severity: 'medium',
-      icon: 'lucide:copy',
+      icon: 'hugeicons:copy',
       title: `${group.items.length} ${t('audit.dupUrlTitle')} ${group.key}`,
       description: group.items.map(item => item.label || t('vault.untitled')).join(', '),
       action: t('audit.dupUrlDesc'),
@@ -172,7 +172,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: `duplicate-label-${group.key}`,
       severity: 'low',
-      icon: 'lucide:tags',
+      icon: 'hugeicons:tags',
       title: `${group.items.length} ${t('audit.dupLabelTitle')}`,
       description: group.items.map(item => item.type).join(', '),
       action: t('audit.dupLabelAction'),
@@ -183,7 +183,7 @@ const issues = computed<AuditIssue[]>(() => {
     result.push({
       key: 'old-items',
       severity: 'low',
-      icon: 'lucide:calendar-clock',
+      icon: 'hugeicons:calendar-clock',
       title: `${oldItems.length} ${t('audit.oldTitle')}`,
       description: t('audit.oldDesc'),
       action: t('audit.oldAction'),
@@ -280,7 +280,7 @@ async function runPasswordAudit() {
       findings.push({
         key: 'local-weak-passwords',
         severity: 'high',
-        icon: 'lucide:key-round',
+        icon: 'hugeicons:key-round',
         title: t('audit.weakPasswordsTitle').replace('{count}', String(weak.length)),
         description: weak.map(entry => entry.item.label || t('vault.untitled')).join(', '),
         action: t('audit.weakPasswordsAction'),
@@ -292,7 +292,7 @@ async function runPasswordAudit() {
       findings.push({
         key: 'local-reused-passwords',
         severity: 'high',
-        icon: 'lucide:copy-x',
+        icon: 'hugeicons:copy-x',
         title: t('audit.reusedPasswordsTitle').replace('{count}', String(affected)),
         description: reused.flatMap(group => group.map(item => item.label || t('vault.untitled'))).join(', '),
         action: t('audit.reusedPasswordsAction'),

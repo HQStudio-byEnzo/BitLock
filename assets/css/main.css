@@ -91,18 +91,75 @@
     color: var(--color-accent-ink);
   }
 
+  input[type='checkbox'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule-strong);
+    border-radius: 0.4rem;
+    cursor: pointer;
+    display: inline-grid;
+    flex: none;
+    height: 1.15rem;
+    place-content: center;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+    width: 1.15rem;
+  }
+
+  input[type='checkbox']::before {
+    background-color: var(--color-accent-ink);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    content: '';
+    height: 0.65rem;
+    transform: scale(0);
+    transition: transform var(--dur-fast) var(--ease-out);
+    width: 0.65rem;
+  }
+
+  input[type='checkbox']:checked {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  input[type='checkbox']:checked::before {
+    transform: scale(1);
+  }
+
+  input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  input[type='checkbox']:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
   ::-webkit-scrollbar {
-    height: var(--size-scrollbar);
-    width: var(--size-scrollbar);
+    height: 12px;
+    width: 12px;
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--color-paper);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
     background: var(--color-rule-strong);
-    border-radius: var(--radius-sm);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-faint);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+  }
+
+  * {
+    scrollbar-color: var(--color-rule-strong) transparent;
+    scrollbar-width: thin;
   }
 }
 
@@ -2662,4 +2719,44 @@
 .skip-link:focus-visible {
   transform: translateY(0);
   outline-color: var(--color-focus);
+}
+
+/* Page and layout transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 200ms var(--ease-out);
+}
+
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active,
+  .layout-enter-active,
+  .layout-leave-active {
+    transition: none;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    transform: none;
+  }
 }

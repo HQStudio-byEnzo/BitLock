@@ -23,7 +23,7 @@
           <p class="flex-1 text-sm leading-relaxed text-surface-500">{{ feature.summary }}</p>
           <span class="inline-flex items-center gap-1 text-sm font-semibold text-accent-600">
             {{ t('landing.readMore') }}
-            <Icon name="lucide:arrow-right" class="h-4 w-4" />
+            <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" />
           </span>
         </NuxtLink>
       </section>

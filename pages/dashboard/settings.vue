@@ -3,7 +3,7 @@
     <h1 class="font-display text-3xl font-semibold tracking-tight text-foreground">{{ t('settings.title') }}</h1>
 
     <section class="profile">
-      <span class="profile__avatar" aria-hidden="true">{{ initial }}</span>
+      <UiAvatarPicker size="lg" />
       <div class="profile__text">
         <h2>{{ user?.username || '—' }}</h2>
         <p>{{ t('nav.localAccount') }}<template v-if="userInfo?.created_at"> · {{ formatDate(userInfo.created_at) }}</template></p>
@@ -21,14 +21,14 @@
       >
         <Icon :name="section.icon" class="row__icon" />
         <span class="row__label">{{ section.label }}</span>
-        <Icon name="lucide:chevron-right" class="row__chevron" />
+        <Icon name="hugeicons:chevron-right" class="row__chevron" />
       </button>
     </nav>
 
     <section v-if="activeSection === 'account'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:user" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:user" class="w-5 h-5 text-surface-400" />
           {{ t('settings.account') }}
         </h2>
         <div class="space-y-3">
@@ -45,7 +45,7 @@
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:key-round" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:key-round" class="w-5 h-5 text-surface-400" />
           {{ t('settings.changePwd') }}
         </h2>
 
@@ -109,7 +109,7 @@
     <section v-else-if="activeSection === 'security'" class="space-y-6">
       <section class="card space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:shield" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:shield-01" class="w-5 h-5 text-surface-400" />
           {{ t('settings.security') }}
         </h2>
         <div class="system-note">
@@ -121,7 +121,7 @@
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:key-round" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:key-round" class="w-5 h-5 text-surface-400" />
           {{ t('settings.masterPwdTitle') }}
         </h2>
 
@@ -196,7 +196,7 @@
 
       <section class="glass-panel p-5 md:p-6 space-y-5">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:sliders-horizontal" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:sliders-horizontal" class="w-5 h-5 text-surface-400" />
           {{ t('settings.securityPrefs') }}
         </h2>
 
@@ -258,7 +258,7 @@
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2"><Icon name="lucide:fingerprint" class="w-5 h-5 text-accent-600" />{{ t('settings.passkeyTitle') }}</h2>
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2"><Icon name="hugeicons:fingerprint-pattern" class="w-5 h-5 text-accent-600" />{{ t('settings.passkeyTitle') }}</h2>
         <p class="text-sm text-surface-400">{{ t('settings.passkeyDesc') }}</p>
         <p v-if="!passkeySupported" class="text-sm text-amber-700">{{ t('settings.passkeyUnsupported') }}</p>
         <div v-else class="flex flex-wrap items-center gap-3">
@@ -271,7 +271,7 @@
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:unplug" class="w-5 h-5 text-accent-600" />
+          <Icon name="hugeicons:unplug" class="w-5 h-5 text-accent-600" />
           {{ t('settings.extensionTitle') }}
         </h2>
         <p class="text-sm text-surface-400">{{ t('settings.extensionDesc') }}</p>
@@ -289,7 +289,7 @@
           <div class="flex flex-col sm:flex-row gap-2">
             <input :value="extensionToken" readonly class="input-field flex-1 font-mono text-xs" />
             <button type="button" class="btn-secondary" @click="copyExtensionToken">
-              <Icon name="lucide:copy" class="w-4 h-4" />{{ t('settings.extensionCopy') }}
+              <Icon name="hugeicons:copy" class="w-4 h-4" />{{ t('settings.extensionCopy') }}
             </button>
           </div>
         </div>
@@ -300,7 +300,7 @@
     <section v-else-if="activeSection === 'language'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:globe" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:globe" class="w-5 h-5 text-surface-400" />
           {{ t('settings.language') }}
         </h2>
         <div class="flex flex-wrap gap-2">
@@ -327,7 +327,7 @@
         <div class="flex items-start justify-between gap-4">
           <div>
             <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Icon name="lucide:keyboard" class="w-5 h-5 text-surface-400" />
+              <Icon name="hugeicons:keyboard" class="w-5 h-5 text-surface-400" />
               {{ t('settings.shortcuts') }}
             </h2>
             <p class="text-sm text-surface-400 mt-1 max-w-2xl">{{ t('settings.shortcutsDesc') }}</p>
@@ -385,12 +385,12 @@
     <section v-else-if="activeSection === 'support'" class="space-y-6">
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="lucide:message-circle" class="w-5 h-5 text-surface-400" />
+          <Icon name="hugeicons:message-circle" class="w-5 h-5 text-surface-400" />
           {{ t('settings.support') }}
         </h2>
         <p class="text-sm text-surface-400">{{ t('settings.supportDesc') }}</p>
         <a href="https://discord.gg/J9xmQchpX6" target="_blank" rel="noopener noreferrer" class="btn-secondary inline-flex items-center gap-2">
-          <Icon name="lucide:message-circle" class="w-4 h-4" />
+          <Icon name="hugeicons:message-circle" class="w-4 h-4" />
           {{ t('settings.joinDiscord') }}
         </a>
       </section>
@@ -399,13 +399,13 @@
     <section v-else class="space-y-6">
       <section class="card border-red-500/20 space-y-4">
         <h2 class="text-lg font-semibold text-red-600 flex items-center gap-2">
-          <Icon name="lucide:alert-triangle" class="w-5 h-5" />
+          <Icon name="hugeicons:triangle-alert" class="w-5 h-5" />
           {{ t('settings.danger') }}
         </h2>
 
         <div class="space-y-4">
           <button type="button" @click="handleSignOut" class="btn-secondary flex items-center gap-2">
-            <Icon name="lucide:log-out" class="w-4 h-4" />
+            <Icon name="hugeicons:log-out" class="w-4 h-4" />
             {{ t('settings.logout') }}
           </button>
 
@@ -416,7 +416,7 @@
 
             <div v-if="!showDeleteConfirm">
               <button type="button" @click="showDeleteConfirm = true" class="btn-danger flex items-center gap-2">
-                <Icon name="lucide:trash-2" class="w-4 h-4" />
+                <Icon name="hugeicons:trash" class="w-4 h-4" />
                 {{ t('settings.deleteBtn') }}
               </button>
             </div>
@@ -432,7 +432,7 @@
               <div v-if="deleteError" class="text-sm text-red-600">{{ deleteError }}</div>
               <div class="flex gap-2">
                 <button type="button" @click="handleDeleteAccount" :disabled="deleteLoading" class="btn-danger flex items-center gap-2">
-                  <Icon name="lucide:trash-2" class="w-4 h-4" />
+                  <Icon name="hugeicons:trash" class="w-4 h-4" />
                   <span v-if="deleteLoading">{{ t('settings.deleting') }}</span>
                   <span v-else>{{ t('settings.confirmDelete') }}</span>
                 </button>
@@ -490,12 +490,12 @@ const securitySettings = reactive({
   privacyShield: true,
 })
 const settingSections = computed(() => [
-  { id: 'account', label: t('settings.account'), icon: 'lucide:user' },
-  { id: 'security', label: t('settings.security'), icon: 'lucide:shield' },
-  { id: 'language', label: t('settings.language'), icon: 'lucide:globe' },
-  { id: 'shortcuts', label: t('settings.shortcuts'), icon: 'lucide:keyboard' },
-  { id: 'support', label: t('settings.support'), icon: 'lucide:message-circle' },
-  { id: 'danger', label: t('settings.danger'), icon: 'lucide:alert-triangle' },
+  { id: 'account', label: t('settings.account'), icon: 'hugeicons:user' },
+  { id: 'security', label: t('settings.security'), icon: 'hugeicons:shield-01' },
+  { id: 'language', label: t('settings.language'), icon: 'hugeicons:globe' },
+  { id: 'shortcuts', label: t('settings.shortcuts'), icon: 'hugeicons:keyboard' },
+  { id: 'support', label: t('settings.support'), icon: 'hugeicons:message-circle' },
+  { id: 'danger', label: t('settings.danger'), icon: 'hugeicons:triangle-alert' },
  ] as const)
 
 onMounted(async () => {

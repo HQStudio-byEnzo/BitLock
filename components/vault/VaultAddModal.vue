@@ -18,11 +18,11 @@
             <h2 class="text-lg font-semibold text-foreground">{{ isNote ? t('notes.editorTitle') : t('vault.addTitle') }}</h2>
           </div>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
-            <Icon name="lucide:x" class="w-5 h-5" />
+            <Icon name="hugeicons:x" class="w-5 h-5" />
           </button>
         </div>
 
-        <form v-if="isNote" class="note-composer__form" @submit.prevent="handleSubmit">
+        <form v-if="isNote && step === 'form'" class="note-composer__form" @submit.prevent="handleSubmit">
           <aside class="note-composer__rail">
             <div>
               <label for="noteType" class="note-composer__label">{{ t('vault.typeLabel') }}</label>
@@ -43,24 +43,11 @@
             </div>
 
             <div class="note-composer__security">
-              <span class="note-composer__security-icon"><Icon name="lucide:lock-keyhole" class="h-4 w-4" /></span>
+              <span class="note-composer__security-icon"><Icon name="hugeicons:lock-keyhole" class="h-4 w-4" /></span>
               <div>
                 <strong>{{ t('notes.encryptedTitle') }}</strong>
                 <p>{{ t('notes.encryptedDesc') }}</p>
               </div>
-            </div>
-
-            <div v-if="!isUnlocked" class="note-composer__unlock">
-              <p>{{ t('vault.masterPwdNotice') }}</p>
-              <label for="noteMasterPassword" class="note-composer__label">{{ t('vault.masterPwdLabel') }}</label>
-              <input
-                id="noteMasterPassword"
-                v-model="masterPasswordInput"
-                type="password"
-                class="input-field"
-                autocomplete="current-password"
-                placeholder="••••••••••••"
-              />
             </div>
           </aside>
 
@@ -84,34 +71,14 @@
               <p v-if="error" class="note-composer__error" role="alert">{{ error }}</p>
               <p v-else class="note-composer__autosave">{{ t('notes.localDraft') }}</p>
               <button type="submit" :disabled="isSubmitting" class="btn-primary note-composer__submit">
-                <Icon :name="isSubmitting ? 'lucide:loader-circle' : 'lucide:lock-keyhole'" class="h-4 w-4" :class="{ 'animate-spin': isSubmitting }" />
+                <Icon :name="isSubmitting ? 'hugeicons:loader-circle' : 'hugeicons:lock-keyhole'" class="h-4 w-4" :class="{ 'animate-spin': isSubmitting }" />
                 <span>{{ isSubmitting ? t('vault.adding') : t('notes.saveEncrypted') }}</span>
               </button>
             </footer>
           </section>
         </form>
 
-        <template v-else>
-        <div
-          v-if="needsEncryption && !isUnlocked"
-          class="mb-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-800 space-y-3"
-        >
-          <p>{{ t('vault.masterPwdNotice') }}</p>
-          <div>
-            <label for="masterPassword" class="block text-xs font-medium text-amber-100 mb-1">
-              {{ t('vault.masterPwdLabel') }}
-            </label>
-            <input
-              id="masterPassword"
-              v-model="masterPasswordInput"
-              type="password"
-              class="input-field"
-              placeholder="••••••••••••"
-              autocomplete="current-password"
-            />
-          </div>
-        </div>
-
+        <template v-else-if="step === 'form'">
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-surface-300 mb-2">{{ t('vault.typeLabel') }}</label>
@@ -232,6 +199,37 @@
           </button>
         </form>
         </template>
+
+        <div v-else class="unlock-step">
+          <span class="unlock-step__icon"><Icon name="hugeicons:lock-keyhole" class="h-6 w-6" /></span>
+          <h2 class="unlock-step__title">{{ t('vault.unlockTitle') }}</h2>
+          <p class="unlock-step__desc">{{ t('vault.unlockDesc') }}</p>
+          <form class="unlock-step__form" @submit.prevent="commitUnlock">
+            <label for="addMasterPassword" class="block text-sm font-medium text-surface-300 mb-1">
+              {{ t('vault.masterPwdLabel') }}
+            </label>
+            <input
+              id="addMasterPassword"
+              v-model="masterPasswordInput"
+              type="password"
+              required
+              autofocus
+              class="input-field"
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+            />
+            <div v-if="error" role="alert" class="unlock-step__error">{{ error }}</div>
+            <div class="unlock-step__actions">
+              <button type="button" class="btn-secondary flex-1" :disabled="isSubmitting" @click="step = 'form'">
+                {{ t('settings.cancel') }}
+              </button>
+              <button type="submit" class="btn-primary flex-1" :disabled="isSubmitting">
+                <Icon :name="isSubmitting ? 'hugeicons:loader-circle' : 'hugeicons:lock-open'" class="h-4 w-4" :class="{ 'animate-spin': isSubmitting }" />
+                {{ isSubmitting ? t('vault.adding') : t('vault.unlockAndSave') }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </Teleport>
@@ -243,6 +241,8 @@ import { serializePasswordEntry } from '~/utils/password-entry'
 
 const props = defineProps<{
   defaultType?: 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp'
+  initialPayload?: string
+  initialLabel?: string
 }>()
 
 const emit = defineEmits<{
@@ -264,8 +264,8 @@ useModalFocus(dialogEl, () => emit('close'))
 
 const form = reactive({
   type: props.defaultType || 'link' as 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp',
-  label: '',
-  payload: '',
+  label: props.initialLabel || '',
+  payload: props.initialPayload || '',
   username: '',
   loginEmail: '',
   phone: '',
@@ -274,12 +274,12 @@ const form = reactive({
 })
 
 const types = computed(() => [
-  { value: 'link' as const, label: t('vault.typeLink'), icon: 'lucide:link' },
-  { value: 'password' as const, label: t('vault.typePassword'), icon: 'lucide:key-round' },
-  { value: 'crypto' as const, label: t('vault.typeCrypto'), icon: 'lucide:bitcoin' },
-  { value: 'recovery' as const, label: t('vault.typeRecovery'), icon: 'lucide:ticket-check' },
-  { value: 'note' as const, label: t('vault.typeNote'), icon: 'lucide:notebook-tabs' },
-  { value: 'totp' as const, label: t('vault.typeTotp'), icon: 'lucide:timer-reset' },
+  { value: 'link' as const, label: t('vault.typeLink'), icon: 'hugeicons:link' },
+  { value: 'password' as const, label: t('vault.typePassword'), icon: 'hugeicons:key-round' },
+  { value: 'crypto' as const, label: t('vault.typeCrypto'), icon: 'hugeicons:bitcoin' },
+  { value: 'recovery' as const, label: t('vault.typeRecovery'), icon: 'hugeicons:ticket-check' },
+  { value: 'note' as const, label: t('vault.typeNote'), icon: 'hugeicons:notebook-tabs' },
+  { value: 'totp' as const, label: t('vault.typeTotp'), icon: 'hugeicons:timer-reset' },
 ])
 
 const payloadLabel = computed(() => {
@@ -315,42 +315,59 @@ watch(
   { immediate: true }
 )
 
-async function handleSubmit() {
-  const sessionPassword = masterPassword.value || masterPasswordInput.value.trim()
+const step = ref<'form' | 'unlock'>('form')
 
-  if (needsEncryption && !sessionPassword) {
-    error.value = t('vault.needMasterPasswordToAdd')
-    return
-  }
+function buildPayload() {
+  return form.type === 'password'
+    ? serializePasswordEntry({
+        password: form.payload,
+        username: form.username,
+        email: form.loginEmail,
+        phone: form.phone,
+      })
+    : form.payload
+}
 
+async function saveWithPassword(password: string) {
   isSubmitting.value = true
+  error.value = ''
 
   try {
-    if (needsEncryption && sessionPassword && !masterPassword.value) {
-      await unlockMasterPassword(sessionPassword)
-    }
+    if (password && !isUnlocked.value) await unlockMasterPassword(password)
 
     await addItem({
       type: form.type,
       label: form.label,
-      payload: form.type === 'password'
-        ? serializePasswordEntry({
-            password: form.payload,
-            username: form.username,
-            email: form.loginEmail,
-            phone: form.phone,
-          })
-        : form.payload,
+      payload: buildPayload(),
       shouldEncrypt: true,
       url: form.type === 'password' ? form.url : form.type === 'link' ? form.payload : undefined,
     })
     masterPasswordInput.value = ''
     emit('added')
-  } catch {
-    // Error is handled by useVault composable
+  } catch (err: any) {
+    error.value = err?.message || t('vault.needMasterPasswordToAdd')
   } finally {
     isSubmitting.value = false
   }
+}
+
+function handleSubmit() {
+  // Ask for the master password only after the item form is filled.
+  if (needsEncryption && !isUnlocked.value) {
+    error.value = ''
+    step.value = 'unlock'
+    return
+  }
+  saveWithPassword('')
+}
+
+async function commitUnlock() {
+  const password = masterPasswordInput.value.trim()
+  if (!password) {
+    error.value = t('vault.needMasterPasswordToAdd')
+    return
+  }
+  await saveWithPassword(password)
 }
 
 function generateSeed() {
@@ -637,5 +654,59 @@ async function importTxt(event: Event) {
   .note-composer__textarea {
     transition-duration: var(--dur-fast);
   }
+}
+
+.unlock-step {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  text-align: center;
+}
+
+.unlock-step__icon {
+  align-items: center;
+  background: var(--color-accent-soft);
+  border-radius: 999px;
+  color: var(--color-accent-strong);
+  display: grid;
+  height: 3rem;
+  place-items: center;
+  width: 3rem;
+}
+
+.unlock-step__title {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+}
+
+.unlock-step__desc {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  max-width: 26rem;
+}
+
+.unlock-step__form {
+  margin-top: var(--space-2);
+  text-align: start;
+  width: 100%;
+}
+
+.unlock-step__error {
+  background: var(--color-danger-soft);
+  border: 1px solid oklch(0.577 0.245 27.3 / 0.35);
+  border-radius: var(--radius-md);
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+}
+
+.unlock-step__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 </style>

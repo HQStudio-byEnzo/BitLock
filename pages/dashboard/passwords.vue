@@ -6,17 +6,17 @@
         <p class="text-surface-400 text-sm mt-1">{{ t('passwords.subtitle') }}</p>
       </div>
       <button @click="showAddModal = true" class="btn-primary flex items-center gap-2">
-        <Icon name="lucide:plus" class="w-4 h-4" />
+        <Icon name="hugeicons:plus" class="w-4 h-4" />
         {{ t('passwords.add') }}
       </button>
     </div>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="lucide:loader-2" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
     </div>
 
     <div v-else-if="filteredItems.length === 0" class="text-center py-16">
-      <Icon name="lucide:key-round" class="w-12 h-12 text-surface-600 mx-auto mb-4" />
+      <Icon name="hugeicons:key-round" class="w-12 h-12 text-surface-600 mx-auto mb-4" />
       <p class="text-surface-400">{{ t('passwords.empty') }}</p>
     </div>
 

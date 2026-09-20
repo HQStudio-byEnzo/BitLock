@@ -4,7 +4,7 @@
 
     <main v-if="feature" class="mx-auto w-full max-w-[76rem] px-6 py-14 md:px-10 md:py-20">
       <NuxtLink to="/features" class="btn-secondary">
-        <Icon name="lucide:arrow-left" class="h-4 w-4" />
+        <Icon name="hugeicons:arrow-left-01" class="h-4 w-4" />
         {{ t('featuresIndex.back') }}
       </NuxtLink>
 
@@ -18,7 +18,7 @@
 
           <ul class="mt-8 space-y-4">
             <li v-for="point in feature.points" :key="point" class="flex items-start gap-3 text-surface-300">
-              <Icon name="lucide:check" class="mt-1 h-4 w-4 flex-none text-accent-600" />
+              <Icon name="hugeicons:check" class="mt-1 h-4 w-4 flex-none text-accent-600" />
               <span>{{ point }}</span>
             </li>
           </ul>
@@ -38,7 +38,7 @@
 
     <main v-else class="mx-auto w-full max-w-[64rem] px-6 py-20 md:px-10">
       <NuxtLink to="/features" class="btn-secondary">
-        <Icon name="lucide:arrow-left" class="h-4 w-4" />
+        <Icon name="hugeicons:arrow-left-01" class="h-4 w-4" />
         {{ t('featuresIndex.back') }}
       </NuxtLink>
       <section class="card mt-6 p-6">

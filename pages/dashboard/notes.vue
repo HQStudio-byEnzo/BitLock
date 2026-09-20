@@ -6,12 +6,12 @@
         <h1 class="mt-3 text-3xl md:text-4xl font-semibold text-foreground">{{ t('notes.title') }}</h1>
         <p class="mt-3 text-surface-300">{{ t('notes.subtitle') }}</p>
       </div>
-      <button class="btn-primary self-start" @click="showAdd = true"><Icon name="lucide:plus" class="w-4 h-4" /> {{ t('notes.add') }}</button>
+      <button class="btn-primary self-start" @click="showAdd = true"><Icon name="hugeicons:plus" class="w-4 h-4" /> {{ t('notes.add') }}</button>
     </section>
 
     <div v-if="loading" class="glass-panel p-10 text-center text-surface-400">{{ t('common.loading') }}</div>
     <div v-else-if="notes.length === 0" class="glass-panel p-10 text-center">
-      <Icon name="lucide:notebook-tabs" class="w-10 h-10 mx-auto text-accent-600" />
+      <Icon name="hugeicons:notebook-tabs" class="w-10 h-10 mx-auto text-accent-600" />
       <p class="mt-4 text-foreground">{{ t('notes.empty') }}</p>
       <p class="mt-1 text-sm text-surface-400">{{ t('notes.emptyHint') }}</p>
     </div>

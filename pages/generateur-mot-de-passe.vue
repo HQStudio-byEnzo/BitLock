@@ -11,7 +11,7 @@
             <label class="text-sm text-surface-400">{{ t('generator.generatedLabel') }}</label>
             <div class="mt-2 flex flex-col sm:flex-row gap-2">
               <input :value="password" readonly :aria-label="t('generator.generatedLabel')" class="input-field font-mono text-lg min-w-0" />
-              <button class="btn-secondary shrink-0" :aria-label="t('vault.copy')" @click="copyPassword"><Icon name="lucide:copy" class="w-5 h-5" /></button>
+              <button class="btn-secondary shrink-0" :aria-label="t('vault.copy')" @click="copyPassword"><Icon name="hugeicons:copy" class="w-5 h-5" /></button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
