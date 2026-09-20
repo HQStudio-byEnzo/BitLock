@@ -5,7 +5,7 @@
     <div class="grid gap-5 lg:grid-cols-2">
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <div><p class="eyebrow">{{ t('transfer.send') }}</p><h2 class="mt-2 text-xl text-foreground">{{ t('transfer.create') }}</h2></div>
-        <select v-model="selectedId" class="input-field"><option value="">{{ t('transfer.select') }}</option><option v-for="item in items" :key="item.id" :value="item.id">{{ item.label || item.type }}</option></select>
+        <UiSelectMenu v-model="selectedId" :placeholder="t('transfer.select')" :options="itemOptions" />
         <div class="flex gap-2"><input v-model="transferCode" class="input-field font-mono" :aria-label="t('transfer.code')" :placeholder="t('transfer.code')" /><button class="btn-secondary" :aria-label="t('transfer.newCode')" @click="newCode"><Icon name="hugeicons:dices" class="w-4 h-4" /></button></div>
         <button class="btn-primary w-full" :disabled="!selectedId || !transferCode || working" @click="createPackage">{{ t('transfer.generate') }}</button>
         <div v-if="encoded" class="space-y-4">
@@ -42,6 +42,7 @@ const { generatePassword } = usePasswordGenerator()
 const { copySecurely } = useSecureClipboard()
 const selectedId = ref(''), transferCode = ref(''), encoded = ref(''), qrDataUrl = ref(''), incoming = ref(''), incomingCode = ref(''), working = ref(false), message = ref(''), failed = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+const itemOptions = computed(() => items.value.map(item => ({ value: item.id, label: item.label || item.type })))
 function newCode() { transferCode.value = generatePassword({ length: 20, uppercase: true, lowercase: true, numbers: true, symbols: false, avoidAmbiguous: true }) }
 async function createPackage() {
   if (!isUnlocked.value) { failed.value = true; message.value = t('transfer.unlock'); return }

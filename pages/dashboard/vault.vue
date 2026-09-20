@@ -16,6 +16,10 @@
 
     <!-- Filters -->
     <div class="glass-panel p-4 md:p-5 space-y-3">
+      <div class="grid gap-2 sm:grid-cols-2">
+        <UiSelectMenu v-model="vaultFilter" :options="vaultOptions" :placeholder="t('vault.allVaults')" />
+        <UiSelectMenu v-model="folderFilter" :options="folderOptions" :placeholder="t('vault.allFolders')" />
+      </div>
       <div v-if="searchQuery" class="flex items-center gap-2 text-sm text-surface-500">
         <Icon name="hugeicons:search-01" class="h-4 w-4 flex-none" />
         <span class="truncate">{{ t('vault.search') }} « {{ searchQuery }} »</span>
@@ -117,6 +121,27 @@ const deleteError = ref('')
 const searchQuery = ref(typeof route.query.q === 'string' ? route.query.q : '')
 const activeFilter = ref('')
 
+const { data: orgData } = await useFetch<{
+  vaults: { id: string; name: string }[]
+  folders: { id: string; name: string; vault_id: string }[]
+}>('/api/organization')
+
+const vaultFilter = ref('')
+const folderFilter = ref('')
+const vaultOptions = computed(() => [
+  { value: '', label: t('vault.allVaults') },
+  ...(orgData.value?.vaults || []).map(vault => ({ value: vault.id, label: vault.name })),
+])
+const folderOptions = computed(() => {
+  const folders = (orgData.value?.folders || []).filter(folder => !vaultFilter.value || folder.vault_id === vaultFilter.value)
+  return [
+    { value: '', label: t('vault.allFolders') },
+    ...folders.map(folder => ({ value: folder.id, label: folder.name })),
+  ]
+})
+
+watch(vaultFilter, () => { folderFilter.value = '' })
+
 watch(() => route.query.q, (value) => {
   searchQuery.value = typeof value === 'string' ? value : ''
 })
@@ -140,9 +165,14 @@ const searchChips = computed(() => [
 
 const visibleItems = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
+  const scoped = items.value.filter(item => {
+    if (vaultFilter.value && item.vault_id !== vaultFilter.value) return false
+    if (folderFilter.value && item.folder_id !== folderFilter.value) return false
+    return true
+  })
   const byType = activeFilter.value
-    ? items.value.filter(item => item.type === activeFilter.value)
-    : items.value
+    ? scoped.filter(item => item.type === activeFilter.value)
+    : scoped
 
   if (!query) return byType
 

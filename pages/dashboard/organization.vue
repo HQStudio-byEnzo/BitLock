@@ -17,7 +17,7 @@
 
       <section class="glass-panel p-5 space-y-4">
         <div class="flex items-center gap-2"><Icon name="hugeicons:folder-tree" class="text-accent-600" /><h2 class="text-foreground font-medium">{{ t('organization.folders') }}</h2></div>
-        <form class="space-y-2" @submit.prevent="create('folder', folderName)"><input v-model="folderName" class="input-field" :aria-label="t('organization.folderName')" :placeholder="t('organization.folderName')" /><select v-model="folderVault" class="input-field" :aria-label="t('organization.folders')"><option v-for="vault in data.vaults" :key="vault.id" :value="vault.id">{{ vault.name }}</option></select><button class="btn-secondary w-full">{{ t('organization.addFolder') }}</button></form>
+        <form class="space-y-2" @submit.prevent="create('folder', folderName)"><input v-model="folderName" class="input-field" :aria-label="t('organization.folderName')" :placeholder="t('organization.folderName')" /><UiSelectMenu v-model="folderVault" :options="vaultOptions" :placeholder="t('organization.vaults')" /><button class="btn-secondary w-full">{{ t('organization.addFolder') }}</button></form>
         <ul class="space-y-2"><li v-for="folder in data.folders" :key="folder.id" class="flex items-center gap-3 border border-border p-3"><Icon name="hugeicons:folder-01" class="text-surface-500" /><span class="flex-1 text-sm text-surface-200">{{ folder.name }}</span><button class="icon-button" :aria-label="`${t('vault.deleteAction')} ${folder.name}`" @click="remove('folder', folder.id)"><Icon name="hugeicons:trash" class="w-4 h-4" /></button></li></ul>
       </section>
 
@@ -31,9 +31,9 @@
     <section class="glass-panel p-5 md:p-6 space-y-5">
       <div><p class="eyebrow">{{ t('organization.classify') }}</p><h2 class="mt-2 text-xl text-foreground">{{ t('organization.assignTitle') }}</h2></div>
       <div class="grid gap-3 md:grid-cols-3">
-        <select v-model="selectedItemId" class="input-field" :aria-label="t('organization.selectItem')"><option value="">{{ t('organization.selectItem') }}</option><option v-for="item in items" :key="item.id" :value="item.id">{{ item.label || item.type }}</option></select>
-        <select v-model="selectedVaultId" class="input-field" :aria-label="t('organization.vaults')"><option v-for="vault in data.vaults" :key="vault.id" :value="vault.id">{{ vault.name }}</option></select>
-        <select v-model="selectedFolderId" class="input-field" :aria-label="t('organization.noFolder')"><option value="">{{ t('organization.noFolder') }}</option><option v-for="folder in matchingFolders" :key="folder.id" :value="folder.id">{{ folder.name }}</option></select>
+        <UiSelectMenu v-model="selectedItemId" :options="itemOptions" :placeholder="t('organization.selectItem')" />
+        <UiSelectMenu v-model="selectedVaultId" :options="vaultOptions" :placeholder="t('organization.vaults')" />
+        <UiSelectMenu v-model="selectedFolderId" :options="folderOptions" :placeholder="t('organization.noFolder')" />
       </div>
       <div class="flex flex-wrap gap-2"><label v-for="tag in data.tags" :key="tag.id" class="flex items-center gap-2 border border-border px-3 py-2 text-sm text-surface-300"><input v-model="selectedTagIds" type="checkbox" :value="tag.id" />{{ tag.name }}</label></div>
       <button class="btn-primary" :disabled="!selectedItemId" @click="assign">{{ t('organization.assign') }}</button>
@@ -52,6 +52,15 @@ const vaultName = ref(''), folderName = ref(''), tagName = ref(''), folderVault 
 const selectedItemId = ref(''), selectedVaultId = ref(''), selectedFolderId = ref(''), selectedTagIds = ref<string[]>([])
 const message = ref(''), failed = ref(false)
 const matchingFolders = computed(() => data.folders.filter(folder => folder.vault_id === selectedVaultId.value))
+const vaultOptions = computed(() => data.vaults.map(vault => ({ value: vault.id, label: vault.name })))
+const itemOptions = computed(() => [
+  { value: '', label: t('organization.selectItem') },
+  ...items.value.map(item => ({ value: item.id, label: item.label || item.type })),
+])
+const folderOptions = computed(() => [
+  { value: '', label: t('organization.noFolder') },
+  ...matchingFolders.value.map(folder => ({ value: folder.id, label: folder.name })),
+])
 async function load() { const response: typeof data = await $fetch('/api/organization'); Object.assign(data, response); folderVault.value ||= data.vaults[0]?.id || ''; selectedVaultId.value ||= data.vaults[0]?.id || '' }
 async function perform(work: () => Promise<unknown>) { message.value = ''; failed.value = false; try { await work(); message.value = t('organization.saved'); await load() } catch (error: any) { failed.value = true; message.value = error?.data?.message || t('organization.failed') } }
 async function create(kind: 'vault' | 'folder' | 'tag', name: string) { const trimmed = name.trim(); if (!trimmed) return; await perform(() => $fetch('/api/organization', { method: 'POST', body: { kind, name: trimmed, vault_id: folderVault.value, color: tagColor.value } })); if (kind === 'vault') vaultName.value = ''; else if (kind === 'folder') folderName.value = ''; else tagName.value = '' }

@@ -2,8 +2,8 @@
   <div class="section-shell max-w-6xl py-10 md:py-16 space-y-6">
     <section class="hero-panel"><p class="eyebrow">{{ t('history.eyebrow') }}</p><h1 class="mt-3 text-3xl md:text-4xl font-semibold text-foreground">{{ t('history.title') }}</h1><p class="mt-3 text-surface-300">{{ t('history.subtitle') }}</p></section>
     <section class="glass-panel p-5 space-y-4">
-      <label for="historySelect" class="text-sm text-surface-300">{{ t('history.select') }}</label>
-      <select id="historySelect" v-model="selectedId" class="input-field" :aria-label="t('history.select')"><option value="">{{ t('history.selectPlaceholder') }}</option><option v-for="item in items" :key="item.id" :value="item.id">{{ item.label || item.type }}</option></select>
+      <p class="text-sm text-surface-300">{{ t('history.select') }}</p>
+      <UiSelectMenu v-model="selectedId" :options="itemOptions" :placeholder="t('history.selectPlaceholder')" />
     </section>
     <section v-if="selectedId" class="glass-panel p-5 md:p-6">
       <div v-if="loading" class="text-surface-400">{{ t('common.loading') }}</div>
@@ -26,6 +26,10 @@ definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 const { t } = useLang()
 const { formatDate } = useDateFormat()
 const { items, fetchItems } = useVault()
+const itemOptions = computed(() => [
+  { value: '', label: t('history.selectPlaceholder') },
+  ...items.value.map(item => ({ value: item.id, label: item.label || item.type })),
+])
 const selectedId = ref(''), versions = ref<any[]>([]), loading = ref(false), restoring = ref(''), message = ref(''), failed = ref(false)
 async function loadHistory() { if (!selectedId.value) return; loading.value = true; try { const data: { history: any[] } = await $fetch(`/api/vault/${selectedId.value}/history`); versions.value = data.history } finally { loading.value = false } }
 async function restore(historyId: string) { restoring.value = historyId; message.value = ''; failed.value = false; try { await $fetch(`/api/vault/${selectedId.value}/restore`, { method: 'POST', body: { history_id: historyId } }); message.value = t('history.restored'); await Promise.all([loadHistory(), fetchItems()]) } catch { failed.value = true; message.value = t('history.failed') } finally { restoring.value = '' } }

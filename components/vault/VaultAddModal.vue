@@ -26,9 +26,7 @@
           <aside class="note-composer__rail">
             <div>
               <label for="noteType" class="note-composer__label">{{ t('vault.typeLabel') }}</label>
-              <select id="noteType" v-model="form.type" class="input-field">
-                <option v-for="tp in types" :key="tp.value" :value="tp.value">{{ tp.label }}</option>
-              </select>
+              <UiSelectMenu :model-value="form.type" :options="typeOptions" @update:model-value="(value) => form.type = value as typeof form.type" />
             </div>
 
             <div>
@@ -40,6 +38,11 @@
                 class="input-field"
                 :placeholder="t('notes.titlePlaceholder')"
               />
+            </div>
+
+            <div v-if="vaultOptions.length > 1 || folderOptions.length > 1" class="space-y-2">
+              <UiSelectMenu v-model="vaultId" :options="vaultOptions" :placeholder="t('vault.pickVault')" />
+              <UiSelectMenu v-model="folderId" :options="folderOptions" :placeholder="t('vault.pickFolder')" />
             </div>
 
             <div class="note-composer__security">
@@ -111,6 +114,11 @@
               class="input-field"
               :placeholder="t('vault.labelPlaceholder')"
             />
+          </div>
+
+          <div v-if="vaultOptions.length > 1 || folderOptions.length > 1" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <UiSelectMenu v-model="vaultId" :options="vaultOptions" :placeholder="t('vault.pickVault')" />
+            <UiSelectMenu v-model="folderId" :options="folderOptions" :placeholder="t('vault.pickFolder')" />
           </div>
 
           <div>
@@ -260,6 +268,25 @@ const masterPasswordInput = ref('')
 const dialogEl = ref<HTMLElement | null>(null)
 const recoveryFileInput = ref<HTMLInputElement | null>(null)
 
+const orgData = ref<{ vaults: { id: string; name: string }[]; folders: { id: string; name: string; vault_id: string }[] } | null>(null)
+const vaultId = ref('')
+const folderId = ref('')
+const vaultOptions = computed(() => [
+  { value: '', label: t('vault.pickVault') },
+  ...(orgData.value?.vaults || []).map(vault => ({ value: vault.id, label: vault.name })),
+])
+const folderOptions = computed(() => {
+  const folders = (orgData.value?.folders || []).filter(folder => !vaultId.value || folder.vault_id === vaultId.value)
+  return [
+    { value: '', label: t('vault.pickFolder') },
+    ...folders.map(folder => ({ value: folder.id, label: folder.name })),
+  ]
+})
+watch(vaultId, () => { folderId.value = '' })
+onMounted(async () => {
+  try { orgData.value = await $fetch('/api/organization') } catch { /* ignore */ }
+})
+
 useModalFocus(dialogEl, () => emit('close'))
 
 const form = reactive({
@@ -282,8 +309,9 @@ const types = computed(() => [
   { value: 'totp' as const, label: t('vault.typeTotp'), icon: 'hugeicons:timer-reset' },
 ])
 
-const payloadLabel = computed(() => {
-  switch (form.type) {
+const typeOptions = computed(() => types.value.map(tp => ({ value: tp.value, label: tp.label })))
+
+const payloadLabel = computed(() => {  switch (form.type) {
     case 'link': return t('vault.payloadLink')
     case 'password': return t('vault.payloadPassword')
     case 'crypto': return t('vault.payloadCrypto')
@@ -341,6 +369,8 @@ async function saveWithPassword(password: string) {
       payload: buildPayload(),
       shouldEncrypt: true,
       url: form.type === 'password' ? form.url : form.type === 'link' ? form.payload : undefined,
+      vaultId: vaultId.value || undefined,
+      folderId: folderId.value || null,
     })
     masterPasswordInput.value = ''
     emit('added')

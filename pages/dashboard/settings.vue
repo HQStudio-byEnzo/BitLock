@@ -206,13 +206,13 @@
               <p class="text-sm font-medium text-surface-200">{{ t('settings.autoLock') }}</p>
               <p class="text-xs text-surface-500">{{ t('settings.autoLockDesc') }}</p>
             </div>
-            <select v-model="securitySettings.autoLockMinutes" class="input-field max-w-40">
-              <option :value="1">1 min</option>
-              <option :value="5">5 min</option>
-              <option :value="15">15 min</option>
-              <option :value="30">30 min</option>
-              <option :value="0">{{ t('settings.disabled') }}</option>
-            </select>
+            <div class="w-40 shrink-0">
+              <UiSelectMenu
+                :model-value="String(securitySettings.autoLockMinutes)"
+                :options="autoLockOptions"
+                @update:model-value="(value) => securitySettings.autoLockMinutes = Number(value)"
+              />
+            </div>
           </div>
         </div>
 
@@ -222,12 +222,13 @@
               <p class="text-sm font-medium text-surface-200">{{ t('settings.clipboardClear') }}</p>
               <p class="text-xs text-surface-500">{{ t('settings.clipboardClearDesc') }}</p>
             </div>
-            <select v-model="securitySettings.clipboardClearSeconds" class="input-field max-w-40">
-              <option :value="15">15 s</option>
-              <option :value="30">30 s</option>
-              <option :value="60">60 s</option>
-              <option :value="0">{{ t('settings.disabled') }}</option>
-            </select>
+            <div class="w-40 shrink-0">
+              <UiSelectMenu
+                :model-value="String(securitySettings.clipboardClearSeconds)"
+                :options="clipboardOptions"
+                @update:model-value="(value) => securitySettings.clipboardClearSeconds = Number(value)"
+              />
+            </div>
           </div>
         </div>
 
@@ -489,8 +490,20 @@ const securitySettings = reactive({
   hideDecryptedByDefault: true,
   privacyShield: true,
 })
-const settingSections = computed(() => [
-  { id: 'account', label: t('settings.account'), icon: 'hugeicons:user' },
+const autoLockOptions = computed(() => [
+  { value: '1', label: '1 min' },
+  { value: '5', label: '5 min' },
+  { value: '15', label: '15 min' },
+  { value: '30', label: '30 min' },
+  { value: '0', label: t('settings.disabled') },
+])
+const clipboardOptions = computed(() => [
+  { value: '15', label: '15 s' },
+  { value: '30', label: '30 s' },
+  { value: '60', label: '60 s' },
+  { value: '0', label: t('settings.disabled') },
+])
+const settingSections = computed(() => [  { id: 'account', label: t('settings.account'), icon: 'hugeicons:user' },
   { id: 'security', label: t('settings.security'), icon: 'hugeicons:shield-01' },
   { id: 'language', label: t('settings.language'), icon: 'hugeicons:globe' },
   { id: 'shortcuts', label: t('settings.shortcuts'), icon: 'hugeicons:keyboard' },

@@ -54,6 +54,19 @@ export function useVault() {
   const { encrypt, decrypt, serializeEncryptedPayload, parseEncryptedPayload } = useCrypto()
 
   /**
+   * Update the local stats counters without a server round-trip.
+   */
+  function bumpStats(delta: number, type: VaultItem['type'], favorite: boolean) {
+    const current = stats.value
+    if (!current) return
+    const counts = current.counts
+    counts.total = Math.max(0, counts.total + delta)
+    const key = ({ link: 'links', password: 'passwords', crypto: 'crypto', recovery: 'recovery', note: 'notes', totp: 'totp' } as const)[type]
+    if (key) counts[key] = Math.max(0, counts[key] + delta)
+    if (favorite) counts.favorites = Math.max(0, counts.favorites + delta)
+  }
+
+  /**
    * Récupère tous les éléments du coffre-fort
    */
   async function fetchItems(filters?: { type?: string; favorites?: boolean; search?: string }) {
@@ -138,10 +151,26 @@ export function useVault() {
         },
       })
 
-      if (options.refresh !== false) {
-        await fetchItems()
-        await fetchStats()
+      // Optimistic insert keeps the UI instant; no full refetch needed.
+      const now = new Date().toISOString()
+      const optimistic: VaultItem = {
+        id: response.id,
+        user_id: '',
+        type: data.type,
+        vault_id: data.vaultId ?? null,
+        folder_id: data.folderId ?? null,
+        tags: [],
+        label: data.label,
+        is_encrypted: true,
+        payload,
+        iv: iv ?? null,
+        url: data.type === 'password' ? data.url || undefined : undefined,
+        favorite: !!data.favorite,
+        created_at: now,
+        updated_at: now,
       }
+      items.value = [optimistic, ...items.value]
+      bumpStats(1, data.type, !!data.favorite)
 
       return response
     } catch (err: any) {
@@ -273,17 +302,25 @@ export function useVault() {
   }
 
   /**
-   * Met à jour un élément
+   * Met à jour un élément (optimiste : pas de rechargement complet)
    */
   async function updateItem(id: string, data: Partial<VaultItem>) {
+    const index = items.value.findIndex(entry => entry.id === id)
+    const previous = index >= 0 ? { ...items.value[index] } : null
+
+    if (index >= 0) {
+      const next = { ...items.value[index], ...data, updated_at: new Date().toISOString() }
+      items.value[index] = next
+      if (previous && 'favorite' in data && stats.value) {
+        const delta = (data.favorite ? 1 : 0) - (previous.favorite ? 1 : 0)
+        stats.value.counts.favorites = Math.max(0, stats.value.counts.favorites + delta)
+      }
+    }
+
     try {
-      await $fetch(`/api/vault/${id}`, {
-        method: 'PUT',
-        body: data,
-      })
-      await fetchItems()
-      await fetchStats()
+      await $fetch(`/api/vault/${id}`, { method: 'PUT', body: data })
     } catch (err: any) {
+      if (previous && index >= 0) items.value[index] = previous
       error.value = err.data?.message || 'Erreur lors de la mise à jour.'
       throw err
     }
@@ -300,24 +337,30 @@ export function useVault() {
    * Supprime un élément
    */
   async function deleteItem(item: VaultItem, providedPassword: string = '') {
-    try {
-      if (item.is_encrypted) {
-        const secret = providedPassword || masterPassword.value
-        if (!secret) {
-          throw new Error('Le mot de passe maître est requis pour supprimer cet élément.')
-        }
-
-        try {
-          await decryptItem(item, secret)
-        } catch {
-          throw new Error('Le mot de passe maître est incorrect ou le secret est corrompu.')
-        }
+    if (item.is_encrypted) {
+      const secret = providedPassword || masterPassword.value
+      if (!secret) {
+        throw new Error('Le mot de passe maître est requis pour supprimer cet élément.')
       }
 
+      try {
+        await decryptItem(item, secret)
+      } catch {
+        throw new Error('Le mot de passe maître est incorrect ou le secret est corrompu.')
+      }
+    }
+
+    const index = items.value.findIndex(entry => entry.id === item.id)
+    const removed = index >= 0 ? items.value.splice(index, 1)[0] : null
+    if (removed) bumpStats(-1, removed.type, removed.favorite)
+
+    try {
       await $fetch(`/api/vault/${item.id}`, { method: 'DELETE' })
-      await fetchItems()
-      await fetchStats()
     } catch (err: any) {
+      if (removed) {
+        items.value.splice(index, 0, removed)
+        bumpStats(1, removed.type, removed.favorite)
+      }
       error.value = err.data?.message || 'Erreur lors de la suppression.'
       throw err
     }

@@ -49,16 +49,44 @@
           <span>QVault</span>
         </NuxtLink>
 
-        <form class="dash__search" role="search" @submit.prevent="submitSearch">
-          <Icon name="hugeicons:search-01" class="dash__searchIcon" />
-          <input
-            v-model="searchQuery"
-            type="search"
-            class="dash__searchInput"
-            :placeholder="t('vault.search')"
-            :aria-label="t('vault.search')"
-          />
-        </form>
+        <div ref="searchRoot" class="dash__searchWrap">
+          <form class="dash__search" role="search" @submit.prevent="openFirstResult">
+            <Icon name="hugeicons:search-01" class="dash__searchIcon" />
+            <input
+              v-model="searchQuery"
+              type="search"
+              class="dash__searchInput"
+              :placeholder="t('vault.search')"
+              :aria-label="t('vault.search')"
+              @focus="onSearchFocus"
+              @input="onSearchInput"
+            />
+          </form>
+
+          <Transition name="fade">
+            <div v-if="searchOpen && searchQuery.trim()" class="dash__results" role="listbox">
+              <p v-if="results.length === 0" class="dash__resultsEmpty">{{ t('vault.noResult') }}</p>
+              <button
+                v-for="item in results"
+                :key="item.id"
+                type="button"
+                class="dash__result"
+                role="option"
+                @click="pickResult(item)"
+              >
+                <span class="dash__resultIcon"><Icon :name="typeIcon(item.type)" class="h-4 w-4" /></span>
+                <span class="dash__resultText">
+                  <strong>{{ item.label || t('vault.untitled') }}</strong>
+                  <small>{{ item.url || typeLabel(item.type) }}</small>
+                </span>
+                <Icon name="hugeicons:arrow-right-01" class="dash__resultArrow h-4 w-4" />
+              </button>
+              <NuxtLink v-if="results.length" to="/dashboard/vault" class="dash__resultsAll" @click="searchOpen = false">
+                {{ t('dash.viewAll') }}
+              </NuxtLink>
+            </div>
+          </Transition>
+        </div>
 
         <button type="button" class="dash__menu dash__menu--mobile" :aria-label="t('nav.signout')" @click="signOut">
           <Icon name="hugeicons:log-out" class="h-4 w-4" />
@@ -136,11 +164,13 @@
 
     <LegalTermsAcceptanceModal />
     <SecurityMasterPasswordOnboarding />
+    <VaultDecryptModal v-if="searchTarget" :item="searchTarget" @close="searchTarget = null" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useLang } from '~/composables/useI18n'
+import type { VaultItem } from '~/composables/useVault'
 
 const { user, signOut } = useAuthClient()
 const { t } = useLang()
@@ -148,13 +178,55 @@ useAppShortcuts()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 const searchQuery = ref('')
+const searchOpen = ref(false)
+const searchRoot = ref<HTMLElement | null>(null)
+const searchTarget = ref<VaultItem | null>(null)
 const mobileSheetEl = ref<HTMLElement | null>(null)
 useModalFocus(mobileSheetEl, () => { mobileMenuOpen.value = false }, { active: mobileMenuOpen })
 
-function submitSearch() {
-  const query = searchQuery.value.trim()
-  navigateTo(query ? `/dashboard/vault?q=${encodeURIComponent(query)}` : '/dashboard/vault')
+const { items, fetchItems } = useVault()
+let loadingItems = false
+
+const results = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  if (!query) return [] as VaultItem[]
+  return items.value
+    .filter(item => `${item.label} ${item.url || ''} ${item.type}`.toLowerCase().includes(query))
+    .slice(0, 8)
+})
+
+const SEARCH_ICONS: Record<VaultItem['type'], string> = {
+  link: 'hugeicons:link', password: 'hugeicons:key-round', crypto: 'hugeicons:bitcoin',
+  recovery: 'hugeicons:life-buoy', note: 'hugeicons:notebook-pen', totp: 'hugeicons:shield-check',
 }
+function typeIcon(type: VaultItem['type']) { return SEARCH_ICONS[type] }
+function typeLabel(type: VaultItem['type']) { return t(`dash.${({ link: 'links', password: 'passwords', crypto: 'crypto', recovery: 'recovery', note: 'notes', totp: 'totp' } as const)[type]}`) }
+
+async function onSearchFocus() {
+  searchOpen.value = true
+  if (items.value.length === 0 && !loadingItems) {
+    loadingItems = true
+    try { await fetchItems() } finally { loadingItems = false }
+  }
+}
+function onSearchInput() {
+  searchOpen.value = true
+}
+function pickResult(item: VaultItem) {
+  searchTarget.value = item
+  searchOpen.value = false
+  searchQuery.value = ''
+}
+function openFirstResult() {
+  const first = results.value[0]
+  if (first) pickResult(first)
+}
+function onSearchPointerDown(event: PointerEvent) {
+  if (searchOpen.value && searchRoot.value && !searchRoot.value.contains(event.target as Node)) searchOpen.value = false
+}
+onMounted(() => document.addEventListener('pointerdown', onSearchPointerDown))
+onBeforeUnmount(() => document.removeEventListener('pointerdown', onSearchPointerDown))
+
 const { showWarning, remainingSeconds, resetTimers } = useAutoLock()
 const { shielded, reveal } = usePrivacyShield()
 
@@ -318,9 +390,9 @@ watch(() => route.path, () => {
 }
 
 .dash__avatarImg {
-  height: 100%;
-  object-fit: cover;
-  width: 100%;
+  height: 74%;
+  object-fit: contain;
+  width: 74%;
 }
 
 .dash__userText {
@@ -384,17 +456,119 @@ watch(() => route.path, () => {
   display: none;
 }
 
+.dash__searchWrap {
+  flex: 1;
+  max-width: 30rem;
+  position: relative;
+}
+
 .dash__search {
   align-items: center;
   background: var(--color-panel);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-md);
   display: flex;
-  flex: 1;
   gap: var(--space-2);
-  max-width: 30rem;
   padding-inline: var(--space-3);
   transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  width: 100%;
+}
+
+.dash__results {
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  left: 0;
+  max-height: 24rem;
+  overflow-y: auto;
+  padding: var(--space-1);
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 50;
+}
+
+.dash__resultsEmpty {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.dash__result {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  text-align: start;
+  transition: background-color var(--dur-fast) var(--ease-out);
+  width: 100%;
+}
+
+.dash__result:hover {
+  background: var(--color-paper-3);
+}
+
+.dash__resultIcon {
+  align-items: center;
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent-strong);
+  display: grid;
+  flex: none;
+  height: 1.75rem;
+  place-items: center;
+  width: 1.75rem;
+}
+
+.dash__resultText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash__resultText strong {
+  color: var(--color-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash__resultText small {
+  color: var(--color-text-faint);
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash__resultArrow {
+  color: var(--color-text-faint);
+  flex: none;
+}
+
+.dash__resultsAll {
+  border-top: 1px solid var(--color-rule);
+  color: var(--color-accent-600);
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  text-decoration: none;
+}
+
+.dash__resultsAll:hover {
+  color: var(--color-accent-700);
 }
 
 .dash__search:focus-within {

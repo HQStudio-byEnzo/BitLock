@@ -106,10 +106,10 @@ onBeforeUnmount(() => {
 .avatar-picker__trigger--lg { height: 5.5rem; width: 5.5rem; font-size: 1.75rem; }
 
 .avatar-picker__img {
-  height: 100%;
-  width: 100%;
-  border-radius: 999px;
-  object-fit: cover;
+  height: 74%;
+  width: 74%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .avatar-picker__badge {
