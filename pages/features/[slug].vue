@@ -60,7 +60,7 @@ const { getFeature } = useFeatureCatalog()
 const feature = computed(() => getFeature(String(route.params.slug)))
 
 useSeoMeta({
-  title: feature.value ? `${feature.value.title} - QVault` : 'QVault',
+  title: feature.value ? feature.value.title : t('featuresIndex.seoTitle'),
   description: feature.value?.summary || t('featuresIndex.seoDesc'),
 })
 </script>

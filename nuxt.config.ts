@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const siteUrl = (process.env.APP_URL || 'https://qvault.hqmerchant.xyz').replace(/\/+$/, '')
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-07-19',
   future: {
@@ -48,7 +50,7 @@ export default defineNuxtConfig({
     tursoDbUrl: process.env.TURSO_DB_URL || '',
     tursoDbToken: process.env.TURSO_DB_TOKEN || '',
     // App URL
-    appUrl: process.env.APP_URL || 'https://qvault.hqmerchant.xyz',
+    appUrl: siteUrl,
     // Publicly disclosed partner links. Set SUPPORT_CATALOG_JSON=[] to disable
     // this catalogue, or replace it with your own validated JSON entries.
     supportCatalogJson: process.env.SUPPORT_CATALOG_JSON || JSON.stringify([
@@ -136,6 +138,9 @@ export default defineNuxtConfig({
     // Public
     public: {
       appName: 'QVault',
+      // Single source of truth for absolute URLs (canonical, Open Graph,
+      // JSON-LD). Served to the client so per-page head tags stay consistent.
+      siteUrl,
     },
   },
 
@@ -168,7 +173,7 @@ export default defineNuxtConfig({
     layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       htmlAttrs: { lang: 'fr', class: 'dark' },
-      title: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés',
+      title: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto',
       titleTemplate: '%s | QVault',
       meta: [
         { charset: 'utf-8' },
@@ -181,17 +186,14 @@ export default defineNuxtConfig({
         // Open Graph
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'QVault' },
-        { property: 'og:url', content: 'https://qvault.hqmerchant.xyz/' },
-        { property: 'og:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
+        { property: 'og:title', content: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto' },
         { property: 'og:description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
-        { property: 'og:image', content: 'https://qvault.hqmerchant.xyz/qvault-social.png' },
         { property: 'og:locale', content: 'fr_FR' },
         { property: 'og:locale:alternate', content: 'en_US' },
         // Twitter
         { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
+        { name: 'twitter:title', content: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto' },
         { name: 'twitter:description', content: 'Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge.' },
-        { name: 'twitter:image', content: 'https://qvault.hqmerchant.xyz/qvault-social.png' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/qvault-icon-48.png?v=3' },
@@ -199,24 +201,6 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/qvault-icon-16.png?v=3' },
         { rel: 'shortcut icon', href: '/qvault-icon-32.png?v=3' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-v2.png?v=3' },
-        { rel: 'canonical', href: 'https://qvault.hqmerchant.xyz/' },
-      ],
-      script: [
-        {
-          type: 'application/ld+json',
-          innerHTML: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: 'QVault',
-            url: process.env.APP_URL || 'https://qvault.hqmerchant.xyz/',
-            applicationCategory: 'SecurityApplication',
-            operatingSystem: 'Web',
-            description: 'Coffre-fort numérique gratuit avec chiffrement zero-knowledge. Stockez mots de passe, liens et clés crypto en toute sécurité.',
-            offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-            author: { '@type': 'Organization', name: 'HQ Studio' },
-            license: 'https://github.com/Subdomain-Studio/BitLock/blob/main/LICENSE.md',
-          }),
-        },
       ],
     },
   },

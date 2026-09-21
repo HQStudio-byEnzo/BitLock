@@ -48,5 +48,5 @@ import { useLang } from '~/composables/useI18n'
 definePageMeta({ layout: 'default' })
 
 const { t } = useLang()
-useSeoMeta({ title: `QVault - ${t('legal.cgu.titlePage')}` })
+useSeoMeta({ title: t('legal.cgu.titlePage') })
 </script>
