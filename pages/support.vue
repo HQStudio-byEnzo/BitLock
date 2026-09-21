@@ -84,7 +84,7 @@
         <NuxtLink to="/">{{ copy.home }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
         <a
-          href="https://github.com/HQStudio-byEnzo/Bitlock"
+          href="https://github.com/HQStudio-byEnzo/BitLock"
           target="_blank"
           rel="noopener noreferrer"
         >
