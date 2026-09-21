@@ -736,8 +736,11 @@ const securityFlow = computed(() => [
 }
 
 .lp-footer__links a {
+  align-items: center;
   color: var(--color-text-muted);
+  display: inline-flex;
   font-size: 0.875rem;
+  min-height: 1.5rem;
   text-decoration: none;
 }
 

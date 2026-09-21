@@ -1,4 +1,6 @@
-function requestOrigin(event: Parameters<Parameters<typeof defineEventHandler>[0]>[0]) {
+import type { H3Event } from 'h3'
+
+function requestOrigin(event: H3Event) {
   const forwardedHost = getRequestHeader(event, 'x-forwarded-host')
   const host = forwardedHost || getRequestHeader(event, 'host')
   const forwardedProto = getRequestHeader(event, 'x-forwarded-proto')
@@ -6,14 +8,26 @@ function requestOrigin(event: Parameters<Parameters<typeof defineEventHandler>[0
   return host ? `${protocol}://${host}` : null
 }
 
-function allowedOrigins(event: Parameters<Parameters<typeof defineEventHandler>[0]>[0]) {
-  const allowed = new Set<string>()
-  const configuredAppUrl = String(useRuntimeConfig().appUrl || '').trim()
-  if (configuredAppUrl) {
-    try { allowed.add(new URL(configuredAppUrl).origin) } catch { /* ignore malformed config */ }
+function addOrigin(target: Set<string>, value: unknown) {
+  const candidate = String(value || '').trim()
+  if (!candidate) return
+  try {
+    target.add(new URL(candidate).origin)
+  } catch {
+    // Ignore malformed values rather than widening the allowlist.
   }
-  const derived = requestOrigin(event)
-  if (derived) allowed.add(derived)
+}
+
+function allowedOrigins(event: H3Event) {
+  const allowed = new Set<string>()
+  // The configured app URL is the single trusted origin in production.
+  addOrigin(allowed, useRuntimeConfig().appUrl)
+  // Vercel exposes the deployment URL so previews and the platform alias keep
+  // working without trusting an arbitrary Host header.
+  addOrigin(allowed, process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+  addOrigin(allowed, process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
+  // Outside production the request host is trusted so localhost and LAN hosts work.
+  if (process.env.NODE_ENV !== 'production') addOrigin(allowed, requestOrigin(event))
   return allowed
 }
 

@@ -72,9 +72,9 @@
           </NuxtLink>
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3 text-xs text-surface-500">
-          <NuxtLink to="/legal/cgu" class="hover:text-surface-300 transition-colors">{{ t('footer.terms') }}</NuxtLink>
-          <NuxtLink to="/legal/confidentialite" class="hover:text-surface-300 transition-colors">{{ t('footer.privacy') }}</NuxtLink>
-          <NuxtLink to="/legal/mentions-legales" class="hover:text-surface-300 transition-colors">{{ t('footer.legalNotice') }}</NuxtLink>
+          <NuxtLink to="/legal/cgu" class="inline-flex min-h-6 items-center hover:text-surface-300 transition-colors">{{ t('footer.terms') }}</NuxtLink>
+          <NuxtLink to="/legal/confidentialite" class="inline-flex min-h-6 items-center hover:text-surface-300 transition-colors">{{ t('footer.privacy') }}</NuxtLink>
+          <NuxtLink to="/legal/mentions-legales" class="inline-flex min-h-6 items-center hover:text-surface-300 transition-colors">{{ t('footer.legalNotice') }}</NuxtLink>
         </div>
       </div>
     </div>

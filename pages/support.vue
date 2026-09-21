@@ -343,8 +343,11 @@ const copy = computed(() => locale.value === 'fr' ? {
 }
 
 .support-footer a {
+  align-items: center;
   color: var(--color-text-muted);
+  display: inline-flex;
   font-size: 0.875rem;
+  min-height: 1.5rem;
   text-decoration: none;
 }
 
