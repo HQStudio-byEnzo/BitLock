@@ -104,4 +104,4 @@ Vercel, then deploy. `SUPPORT_CATALOG_JSON` is optional.
 
 ## License
 
-[MIT](./LICENSE.md) — KernelStudio by Enzo.
+[MIT](./LICENSE.md) — HQ Studio by Enzo.

@@ -27,7 +27,7 @@ const structuredData = computed(() => JSON.stringify({
   description: 'Coffre-fort numérique gratuit avec chiffrement zero-knowledge. Stockez mots de passe, liens et clés crypto en toute sécurité.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   author: { '@type': 'Organization', name: 'HQ Studio' },
-  license: 'https://github.com/Subdomain-Studio/BitLock/blob/main/LICENSE.md',
+  license: 'https://github.com/HQStudio-byEnzo/Bitlock/blob/main/LICENSE.md',
 }))
 
 useHead({
