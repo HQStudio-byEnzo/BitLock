@@ -48,7 +48,7 @@ export default defineNuxtConfig({
     tursoDbUrl: process.env.TURSO_DB_URL || '',
     tursoDbToken: process.env.TURSO_DB_TOKEN || '',
     // App URL
-    appUrl: process.env.APP_URL || 'https://bitlock.hqmerchant.xyz',
+    appUrl: process.env.APP_URL || 'https://qvault.hqmerchant.xyz',
     // Publicly disclosed partner links. Set SUPPORT_CATALOG_JSON=[] to disable
     // this catalogue, or replace it with your own validated JSON entries.
     supportCatalogJson: process.env.SUPPORT_CATALOG_JSON || JSON.stringify([
@@ -181,17 +181,17 @@ export default defineNuxtConfig({
         // Open Graph
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'QVault' },
-        { property: 'og:url', content: 'https://bitlock.hqmerchant.xyz/' },
+        { property: 'og:url', content: 'https://qvault.hqmerchant.xyz/' },
         { property: 'og:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
         { property: 'og:description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
-        { property: 'og:image', content: 'https://bitlock.hqmerchant.xyz/qvault-social.png' },
+        { property: 'og:image', content: 'https://qvault.hqmerchant.xyz/qvault-social.png' },
         { property: 'og:locale', content: 'fr_FR' },
         { property: 'og:locale:alternate', content: 'en_US' },
         // Twitter
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:title', content: 'QVault | Coffre-fort Numérique Gratuit - Mots de Passe & Crypto Sécurisés' },
         { name: 'twitter:description', content: 'Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge.' },
-        { name: 'twitter:image', content: 'https://bitlock.hqmerchant.xyz/qvault-social.png' },
+        { name: 'twitter:image', content: 'https://qvault.hqmerchant.xyz/qvault-social.png' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/qvault-icon-48.png?v=3' },
@@ -199,7 +199,7 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/qvault-icon-16.png?v=3' },
         { rel: 'shortcut icon', href: '/qvault-icon-32.png?v=3' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-v2.png?v=3' },
-        { rel: 'canonical', href: 'https://bitlock.hqmerchant.xyz/' },
+        { rel: 'canonical', href: 'https://qvault.hqmerchant.xyz/' },
       ],
       script: [
         {
@@ -208,7 +208,7 @@ export default defineNuxtConfig({
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: 'QVault',
-            url: process.env.APP_URL || 'https://bitlock.hqmerchant.xyz/',
+            url: process.env.APP_URL || 'https://qvault.hqmerchant.xyz/',
             applicationCategory: 'SecurityApplication',
             operatingSystem: 'Web',
             description: 'Coffre-fort numérique gratuit avec chiffrement zero-knowledge. Stockez mots de passe, liens et clés crypto en toute sécurité.',

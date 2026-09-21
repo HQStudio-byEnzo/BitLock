@@ -5,4 +5,4 @@ Disallow: /auth/
 Disallow: /dashboard/
 Disallow: /dashboard/*
 
-Sitemap: https://bitlock.hqmerchant.xyz/sitemap.xml
+Sitemap: https://qvault.hqmerchant.xyz/sitemap.xml
