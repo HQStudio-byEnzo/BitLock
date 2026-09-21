@@ -60,6 +60,7 @@ async function ensureBaseSchema(db: ReturnType<typeof createClient>) {
     'CREATE INDEX IF NOT EXISTS idx_vault_history_item ON vault_item_history(user_id, item_id, version DESC)',
     `CREATE TABLE IF NOT EXISTS master_verifiers (user_id TEXT PRIMARY KEY, payload TEXT NOT NULL, iv TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT (datetime('now')), FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS extension_tokens (user_id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL DEFAULT (datetime('now')), last_used_at TEXT, expires_at TEXT, session_version INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
+    `CREATE TABLE IF NOT EXISTS extension_pair_codes (user_id TEXT PRIMARY KEY, code_hash TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT (datetime('now')), expires_at TEXT NOT NULL, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS accepted_terms (user_id TEXT PRIMARY KEY, terms_version TEXT NOT NULL, accepted_at TEXT NOT NULL DEFAULT (datetime('now')), user_agent TEXT, ip_address TEXT, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)`,
     `CREATE TABLE IF NOT EXISTS rate_limits (key_hash TEXT PRIMARY KEY, count INTEGER NOT NULL, reset_at INTEGER NOT NULL)`,
     'CREATE INDEX IF NOT EXISTS idx_rate_limits_reset_at ON rate_limits(reset_at)',

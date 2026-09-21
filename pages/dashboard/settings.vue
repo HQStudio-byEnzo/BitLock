@@ -276,25 +276,46 @@
           {{ t('settings.extensionTitle') }}
         </h2>
         <p class="text-sm text-surface-400">{{ t('settings.extensionDesc') }}</p>
-        <div class="flex flex-wrap items-center gap-3">
-          <span class="tech-status">{{ extensionConfigured ? t('settings.extensionActive') : t('settings.extensionInactive') }}</span>
-          <button type="button" class="btn-primary" :disabled="extensionLoading" @click="generateExtensionToken">
-            {{ extensionConfigured ? t('settings.extensionRotate') : t('settings.extensionGenerate') }}
-          </button>
-          <button v-if="extensionConfigured" type="button" class="btn-secondary" :disabled="extensionLoading" @click="revokeExtensionToken">
-            {{ t('settings.extensionRevoke') }}
-          </button>
-        </div>
-        <div v-if="extensionToken" class="system-note space-y-3">
-          <p class="text-xs text-amber-700">{{ t('settings.extensionOnce') }}</p>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input :value="extensionToken" readonly class="input-field flex-1 font-mono text-xs" />
-            <button type="button" class="btn-secondary" @click="copyExtensionToken">
-              <Icon name="hugeicons:copy" class="w-4 h-4" />{{ t('settings.extensionCopy') }}
+
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" class="btn-primary" :disabled="pairLoading" @click="createPairingCode">
+              <Icon name="hugeicons:scan-line" class="w-4 h-4" />
+              {{ pairingCode ? t('settings.pairRegenerate') : t('settings.pairCreate') }}
             </button>
+            <span v-if="pairingCode" class="tech-status">{{ t('settings.pairExpires').replace('{seconds}', String(pairRemainingSeconds)) }}</span>
           </div>
+          <div v-if="pairingCode" class="system-note space-y-2 text-center">
+            <p class="text-xs text-surface-500">{{ t('settings.pairHint') }}</p>
+            <p class="font-mono text-3xl tracking-[0.35em] text-foreground">{{ pairingCode }}</p>
+          </div>
+          <p v-if="pairMessage" class="text-sm" :class="pairFailed ? 'text-red-600' : 'text-accent-text'">{{ pairMessage }}</p>
         </div>
-        <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-600' : 'text-accent-text'">{{ extensionMessage }}</p>
+
+        <details class="text-sm">
+          <summary class="cursor-pointer text-surface-400">{{ t('settings.extensionAdvanced') }}</summary>
+          <div class="mt-3 space-y-3">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="tech-status">{{ extensionConfigured ? t('settings.extensionActive') : t('settings.extensionInactive') }}</span>
+              <button type="button" class="btn-secondary" :disabled="extensionLoading" @click="generateExtensionToken">
+                {{ extensionConfigured ? t('settings.extensionRotate') : t('settings.extensionGenerate') }}
+              </button>
+              <button v-if="extensionConfigured" type="button" class="btn-secondary" :disabled="extensionLoading" @click="revokeExtensionToken">
+                {{ t('settings.extensionRevoke') }}
+              </button>
+            </div>
+            <div v-if="extensionToken" class="system-note space-y-3">
+              <p class="text-xs text-amber-700">{{ t('settings.extensionOnce') }}</p>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input :value="extensionToken" readonly class="input-field flex-1 font-mono text-xs" />
+                <button type="button" class="btn-secondary" @click="copyExtensionToken">
+                  <Icon name="hugeicons:copy" class="w-4 h-4" />{{ t('settings.extensionCopy') }}
+                </button>
+              </div>
+            </div>
+            <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-600' : 'text-accent-text'">{{ extensionMessage }}</p>
+          </div>
+        </details>
       </section>
     </section>
 
@@ -482,6 +503,12 @@ const extensionLoading = ref(false)
 const extensionToken = ref('')
 const extensionMessage = ref('')
 const extensionFailed = ref(false)
+const pairingCode = ref('')
+const pairLoading = ref(false)
+const pairMessage = ref('')
+const pairFailed = ref(false)
+const pairRemainingSeconds = ref(0)
+let pairTimer: ReturnType<typeof setInterval> | null = null
 const activeSection = ref<'account' | 'security' | 'language' | 'shortcuts' | 'support' | 'danger'>('account')
 const editingShortcutId = ref<ShortcutActionId | null>(null)
 const securitySettings = reactive({
@@ -690,6 +717,38 @@ async function copyExtensionToken() {
   extensionMessage.value = t('settings.extensionCopied')
   extensionFailed.value = false
 }
+
+async function createPairingCode() {
+  pairLoading.value = true
+  pairMessage.value = ''
+  pairFailed.value = false
+  try {
+    const response: { code: string; expiresInMinutes: number } = await $fetch('/api/security/extension-pair', { method: 'POST' })
+    pairingCode.value = response.code
+    startPairCountdown(response.expiresInMinutes * 60)
+  } catch {
+    pairFailed.value = true
+    pairMessage.value = t('settings.pairFailed')
+  } finally {
+    pairLoading.value = false
+  }
+}
+
+function startPairCountdown(seconds: number) {
+  pairRemainingSeconds.value = seconds
+  if (pairTimer) clearInterval(pairTimer)
+  pairTimer = setInterval(() => {
+    pairRemainingSeconds.value -= 1
+    if (pairRemainingSeconds.value <= 0) {
+      if (pairTimer) { clearInterval(pairTimer); pairTimer = null }
+      pairingCode.value = ''
+    }
+  }, 1000)
+}
+
+onBeforeUnmount(() => {
+  if (pairTimer) clearInterval(pairTimer)
+})
 
 function startShortcutCapture(id: ShortcutActionId) {
   editing.value = true

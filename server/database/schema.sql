@@ -116,6 +116,16 @@ CREATE TABLE IF NOT EXISTS extension_tokens (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Short-lived single-use codes that pair a browser extension to an account.
+-- Only the code hash is stored; the plaintext code is shown once in the app.
+CREATE TABLE IF NOT EXISTS extension_pair_codes (
+  user_id TEXT PRIMARY KEY,
+  code_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  expires_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS accepted_terms (
   user_id TEXT PRIMARY KEY,
   terms_version TEXT NOT NULL,
