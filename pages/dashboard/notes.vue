@@ -11,7 +11,7 @@
 
     <div v-if="loading" class="glass-panel p-10 text-center text-surface-400">{{ t('common.loading') }}</div>
     <div v-else-if="notes.length === 0" class="glass-panel p-10 text-center">
-      <Icon name="hugeicons:notebook-tabs" class="w-10 h-10 mx-auto text-accent-600" />
+      <Icon name="hugeicons:notebook-tabs" class="w-10 h-10 mx-auto text-accent-text" />
       <p class="mt-4 text-foreground">{{ t('notes.empty') }}</p>
       <p class="mt-1 text-sm text-surface-400">{{ t('notes.emptyHint') }}</p>
     </div>

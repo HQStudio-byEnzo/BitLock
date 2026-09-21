@@ -10,12 +10,12 @@
       <div v-else-if="versions.length === 0" class="text-sm text-surface-400">{{ t('history.empty') }}</div>
       <ol v-else class="divide-y divide-border">
         <li v-for="version in versions" :key="version.id" class="flex flex-col sm:flex-row sm:items-center gap-4 py-4">
-          <span class="flex h-9 w-9 items-center justify-center border border-accent-500/30 font-mono text-sm text-accent-600">v{{ version.version }}</span>
+          <span class="flex h-9 w-9 items-center justify-center border border-accent-500/30 font-mono text-sm text-accent-text">v{{ version.version }}</span>
           <div class="flex-1"><p class="text-sm text-foreground">{{ version.label || t('vault.untitled') }}</p><p class="mt-1 text-xs text-surface-500">{{ formatDate(version.created_at, { dateStyle: 'medium', timeStyle: 'short' }) }} · {{ version.is_encrypted ? 'AES-256-GCM' : t('history.plain') }}</p></div>
           <button class="btn-secondary" :disabled="restoring === version.id" @click="restore(version.id)"><Icon name="hugeicons:rotate-ccw" class="w-4 h-4" />{{ t('history.restore') }}</button>
         </li>
       </ol>
-      <p v-if="message" role="status" class="mt-4 text-sm" :class="failed ? 'text-red-600' : 'text-accent-600'">{{ message }}</p>
+      <p v-if="message" role="status" class="mt-4 text-sm" :class="failed ? 'text-red-600' : 'text-accent-text'">{{ message }}</p>
     </section>
   </div>
 </template>

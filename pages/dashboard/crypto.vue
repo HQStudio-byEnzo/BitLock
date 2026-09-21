@@ -12,13 +12,13 @@
     </div>
 
     <!-- Security notice -->
-    <div class="p-3 rounded-lg bg-accent-500/10 border border-accent-500/20 text-sm text-accent-600 flex items-center gap-2">
+    <div class="p-3 rounded-lg bg-accent-500/10 border border-accent-500/20 text-sm text-accent-text flex items-center gap-2">
       <Icon name="hugeicons:shield-check" class="w-4 h-4 flex-shrink-0" />
       <span>{{ t('crypto.recommend') }}</span>
     </div>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-text animate-spin" />
     </div>
 
     <div v-else-if="filteredItems.length === 0" class="text-center py-16">

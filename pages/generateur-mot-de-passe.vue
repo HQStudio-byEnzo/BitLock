@@ -38,7 +38,7 @@
           <h2 class="text-xl font-semibold">{{ t('generator.relatedTitle') }}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <NuxtLink to="/audit-securite" class="card flex items-start gap-3 p-5 transition-colors hover:border-accent-500/40">
-              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-500/10 text-accent-text">
                 <Icon name="hugeicons:shield-alert" class="h-5 w-5" />
               </span>
               <span class="flex flex-col">
@@ -47,7 +47,7 @@
               </span>
             </NuxtLink>
             <NuxtLink to="/generateur-seed-phrase" class="card flex items-start gap-3 p-5 transition-colors hover:border-accent-500/40">
-              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-500/10 text-accent-text">
                 <Icon name="hugeicons:list-ordered" class="h-5 w-5" />
               </span>
               <span class="flex flex-col">

@@ -3,7 +3,7 @@
     <UiPublicNav />
     <main class="legal-shell">
       <div class="mb-12">
-        <NuxtLink to="/" class="inline-flex items-center gap-2 mb-6 text-accent-600 hover:text-accent-700">
+        <NuxtLink to="/" class="inline-flex items-center gap-2 mb-6 text-accent-text hover:text-accent-text-strong">
           <Icon name="hugeicons:arrow-left-01" class="w-4 h-4" />
           <span>{{ t('common.back') }}</span>
         </NuxtLink>
@@ -15,7 +15,7 @@
           <h2 class="text-2xl font-semibold text-foreground mb-4">1. Website publisher</h2>
           <p>QVault is published by Enzo Izinga, acting as an individual on behalf of HQ Studio.</p>
           <ul class="list-disc list-inside space-y-2 ml-4">
-            <li><strong>Contact:</strong> <a href="mailto:enzoizinga23@gmail.com" class="text-accent-600 hover:text-accent-700">enzoizinga23@gmail.com</a></li>
+            <li><strong>Contact:</strong> <a href="mailto:enzoizinga23@gmail.com" class="text-accent-text hover:text-accent-text-strong">enzoizinga23@gmail.com</a></li>
           </ul>
         </section>
 

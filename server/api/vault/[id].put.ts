@@ -15,8 +15,8 @@ export default defineEventHandler(async (event) => {
   const encrypted = body.is_encrypted === undefined ? Number(current.is_encrypted) === 1 : body.is_encrypted
   let payload = body.payload === undefined ? current.payload : body.payload
   const iv = body.iv === undefined ? current.iv : body.iv
-  if (body.is_encrypted === false) throw createError({ statusCode: 400, message: 'Un element chiffre ne peut pas etre repasse en clair.' })
-  if (!encrypted && (body.payload !== undefined || body.iv !== undefined)) throw createError({ statusCode: 400, message: 'Chiffrez cet ancien element avant de modifier son contenu.' })
+  if (body.is_encrypted === false) throw createError({ statusCode: 400, message: 'Un élément chiffré ne peut pas être repassé en clair.' })
+  if (!encrypted && (body.payload !== undefined || body.iv !== undefined)) throw createError({ statusCode: 400, message: 'Chiffrez cet ancien élément avant de modifier son contenu.' })
   if (current.type !== 'link' && !encrypted) throw createError({ statusCode: 400, message: 'Cet élément doit rester chiffré.' })
   if (encrypted) assertEncryptedPayload(payload, iv)
 

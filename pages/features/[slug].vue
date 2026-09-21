@@ -10,7 +10,7 @@
 
       <div class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
         <section>
-          <span class="grid h-11 w-11 place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+          <span class="grid h-11 w-11 place-items-center rounded-lg bg-accent-500/10 text-accent-text">
             <Icon :name="feature.icon" class="h-5 w-5" />
           </span>
           <h1 class="mt-4 font-display text-4xl font-semibold tracking-tight text-surface-50 md:text-5xl">{{ feature.title }}</h1>
@@ -18,7 +18,7 @@
 
           <ul class="mt-8 space-y-4">
             <li v-for="point in feature.points" :key="point" class="flex items-start gap-3 text-surface-300">
-              <Icon name="hugeicons:check" class="mt-1 h-4 w-4 flex-none text-accent-600" />
+              <Icon name="hugeicons:check" class="mt-1 h-4 w-4 flex-none text-accent-text" />
               <span>{{ point }}</span>
             </li>
           </ul>

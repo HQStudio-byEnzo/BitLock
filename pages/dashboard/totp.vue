@@ -23,7 +23,7 @@
           <div><p class="text-xs uppercase tracking-[.2em] text-surface-500">{{ t('vault.typeTotp') }}</p><h2 class="mt-2 text-foreground font-medium">{{ item.label || t('vault.untitled') }}</h2></div>
           <span class="tech-status tabular-nums">{{ codes[item.id]?.remaining ?? '--' }}s</span>
         </div>
-        <button class="mt-6 w-full font-mono text-3xl tracking-[.22em] text-accent-600 text-left tabular-nums" :disabled="!codes[item.id]" @click="copyCode(item.id)">
+        <button class="mt-6 w-full font-mono text-3xl tracking-[.22em] text-accent-text text-left tabular-nums" :disabled="!codes[item.id]" @click="copyCode(item.id)">
           {{ formatCode(codes[item.id]?.code) }}
         </button>
         <div class="mt-5 h-1 overflow-hidden bg-surface-800" role="progressbar" :aria-valuemin="0" :aria-valuemax="100" :aria-valuenow="Math.round(progress(item.id))" :aria-label="item.label || t('vault.untitled')"><div class="h-full bg-accent-400 transition-[width] duration-1000" :style="{ width: `${progress(item.id)}%` }" /></div>

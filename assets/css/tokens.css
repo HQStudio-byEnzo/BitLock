@@ -80,6 +80,13 @@
   --color-accent-soft: oklch(var(--accent-500) / 0.10);
   --color-accent-rule: oklch(var(--accent-500) / 0.30);
   --color-accent-ink: oklch(0.99 0.005 255);
+  /* Semantic accent roles. `text` is for accent copy on surfaces, `solid` is a
+     filled accent background that keeps ink text above 4.5:1. Light theme uses
+     darker steps, dark theme lighter text steps. */
+  --color-accent-text: oklch(var(--accent-700));
+  --color-accent-text-strong: oklch(var(--accent-800));
+  --color-accent-solid: oklch(var(--accent-600));
+  --color-accent-solid-strong: oklch(var(--accent-700));
   --color-focus: oklch(var(--accent-500) / 0.55);
   --color-danger: oklch(0.577 0.245 27.3);
   --color-danger-soft: oklch(0.577 0.245 27.3 / 0.10);
@@ -175,6 +182,10 @@
 
   --color-accent: oklch(var(--accent-500));
   --color-accent-strong: oklch(var(--accent-400));
+  --color-accent-text: oklch(var(--accent-400));
+  --color-accent-text-strong: oklch(var(--accent-300));
+  --color-accent-solid: oklch(var(--accent-600));
+  --color-accent-solid-strong: oklch(var(--accent-700));
   --color-focus: oklch(var(--accent-400) / 0.5);
   --color-success: oklch(0.72 0.15 149);
   --color-warning: oklch(0.80 0.14 80);

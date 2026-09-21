@@ -23,7 +23,7 @@
         <input ref="fileInput" type="file" accept=".qvault,.qvault-transfer,.bitlock-transfer,application/json" class="hidden" @change="readFile" />
         <input v-model="incomingCode" type="password" :aria-label="t('transfer.receiveCode')" class="input-field font-mono" :placeholder="t('transfer.receiveCode')" />
         <button class="btn-primary w-full" :disabled="!incoming || !incomingCode || working" @click="importPackage">{{ t('transfer.importAction') }}</button>
-        <p v-if="message" role="status" class="text-sm" :class="failed ? 'text-red-600' : 'text-accent-600'">{{ message }}</p>
+        <p v-if="message" role="status" class="text-sm" :class="failed ? 'text-red-600' : 'text-accent-text'">{{ message }}</p>
       </section>
     </div>
   </div>

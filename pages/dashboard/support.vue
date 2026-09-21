@@ -48,7 +48,7 @@
       </div>
       <ul class="space-y-3">
         <li v-for="rule in copy.rules" :key="rule.text" class="flex items-start gap-3 text-sm text-surface-300">
-          <Icon :name="rule.icon" class="mt-0.5 h-5 w-5 flex-none text-accent-600" />
+          <Icon :name="rule.icon" class="mt-0.5 h-5 w-5 flex-none text-accent-text" />
           <span>{{ rule.text }}</span>
         </li>
       </ul>

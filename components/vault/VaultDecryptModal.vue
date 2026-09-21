@@ -9,7 +9,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Icon name="hugeicons:lock-open" class="w-5 h-5 text-accent-600" />
+            <Icon name="hugeicons:lock-open" class="w-5 h-5 text-accent-text" />
             {{ t('vault.decrypt') }}
           </h2>
           <button type="button" @click="$emit('close')" class="icon-button" :aria-label="t('vault.close')">
@@ -96,7 +96,7 @@
               {{ editing ? t('settings.cancel') : t('vault.close') }}
             </button>
           </div>
-          <p v-if="editMessage" class="text-sm" :class="editFailed ? 'text-red-600' : 'text-accent-600'" role="status">{{ editMessage }}</p>
+          <p v-if="editMessage" class="text-sm" :class="editFailed ? 'text-red-600' : 'text-accent-text'" role="status">{{ editMessage }}</p>
 
           <p class="text-xs text-surface-500 text-center">
             {{ t('vault.decryptNotice') }}

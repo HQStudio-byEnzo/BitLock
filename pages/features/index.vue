@@ -16,12 +16,12 @@
           :to="`/features/${feature.slug}`"
           class="card flex flex-col gap-3 p-5 transition-colors hover:border-accent-500/40"
         >
-          <span class="grid h-10 w-10 place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+          <span class="grid h-10 w-10 place-items-center rounded-lg bg-accent-500/10 text-accent-text">
             <Icon :name="feature.icon" class="h-5 w-5" />
           </span>
           <h2 class="font-display text-lg font-semibold text-surface-50">{{ feature.title }}</h2>
           <p class="flex-1 text-sm leading-relaxed text-surface-500">{{ feature.summary }}</p>
-          <span class="inline-flex items-center gap-1 text-sm font-semibold text-accent-600">
+          <span class="inline-flex items-center gap-1 text-sm font-semibold text-accent-text">
             {{ t('landing.readMore') }}
             <Icon name="hugeicons:arrow-right-01" class="h-4 w-4" />
           </span>

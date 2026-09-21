@@ -55,6 +55,8 @@ export default {
         },
         accent: {
           DEFAULT: 'oklch(var(--accent-500) / <alpha-value>)',
+          text: 'oklch(var(--color-accent-text) / <alpha-value>)',
+          'text-strong': 'oklch(var(--color-accent-text-strong) / <alpha-value>)',
           50: 'oklch(var(--accent-50) / <alpha-value>)',
           100: 'oklch(var(--accent-100) / <alpha-value>)',
           200: 'oklch(var(--accent-200) / <alpha-value>)',

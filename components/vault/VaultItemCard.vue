@@ -14,7 +14,7 @@
         <p class="text-sm font-medium text-surface-200 truncate">
           {{ item.label || t('vault.untitled') }}
         </p>
-        <span v-if="item.is_encrypted" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-600 border border-accent-500/20">
+        <span v-if="item.is_encrypted" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-text border border-accent-500/20">
           <Icon name="hugeicons:lock" class="w-2.5 h-2.5" />
         </span>
       </div>
@@ -26,7 +26,7 @@
         :href="safeUrl"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-xs text-accent-600 hover:text-accent-700 truncate block mt-0.5"
+        class="text-xs text-accent-text hover:text-accent-text-strong truncate block mt-0.5"
       >
         {{ safeUrl }}
       </a>
@@ -38,7 +38,7 @@
       <button
         v-if="item.is_encrypted"
         @click="$emit('decrypt', item)"
-        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-accent-600 transition-colors"
+        class="p-2 rounded-lg hover:bg-surface-700 text-surface-400 hover:text-accent-text transition-colors"
         :title="t('vault.decrypt')"
         :aria-label="t('vault.decrypt')"
       >
@@ -120,17 +120,17 @@ const typeLabels = computed(() => ({
 const typeStyles = computed(() => {
   switch (props.item.type) {
     case 'link':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:link', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:link', text: 'text-accent-text' }
     case 'password':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:key-round', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:key-round', text: 'text-accent-text' }
     case 'crypto':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:bitcoin', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:bitcoin', text: 'text-accent-text' }
     case 'recovery':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:ticket-check', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:ticket-check', text: 'text-accent-text' }
     case 'note':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:notebook-tabs', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:notebook-tabs', text: 'text-accent-text' }
     case 'totp':
-      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:timer-reset', text: 'text-accent-600' }
+      return { bg: 'bg-accent-500/10 border border-accent-500/20', icon: 'hugeicons:timer-reset', text: 'text-accent-text' }
     default:
       return { bg: 'bg-surface-700', icon: 'hugeicons:file-01', text: 'text-surface-400' }
   }

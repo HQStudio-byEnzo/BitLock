@@ -25,7 +25,7 @@
       <section class="card flex flex-col p-5 md:p-6">
         <header class="mb-4 flex items-center justify-between">
           <h2 class="font-display text-lg font-semibold text-surface-50">{{ t('dash.recentTitle') }}</h2>
-          <NuxtLink to="/dashboard/vault" class="text-sm font-medium text-accent-600 hover:text-accent-700">{{ t('dash.viewAll') }}</NuxtLink>
+          <NuxtLink to="/dashboard/vault" class="text-sm font-medium text-accent-text hover:text-accent-text-strong">{{ t('dash.viewAll') }}</NuxtLink>
         </header>
 
         <div v-if="loading" class="space-y-3">
@@ -33,8 +33,8 @@
         </div>
         <ul v-else-if="recentItems.length" class="divide-y divide-border">
           <li v-for="item in recentItems" :key="item.id">
-            <NuxtLink to="/dashboard/vault" class="flex items-center gap-3 py-3 transition-colors hover:text-accent-600">
-              <span class="grid h-9 w-9 flex-none place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+            <NuxtLink to="/dashboard/vault" class="flex items-center gap-3 py-3 transition-colors hover:text-accent-text">
+              <span class="grid h-9 w-9 flex-none place-items-center rounded-lg bg-accent-500/10 text-accent-text">
                 <Icon :name="typeIcon(item.type)" class="h-4 w-4" />
               </span>
               <span class="min-w-0 flex-1">
@@ -89,7 +89,7 @@
         <div class="grid gap-3 sm:grid-cols-2">
           <NuxtLink v-for="action in captureActions" :key="action.to" :to="action.to"
             class="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:border-accent-500/40 hover:bg-accent-500/5">
-            <span class="grid h-10 w-10 flex-none place-items-center rounded-lg bg-accent-500/10 text-accent-600">
+            <span class="grid h-10 w-10 flex-none place-items-center rounded-lg bg-accent-500/10 text-accent-text">
               <Icon :name="action.icon" class="h-5 w-5" />
             </span>
             <span class="min-w-0">

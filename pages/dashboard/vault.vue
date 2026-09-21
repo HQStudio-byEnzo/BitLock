@@ -23,7 +23,7 @@
       <div v-if="searchQuery" class="flex items-center gap-2 text-sm text-surface-500">
         <Icon name="hugeicons:search-01" class="h-4 w-4 flex-none" />
         <span class="truncate">{{ t('vault.search') }} « {{ searchQuery }} »</span>
-        <button type="button" class="ml-auto text-accent-600 hover:text-accent-700" @click="searchQuery = ''">
+        <button type="button" class="ml-auto text-accent-text hover:text-accent-text-strong" @click="searchQuery = ''">
           {{ t('common.clear') }}
         </button>
       </div>
@@ -57,7 +57,7 @@
 
     <!-- Items list -->
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-text animate-spin" />
     </div>
 
     <div v-else-if="visibleItems.length === 0" class="text-center py-16">

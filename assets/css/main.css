@@ -227,14 +227,14 @@
   }
 
   .btn-primary {
-    background: var(--color-accent);
-    border: 1px solid var(--color-accent);
+    background: var(--color-accent-solid);
+    border: 1px solid var(--color-accent-solid);
     color: var(--color-accent-ink);
   }
 
   .btn-primary:hover {
-    background: var(--color-accent-strong);
-    border-color: var(--color-accent-strong);
+    background: var(--color-accent-solid-strong);
+    border-color: var(--color-accent-solid-strong);
   }
 
   .btn-primary:focus-visible {
@@ -821,8 +821,8 @@
 
 .tech-nav__cta {
   align-items: center;
-  background: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  background: var(--color-accent-solid);
+  border: 1px solid var(--color-accent-solid);
   border-radius: var(--radius-sm);
   color: var(--color-accent-ink);
   display: inline-flex;

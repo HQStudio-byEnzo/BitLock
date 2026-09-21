@@ -71,10 +71,10 @@
           </span>
         </label>
         <p class="-mt-2 text-xs text-surface-400">
-          <NuxtLink to="/legal/cgu" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.terms') }}</NuxtLink>,
-          <NuxtLink to="/legal/confidentialite" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.privacy') }}</NuxtLink>,
+          <NuxtLink to="/legal/cgu" class="text-accent-text hover:text-accent-text-strong underline">{{ t('footer.terms') }}</NuxtLink>,
+          <NuxtLink to="/legal/confidentialite" class="text-accent-text hover:text-accent-text-strong underline">{{ t('footer.privacy') }}</NuxtLink>,
           {{ t('auth.register.acceptAnd') }}
-          <NuxtLink to="/legal/mentions-legales" class="text-accent-600 hover:text-accent-700 underline">{{ t('footer.legalNotice') }}</NuxtLink>.
+          <NuxtLink to="/legal/mentions-legales" class="text-accent-text hover:text-accent-text-strong underline">{{ t('footer.legalNotice') }}</NuxtLink>.
         </p>
 
         <!-- Error message -->
@@ -97,7 +97,7 @@
       <div class="auth-footer">
         <p class="text-center text-sm text-surface-400">
           {{ t('auth.register.hasAccount') }}
-          <NuxtLink to="/auth/login" class="text-accent-600 hover:text-accent-700 font-medium">
+          <NuxtLink to="/auth/login" class="text-accent-text hover:text-accent-text-strong font-medium underline">
             {{ t('auth.register.login') }}
           </NuxtLink>
         </p>

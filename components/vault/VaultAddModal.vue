@@ -95,7 +95,7 @@
                 class="p-3 rounded-2xl border text-center transition-colors text-sm"
                 :class="[
                   form.type === tp.value
-                    ? 'border-accent-500 bg-accent-500/10 text-accent-600'
+                    ? 'border-accent-500 bg-accent-500/10 text-accent-text'
                     : 'border-surface-700 bg-surface-800 text-surface-400 hover:border-surface-600'
                 ]"
               >
@@ -130,7 +130,7 @@
                 v-if="form.type === 'password'"
                 type="button"
                 @click="generatePasswordValue"
-                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-600 hover:bg-accent-600/30 transition-colors"
+                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-text hover:bg-accent-600/30 transition-colors"
               >
                 {{ t('vault.generatePassword') }}
               </button>
@@ -138,7 +138,7 @@
                 v-if="form.type === 'crypto'"
                 type="button"
                 @click="generateSeed"
-                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-600 hover:bg-accent-600/30 transition-colors"
+                class="text-xs px-2 py-1 rounded bg-accent-600/20 text-accent-text hover:bg-accent-600/30 transition-colors"
               >
                 {{ t('vault.generateSeed') }}
               </button>

@@ -12,7 +12,7 @@
     </div>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-text animate-spin" />
     </div>
 
     <div v-else-if="filteredItems.length === 0" class="text-center py-16">

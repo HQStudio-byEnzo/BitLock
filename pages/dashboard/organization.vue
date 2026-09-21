@@ -6,23 +6,23 @@
       <p class="mt-3 max-w-2xl text-surface-300">{{ t('organization.subtitle') }}</p>
     </section>
 
-    <p v-if="message" role="status" class="glass-panel p-3 text-sm" :class="failed ? 'text-red-600' : 'text-accent-600'">{{ message }}</p>
+    <p v-if="message" role="status" class="glass-panel p-3 text-sm" :class="failed ? 'text-red-600' : 'text-accent-text'">{{ message }}</p>
 
     <div class="grid gap-4 lg:grid-cols-3">
       <section class="glass-panel p-5 space-y-4">
-        <div class="flex items-center gap-2"><Icon name="hugeicons:vault" class="text-accent-600" /><h2 class="text-foreground font-medium">{{ t('organization.vaults') }}</h2></div>
+        <div class="flex items-center gap-2"><Icon name="hugeicons:vault" class="text-accent-text" /><h2 class="text-foreground font-medium">{{ t('organization.vaults') }}</h2></div>
         <form class="flex gap-2" @submit.prevent="create('vault', vaultName)"><input v-model="vaultName" class="input-field" :aria-label="t('organization.vaultName')" :placeholder="t('organization.vaultName')" /><button class="icon-button" :aria-label="t('organization.add')"><Icon name="hugeicons:plus" /></button></form>
         <ul class="space-y-2"><li v-for="vault in data.vaults" :key="vault.id" class="flex items-center gap-3 border border-border p-3"><span class="h-2 w-2 rounded-full" :style="{ background: vault.color }"/><span class="flex-1 text-sm text-surface-200">{{ vault.name }}</span><span v-if="vault.is_default" class="tech-status">default</span><button v-else class="icon-button" :aria-label="`${t('vault.deleteAction')} ${vault.name}`" @click="remove('vault', vault.id)"><Icon name="hugeicons:trash" class="w-4 h-4" /></button></li></ul>
       </section>
 
       <section class="glass-panel p-5 space-y-4">
-        <div class="flex items-center gap-2"><Icon name="hugeicons:folder-tree" class="text-accent-600" /><h2 class="text-foreground font-medium">{{ t('organization.folders') }}</h2></div>
+        <div class="flex items-center gap-2"><Icon name="hugeicons:folder-tree" class="text-accent-text" /><h2 class="text-foreground font-medium">{{ t('organization.folders') }}</h2></div>
         <form class="space-y-2" @submit.prevent="create('folder', folderName)"><input v-model="folderName" class="input-field" :aria-label="t('organization.folderName')" :placeholder="t('organization.folderName')" /><UiSelectMenu v-model="folderVault" :options="vaultOptions" :placeholder="t('organization.vaults')" /><button class="btn-secondary w-full">{{ t('organization.addFolder') }}</button></form>
         <ul class="space-y-2"><li v-for="folder in data.folders" :key="folder.id" class="flex items-center gap-3 border border-border p-3"><Icon name="hugeicons:folder-01" class="text-surface-500" /><span class="flex-1 text-sm text-surface-200">{{ folder.name }}</span><button class="icon-button" :aria-label="`${t('vault.deleteAction')} ${folder.name}`" @click="remove('folder', folder.id)"><Icon name="hugeicons:trash" class="w-4 h-4" /></button></li></ul>
       </section>
 
       <section class="glass-panel p-5 space-y-4">
-        <div class="flex items-center gap-2"><Icon name="hugeicons:tags" class="text-accent-600" /><h2 class="text-foreground font-medium">{{ t('organization.tags') }}</h2></div>
+        <div class="flex items-center gap-2"><Icon name="hugeicons:tags" class="text-accent-text" /><h2 class="text-foreground font-medium">{{ t('organization.tags') }}</h2></div>
         <form class="flex gap-2" @submit.prevent="create('tag', tagName)"><input v-model="tagName" class="input-field" :aria-label="t('organization.tagName')" :placeholder="t('organization.tagName')" /><UiColorPicker v-model="tagColor" /><button class="icon-button" :aria-label="t('organization.add')"><Icon name="hugeicons:plus" /></button></form>
         <ul class="flex flex-wrap gap-2"><li v-for="tag in data.tags" :key="tag.id" class="inline-flex items-center gap-2 border border-border px-3 py-2 text-sm text-surface-200"><span class="h-2 w-2 rounded-full" :style="{ background: tag.color }" />{{ tag.name }}<button class="p-1.5 rounded hover:text-red-600" :aria-label="`${t('vault.deleteAction')} ${tag.name}`" @click="remove('tag', tag.id)"><Icon name="hugeicons:x" class="w-3.5 h-3.5" /></button></li></ul>
       </section>

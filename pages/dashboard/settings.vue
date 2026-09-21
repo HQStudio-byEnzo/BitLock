@@ -259,7 +259,7 @@
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
-        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2"><Icon name="hugeicons:fingerprint-pattern" class="w-5 h-5 text-accent-600" />{{ t('settings.passkeyTitle') }}</h2>
+        <h2 class="text-lg font-semibold text-foreground flex items-center gap-2"><Icon name="hugeicons:fingerprint-pattern" class="w-5 h-5 text-accent-text" />{{ t('settings.passkeyTitle') }}</h2>
         <p class="text-sm text-surface-400">{{ t('settings.passkeyDesc') }}</p>
         <p v-if="!passkeySupported" class="text-sm text-amber-700">{{ t('settings.passkeyUnsupported') }}</p>
         <div v-else class="flex flex-wrap items-center gap-3">
@@ -267,12 +267,12 @@
           <button v-if="!passkeyConfigured" type="button" class="btn-primary" :disabled="!isUnlocked || passkeyLoading" @click="enablePasskey">{{ t('settings.passkeyEnable') }}</button>
           <button v-else type="button" class="btn-secondary" @click="disablePasskey">{{ t('settings.passkeyDisable') }}</button>
         </div>
-        <p v-if="passkeyMessage" class="text-sm" :class="passkeyFailed ? 'text-red-600' : 'text-accent-600'">{{ passkeyMessage }}</p>
+        <p v-if="passkeyMessage" class="text-sm" :class="passkeyFailed ? 'text-red-600' : 'text-accent-text'">{{ passkeyMessage }}</p>
       </section>
 
       <section class="glass-panel p-5 md:p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Icon name="hugeicons:unplug" class="w-5 h-5 text-accent-600" />
+          <Icon name="hugeicons:unplug" class="w-5 h-5 text-accent-text" />
           {{ t('settings.extensionTitle') }}
         </h2>
         <p class="text-sm text-surface-400">{{ t('settings.extensionDesc') }}</p>
@@ -294,7 +294,7 @@
             </button>
           </div>
         </div>
-        <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-600' : 'text-accent-600'">{{ extensionMessage }}</p>
+        <p v-if="extensionMessage" class="text-sm" :class="extensionFailed ? 'text-red-600' : 'text-accent-text'">{{ extensionMessage }}</p>
       </section>
     </section>
 

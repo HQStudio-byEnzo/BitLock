@@ -13,7 +13,7 @@
       </div>
       <div class="glass-panel p-4 border-accent-500/20 bg-accent-500/5 text-sm text-surface-300">{{ t('recovery.txtNotice') }}</div>
     </section>
-    <div v-if="loading" class="flex items-center justify-center py-12"><Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" /></div>
+    <div v-if="loading" class="flex items-center justify-center py-12"><Icon name="hugeicons:loader" class="w-6 h-6 text-accent-text animate-spin" /></div>
     <div v-else-if="filteredItems.length === 0" class="text-center py-16"><Icon name="hugeicons:ticket-check" class="w-12 h-12 text-surface-600 mx-auto mb-4" /><p class="text-surface-400">{{ t('recovery.empty') }}</p></div>
     <div v-else class="space-y-3"><VaultItemCard v-for="item in filteredItems" :key="item.id" :item="item" @toggle-favorite="toggleFavorite(item)" @delete="handleDelete(item)" @decrypt="decryptTarget = item" /></div>
     <VaultAddModal v-if="showAddModal" default-type="recovery" @close="showAddModal = false" @added="showAddModal = false" />

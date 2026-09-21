@@ -67,7 +67,7 @@
       <div class="auth-footer">
         <p class="text-center text-sm text-surface-400">
           {{ t('auth.login.noAccount') }}
-          <NuxtLink to="/auth/register" class="text-accent-600 hover:text-accent-700 font-medium">
+          <NuxtLink to="/auth/register" class="text-accent-text hover:text-accent-text-strong font-medium underline">
             {{ t('auth.login.createAccount') }}
           </NuxtLink>
         </p>

@@ -26,7 +26,7 @@
     </div>
 
     <div class="glass-panel p-4 flex flex-col sm:flex-row sm:items-center gap-3 border-accent-500/20 bg-accent-500/5">
-      <Icon name="hugeicons:shield-check" class="w-5 h-5 text-accent-600 flex-shrink-0" />
+      <Icon name="hugeicons:shield-check" class="w-5 h-5 text-accent-text flex-shrink-0" />
       <p class="text-sm text-surface-400 flex-1">{{ t('audit.notice') }}</p>
       <button type="button" class="btn-secondary" :disabled="passwordAuditLoading" @click="runPasswordAudit">
         <Icon name="hugeicons:key-round" class="w-4 h-4" />
@@ -39,7 +39,7 @@
     </p>
 
     <div v-if="loading" class="flex items-center justify-center py-12">
-      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-600 animate-spin" />
+      <Icon name="hugeicons:loader" class="w-6 h-6 text-accent-text animate-spin" />
     </div>
 
     <div v-else-if="issues.length === 0" class="text-center py-16">

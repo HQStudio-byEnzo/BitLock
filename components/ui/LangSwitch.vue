@@ -3,7 +3,7 @@
     type="button"
     @click="toggle"
     class="icon-button text-[11px] font-mono"
-    :aria-label="locale === 'fr' ? 'Switch to English' : 'Passer en français'"
+    :aria-label="locale === 'fr' ? 'FR, switch to English' : 'EN, passer en français'"
   >
     <Icon name="hugeicons:languages" class="w-4 h-4" />
     <span>{{ locale === 'fr' ? 'FR' : 'EN' }}</span>
