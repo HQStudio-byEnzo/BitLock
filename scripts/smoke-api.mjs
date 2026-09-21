@@ -40,7 +40,7 @@ async function cleanup() {
   const db = createClient(authToken ? { url, authToken } : { url })
   try {
     const users = await db.execute({
-      sql: "SELECT id FROM users WHERE username = ? OR username LIKE 'smoke_%' OR username LIKE 'session_probe_%' OR email LIKE 'smoke-%@bitlock.local' OR email LIKE 'session-probe-%@bitlock.local'",
+      sql: "SELECT id FROM users WHERE username = ? OR username LIKE 'smoke_%' OR username LIKE 'session_probe_%' OR email LIKE 'smoke-%@bitlock.local' OR email LIKE 'session-probe-%@bitlock.local' OR email LIKE 'smoke-%@qvault.invalid' OR email LIKE 'session-probe-%@qvault.invalid'",
       args: [username],
     })
     for (const row of users.rows) {

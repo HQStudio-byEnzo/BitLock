@@ -1,7 +1,7 @@
 export function usePrivacyShield() {
   const shielded = useState('privacy-shielded', () => false)
   function enabled() {
-    return import.meta.client && localStorage.getItem('bitlock.security.privacyShield') !== 'false'
+    return import.meta.client && localStorage.getItem('qvault.security.privacyShield') !== 'false'
   }
   function handleVisibility() {
     if (!enabled()) return

@@ -79,7 +79,7 @@ useModalFocus(dialogEl, () => {}, { active: visible, closeOnEscape: false })
 
 function onboardingKey(name: 'done' | 'snoozed') {
   const owner = user.value?.id || user.value?.username || 'anonymous'
-  return `bitlock.masterPasswordOnboarding:${encodeURIComponent(String(owner))}:${name}`
+  return `qvault.masterPasswordOnboarding:${encodeURIComponent(String(owner))}:${name}`
 }
 
 onMounted(() => {

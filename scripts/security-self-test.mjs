@@ -1,13 +1,14 @@
 import { useCrypto } from '../composables/useCrypto.ts'
 import { useTotp } from '../composables/useTotp.ts'
 import { parsePasswordEntry, serializePasswordEntry } from '../utils/password-entry.ts'
+import { CREDENTIAL_SCHEMA, LEGACY_CREDENTIAL_SCHEMA } from '../utils/brand.ts'
 
 function assert(condition, message) {
   if (!condition) throw new Error(message)
 }
 
 const cryptoTools = useCrypto()
-const plaintext = 'bitlock://self-test/é2e'
+const plaintext = 'qvault://self-test/é2e'
 const password = 'correct horse battery staple'
 const envelope = await cryptoTools.encrypt(plaintext, password)
 assert(envelope.iterations === 600_000, 'New encryption must use 600,000 PBKDF2 iterations')
@@ -28,9 +29,13 @@ const credential = parsePasswordEntry(serializePasswordEntry({
   username: 'enzo',
   password: 'correct horse battery staple',
 }))
-assert(credential.schema === 'bitlock.credentials/v1', 'Credential schema is missing')
+assert(credential.schema === CREDENTIAL_SCHEMA, 'Credential schema is missing')
 assert(credential.username === 'enzo' && credential.password === password, 'Credential round trip failed')
 assert(parsePasswordEntry('legacy-secret').password === 'legacy-secret', 'Legacy password payload is unsupported')
+assert(
+  parsePasswordEntry(JSON.stringify({ schema: LEGACY_CREDENTIAL_SCHEMA, password: 'legacy' })).schema === LEGACY_CREDENTIAL_SCHEMA,
+  'Legacy credential schema is rejected',
+)
 
 const { generateTotp } = useTotp()
 const vector = await generateTotp('otpauth://totp/RFC?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&digits=8&period=30', 59_000)

@@ -1,6 +1,5 @@
+import { MASTER_VERIFIER_TEXT } from '~/utils/brand'
 import { MIN_MASTER_PASSWORD_LENGTH } from '~/utils/security-policy'
-
-export const MASTER_VERIFIER_TEXT = 'bitlock://master-verifier/v1'
 
 interface MasterVerifierResponse {
   configured: boolean
@@ -9,8 +8,8 @@ interface MasterVerifierResponse {
 }
 
 export function useMasterPassword() {
-  const masterPassword = useState<string | null>('bitlock-master-password', () => null)
-  const verifying = useState('bitlock-master-password-verifying', () => false)
+  const masterPassword = useState<string | null>('qvault-master-password', () => null)
+  const verifying = useState('qvault-master-password-verifying', () => false)
   const { encrypt, decrypt, serializeEncryptedPayload, parseEncryptedPayload } = useCrypto()
 
   const isUnlocked = computed(() => !!masterPassword.value)

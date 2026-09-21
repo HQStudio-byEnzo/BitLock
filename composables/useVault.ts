@@ -2,7 +2,7 @@
  * Composable pour la gestion du coffre-fort
  * Gère les appels API et le chiffrement/déchiffrement côté client
  */
-import { MASTER_VERIFIER_TEXT } from '~/composables/useMasterPassword'
+import { MASTER_VERIFIER_TEXT } from '~/utils/brand'
 import { MIN_MASTER_PASSWORD_LENGTH } from '~/utils/security-policy'
 
 export interface VaultItem {
@@ -100,37 +100,31 @@ export function useVault() {
   }
 
   /**
-   * Ajoute un nouvel élément au coffre-fort
-   * Si shouldEncrypt=true, le chiffrement est effectué côté client avant envoi
+   * Ajoute un nouvel élément au coffre-fort.
+   * Le contenu est toujours chiffré côté client avant l'envoi : le serveur
+   * refuse tout élément non chiffré.
    */
   async function addItem(data: {
     type: 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp'
     label: string
     payload: string
-    shouldEncrypt: boolean
     url?: string
     vaultId?: string
     folderId?: string | null
     tagIds?: string[]
     favorite?: boolean
-  }, options: { refresh?: boolean } = {}) {
+  }) {
     error.value = null
 
-    let payload = data.payload
-    let iv: string | undefined
-    const shouldEncrypt = true
-
-    // Chiffrement côté client si demandé
-    if (shouldEncrypt) {
-      if (!masterPassword.value) {
-        const message = "Déverrouillez votre mot de passe maître dans les paramètres avant d'ajouter un élément chiffré."
-        error.value = message
-        throw new Error(message)
-      }
-      const encrypted = await encrypt(data.payload, masterPassword.value)
-      payload = serializeEncryptedPayload(encrypted)
-      iv = encrypted.iv
+    if (!masterPassword.value) {
+      const message = "Déverrouillez votre mot de passe maître dans les paramètres avant d'ajouter un élément chiffré."
+      error.value = message
+      throw new Error(message)
     }
+
+    const encrypted = await encrypt(data.payload, masterPassword.value)
+    const payload = serializeEncryptedPayload(encrypted)
+    const iv = encrypted.iv
 
     try {
       const response: { id: string } = await $fetch('/api/vault', {
@@ -138,7 +132,7 @@ export function useVault() {
         body: {
           type: data.type,
           label: data.label,
-          is_encrypted: shouldEncrypt,
+          is_encrypted: true,
           payload,
           iv,
           url: data.type === 'password'

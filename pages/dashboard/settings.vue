@@ -602,25 +602,25 @@ function handleLockVault() {
 }
 
 function loadSecuritySettings() {
-  securitySettings.autoLockMinutes = Number(localStorage.getItem('bitlock.security.autoLockMinutes') || 5)
-  securitySettings.clipboardClearSeconds = Number(localStorage.getItem('bitlock.security.clipboardClearSeconds') || 30)
-  securitySettings.hideDecryptedByDefault = localStorage.getItem('bitlock.security.hideDecryptedByDefault') !== 'false'
-  securitySettings.privacyShield = localStorage.getItem('bitlock.security.privacyShield') !== 'false'
+  securitySettings.autoLockMinutes = Number(localStorage.getItem('qvault.security.autoLockMinutes') || 5)
+  securitySettings.clipboardClearSeconds = Number(localStorage.getItem('qvault.security.clipboardClearSeconds') || 30)
+  securitySettings.hideDecryptedByDefault = localStorage.getItem('qvault.security.hideDecryptedByDefault') !== 'false'
+  securitySettings.privacyShield = localStorage.getItem('qvault.security.privacyShield') !== 'false'
 }
 
 function saveSecuritySettings() {
-  localStorage.setItem('bitlock.security.autoLockMinutes', String(securitySettings.autoLockMinutes))
-  localStorage.setItem('bitlock.security.clipboardClearSeconds', String(securitySettings.clipboardClearSeconds))
-  localStorage.setItem('bitlock.security.hideDecryptedByDefault', String(securitySettings.hideDecryptedByDefault))
-  localStorage.setItem('bitlock.security.privacyShield', String(securitySettings.privacyShield))
-  window.dispatchEvent(new Event('bitlock-security-settings-changed'))
+  localStorage.setItem('qvault.security.autoLockMinutes', String(securitySettings.autoLockMinutes))
+  localStorage.setItem('qvault.security.clipboardClearSeconds', String(securitySettings.clipboardClearSeconds))
+  localStorage.setItem('qvault.security.hideDecryptedByDefault', String(securitySettings.hideDecryptedByDefault))
+  localStorage.setItem('qvault.security.privacyShield', String(securitySettings.privacyShield))
+  window.dispatchEvent(new Event('qvault-security-settings-changed'))
   securitySaved.value = true
   setTimeout(() => { securitySaved.value = false }, 2000)
 }
 
 function onboardingKey(name: 'done' | 'snoozed') {
   const owner = user.value?.id || user.value?.username || 'anonymous'
-  return `bitlock.masterPasswordOnboarding:${encodeURIComponent(String(owner))}:${name}`
+  return `qvault.masterPasswordOnboarding:${encodeURIComponent(String(owner))}:${name}`
 }
 
 function clearOnboardingState() {

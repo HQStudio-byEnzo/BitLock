@@ -1,5 +1,7 @@
+import { CREDENTIAL_SCHEMA, LEGACY_CREDENTIAL_SCHEMA } from './brand'
+
 export interface PasswordEntry {
-  schema?: 'bitlock.credentials/v1'
+  schema?: typeof CREDENTIAL_SCHEMA | typeof LEGACY_CREDENTIAL_SCHEMA
   password: string
   username?: string
   email?: string
@@ -14,7 +16,7 @@ function cleanOptional(value: unknown) {
 
 export function serializePasswordEntry(entry: PasswordEntry) {
   return JSON.stringify({
-    schema: 'bitlock.credentials/v1',
+    schema: CREDENTIAL_SCHEMA,
     password: entry.password,
     username: cleanOptional(entry.username),
     email: cleanOptional(entry.email),
@@ -26,8 +28,11 @@ export function parsePasswordEntry(payload: string): PasswordEntry {
   try {
     const parsed = JSON.parse(payload)
     if (parsed && typeof parsed === 'object' && typeof parsed.password === 'string') {
+      const schema = parsed.schema === CREDENTIAL_SCHEMA || parsed.schema === LEGACY_CREDENTIAL_SCHEMA
+        ? parsed.schema as PasswordEntry['schema']
+        : undefined
       return {
-        schema: parsed.schema === 'bitlock.credentials/v1' ? parsed.schema : undefined,
+        schema,
         password: parsed.password,
         username: cleanOptional(parsed.username),
         email: cleanOptional(parsed.email),

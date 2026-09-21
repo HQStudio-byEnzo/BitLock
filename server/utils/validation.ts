@@ -120,8 +120,8 @@ export function escapeLikePattern(value: string) {
 export function safeInternalPath(value: unknown, fallback = '/dashboard') {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return fallback
   try {
-    const parsed = new URL(value, 'https://bitlock.local')
-    return parsed.origin === 'https://bitlock.local' ? `${parsed.pathname}${parsed.search}${parsed.hash}` : fallback
+    const parsed = new URL(value, 'https://qvault.local')
+    return parsed.origin === 'https://qvault.local' ? `${parsed.pathname}${parsed.search}${parsed.hash}` : fallback
   } catch {
     return fallback
   }

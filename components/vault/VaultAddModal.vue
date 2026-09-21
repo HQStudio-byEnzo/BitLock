@@ -367,7 +367,6 @@ async function saveWithPassword(password: string) {
       type: form.type,
       label: form.label,
       payload: buildPayload(),
-      shouldEncrypt: true,
       url: form.type === 'password' ? form.url : form.type === 'link' ? form.payload : undefined,
       vaultId: vaultId.value || undefined,
       folderId: folderId.value || null,

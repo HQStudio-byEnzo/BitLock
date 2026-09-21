@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const id = crypto.randomUUID()
   const hashedPassword = await hashUserPassword(password)
-  const internalLegacyEmail = `${id}@bitlock.invalid`
+  const internalLegacyEmail = `${id}@qvault.invalid`
 
   try {
     await db.batch([

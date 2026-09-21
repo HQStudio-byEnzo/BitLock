@@ -1786,7 +1786,7 @@ export function useLang() {
   function setLocale(lang: string) {
     locale.value = lang
     if (import.meta.client) {
-      localStorage.setItem('bitlock-lang', lang)
+      localStorage.setItem('qvault-lang', lang)
       document.documentElement.lang = lang
     }
   }

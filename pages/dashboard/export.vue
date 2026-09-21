@@ -57,7 +57,7 @@
           <span v-else>{{ t('export.importBtn') }}</span>
           <input
             type="file"
-            accept=".qvault,.bitlock,application/json"
+            accept=".qvault,.qvault-backup,.bitlock,.bitlock-backup,application/json"
             class="hidden"
             @change="handleImport"
             :disabled="importing"
@@ -80,6 +80,7 @@
 
 <script setup lang="ts">
 import { useLang } from '~/composables/useI18n'
+import { BACKUP_FORMAT, LEGACY_BACKUP_FORMAT } from '~/utils/brand'
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth',
@@ -206,7 +207,7 @@ async function handleExport() {
 
     const protectedBackup = await encrypt(JSON.stringify(content), masterPassword.value)
     const exportData = {
-      format: 'bitlock-backup',
+      format: BACKUP_FORMAT,
       version: 4,
       exportedAt: new Date().toISOString(),
       cipher: 'AES-256-GCM',
@@ -256,7 +257,7 @@ async function handleImport(event: Event) {
     const envelope = JSON.parse(text)
 
     if (
-      envelope?.format !== 'bitlock-backup' ||
+      ![BACKUP_FORMAT, LEGACY_BACKUP_FORMAT].includes(envelope?.format) ||
       ![3, 4].includes(envelope?.version) ||
       typeof envelope.payload !== 'string' ||
       typeof envelope.iv !== 'string' ||
@@ -313,13 +314,12 @@ async function handleImport(event: Event) {
           type: item.type,
           label: item.label || '',
           payload: plaintext,
-          shouldEncrypt: item.is_encrypted,
           favorite: item.favorite,
           url: item.url || undefined,
           vaultId: item.vault_id ? organizationMaps.vaults.get(item.vault_id) : undefined,
           folderId: item.folder_id ? organizationMaps.folders.get(item.folder_id) || null : null,
           tagIds: item.tag_ids?.map(id => organizationMaps.tags.get(id)).filter((id): id is string => Boolean(id)),
-        }, { refresh: false })
+        })
         imported++
       } catch {
         failed++

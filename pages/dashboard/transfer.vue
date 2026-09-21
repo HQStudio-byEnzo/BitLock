@@ -20,7 +20,7 @@
         <div><p class="eyebrow">{{ t('transfer.receive') }}</p><h2 class="mt-2 text-xl text-foreground">{{ t('transfer.import') }}</h2></div>
         <textarea v-model="incoming" rows="8" :aria-label="t('transfer.paste')" class="input-field resize-none font-mono text-xs" :placeholder="t('transfer.paste')" />
         <button type="button" class="btn-secondary w-full" @click="fileInput?.click()"><Icon name="hugeicons:file-up" class="w-4 h-4" />{{ t('transfer.chooseFile') }}</button>
-        <input ref="fileInput" type="file" accept=".qvault,.bitlock-transfer,application/json" class="hidden" @change="readFile" />
+        <input ref="fileInput" type="file" accept=".qvault,.qvault-transfer,.bitlock-transfer,application/json" class="hidden" @change="readFile" />
         <input v-model="incomingCode" type="password" :aria-label="t('transfer.receiveCode')" class="input-field font-mono" :placeholder="t('transfer.receiveCode')" />
         <button class="btn-primary w-full" :disabled="!incoming || !incomingCode || working" @click="importPackage">{{ t('transfer.importAction') }}</button>
         <p v-if="message" role="status" class="text-sm" :class="failed ? 'text-red-600' : 'text-accent-600'">{{ message }}</p>
@@ -32,8 +32,9 @@
 <script setup lang="ts">
 import QRCode from 'qrcode'
 import { useLang } from '~/composables/useI18n'
+import { TRANSFER_FORMAT, LEGACY_TRANSFER_FORMAT } from '~/utils/brand'
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
-interface TransferEnvelope { format: 'bitlock-transfer'; version: 1; label: string; type: 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp'; url?: string; payload: string; iv: string; createdAt: string }
+interface TransferEnvelope { format: typeof TRANSFER_FORMAT | typeof LEGACY_TRANSFER_FORMAT; version: 1; label: string; type: 'link' | 'password' | 'crypto' | 'recovery' | 'note' | 'totp'; url?: string; payload: string; iv: string; createdAt: string }
 const { t } = useLang()
 const { items, fetchItems, decryptItem, addItem } = useVault()
 const { isUnlocked } = useMasterPassword()
@@ -50,7 +51,7 @@ async function createPackage() {
   working.value = true; message.value = ''; failed.value = false
   try {
     const encrypted = await encrypt(await decryptItem(item), transferCode.value)
-    const envelope: TransferEnvelope = { format: 'bitlock-transfer', version: 1, label: item.label, type: item.type, url: item.url, payload: serializeEncryptedPayload(encrypted), iv: encrypted.iv, createdAt: new Date().toISOString() }
+    const envelope: TransferEnvelope = { format: TRANSFER_FORMAT, version: 1, label: item.label, type: item.type, url: item.url, payload: serializeEncryptedPayload(encrypted), iv: encrypted.iv, createdAt: new Date().toISOString() }
     encoded.value = JSON.stringify(envelope)
     try { qrDataUrl.value = await QRCode.toDataURL(encoded.value, { errorCorrectionLevel: 'M', width: 640, margin: 2 }) } catch { qrDataUrl.value = '' }
   } catch { failed.value = true; message.value = t('transfer.failed') }
@@ -61,10 +62,10 @@ async function importPackage() {
   working.value = true; message.value = ''; failed.value = false
   try {
     const envelope = JSON.parse(incoming.value) as TransferEnvelope
-    if (envelope.format !== 'bitlock-transfer' || envelope.version !== 1) throw new Error('FORMAT')
+    if (![TRANSFER_FORMAT, LEGACY_TRANSFER_FORMAT].includes(envelope.format) || envelope.version !== 1) throw new Error('FORMAT')
     const parsedPayload = parseEncryptedPayload(envelope.payload)
     const plain = await decrypt(parsedPayload.ciphertext, envelope.iv, incomingCode.value, parsedPayload.salt, parsedPayload.iterations)
-    await addItem({ type: envelope.type, label: envelope.label, payload: plain, shouldEncrypt: true, url: envelope.url })
+    await addItem({ type: envelope.type, label: envelope.label, payload: plain, url: envelope.url })
     message.value = t('transfer.imported'); incoming.value = ''; incomingCode.value = ''
   } catch { failed.value = true; message.value = t('transfer.invalid') }
   finally { working.value = false }

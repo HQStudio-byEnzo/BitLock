@@ -22,7 +22,7 @@ export interface ShortcutPreferences {
   actions: Record<ShortcutActionId, { enabled: boolean; combo: string }>
 }
 
-const STORAGE_KEY = 'bitlock.shortcuts'
+const STORAGE_KEY = 'qvault.shortcuts'
 
 export const shortcutActions: ShortcutActionMeta[] = [
   { id: 'addLink', route: '/dashboard/links?add=1', labelKey: 'settings.shortcutAddLink', descriptionKey: 'settings.shortcutAddLinkDesc', defaultCombo: 'mod+shift+l' },
@@ -96,9 +96,9 @@ function isEditableTarget(target: EventTarget | null) {
 }
 
 export function useShortcutPreferences() {
-  const shortcuts = useState<ShortcutPreferences>('bitlock-shortcuts', () => createDefaultPreferences())
-  const loaded = useState<boolean>('bitlock-shortcuts-loaded', () => false)
-  const editing = useState<boolean>('bitlock-shortcuts-editing', () => false)
+  const shortcuts = useState<ShortcutPreferences>('qvault-shortcuts', () => createDefaultPreferences())
+  const loaded = useState<boolean>('qvault-shortcuts-loaded', () => false)
+  const editing = useState<boolean>('qvault-shortcuts-editing', () => false)
 
   function loadShortcuts() {
     if (!import.meta.client) return
@@ -131,7 +131,7 @@ export function useShortcutPreferences() {
   function saveShortcuts() {
     if (!import.meta.client) return
     localStorage.setItem(STORAGE_KEY, JSON.stringify(shortcuts.value))
-    window.dispatchEvent(new Event('bitlock-shortcuts-changed'))
+    window.dispatchEvent(new Event('qvault-shortcuts-changed'))
   }
 
   function resetShortcuts() {
@@ -171,13 +171,13 @@ export function useAppShortcuts() {
   onMounted(() => {
     loadShortcuts()
     window.addEventListener('keydown', handleKeydown)
-    window.addEventListener('bitlock-shortcuts-changed', loadShortcuts)
+    window.addEventListener('qvault-shortcuts-changed', loadShortcuts)
     window.addEventListener('storage', loadShortcuts)
   })
 
   onUnmounted(() => {
     window.removeEventListener('keydown', handleKeydown)
-    window.removeEventListener('bitlock-shortcuts-changed', loadShortcuts)
+    window.removeEventListener('qvault-shortcuts-changed', loadShortcuts)
     window.removeEventListener('storage', loadShortcuts)
   })
 

@@ -6,7 +6,7 @@ interface StoredPasskey {
   encryptedMaster: string
 }
 
-const STORAGE_KEY = 'bitlock.security.passkeyUnlock'
+const STORAGE_KEY = 'qvault.security.passkeyUnlock'
 
 function toBase64(value: ArrayBuffer | Uint8Array) {
   const bytes = value instanceof Uint8Array ? value : new Uint8Array(value)

@@ -8,7 +8,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message)
 }
 
-const databasePath = join(process.cwd(), `bitlock-migration-${randomUUID()}.db`)
+const databasePath = join(process.cwd(), `qvault-migration-${randomUUID()}.db`)
 const db = createClient({ url: `file:${databasePath}` })
 
 try {

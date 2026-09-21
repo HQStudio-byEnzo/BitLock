@@ -1,5 +1,5 @@
 export function useSecureClipboard() {
-  const lastCopyToken = useState('bitlock-secure-clipboard-token', () => '')
+  const lastCopyToken = useState('qvault-secure-clipboard-token', () => '')
 
   async function copySecurely(value: string, clearAfterSeconds?: number) {
     if (!import.meta.client) return false
@@ -7,7 +7,7 @@ export function useSecureClipboard() {
 
     const token = crypto.randomUUID()
     lastCopyToken.value = token
-    const seconds = clearAfterSeconds ?? Number(localStorage.getItem('bitlock.security.clipboardClearSeconds') || 30)
+    const seconds = clearAfterSeconds ?? Number(localStorage.getItem('qvault.security.clipboardClearSeconds') || 30)
 
     if (seconds > 0) {
       window.setTimeout(async () => {
