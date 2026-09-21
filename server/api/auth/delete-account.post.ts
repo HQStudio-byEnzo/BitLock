@@ -36,7 +36,6 @@ export default defineEventHandler(async (event) => {
     { sql: 'DELETE FROM folders WHERE user_id = ?', args: [session.user.id] },
     { sql: 'DELETE FROM vaults WHERE user_id = ?', args: [session.user.id] },
     { sql: 'DELETE FROM master_verifiers WHERE user_id = ?', args: [session.user.id] },
-    { sql: 'DELETE FROM webauthn_credentials WHERE user_id = ?', args: [session.user.id] },
     { sql: 'DELETE FROM extension_tokens WHERE user_id = ?', args: [session.user.id] },
     { sql: 'DELETE FROM accepted_terms WHERE user_id = ?', args: [session.user.id] },
     { sql: 'DELETE FROM users WHERE id = ?', args: [session.user.id] },

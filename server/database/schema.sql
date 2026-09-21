@@ -1,4 +1,4 @@
--- BitLock online libSQL/Turso schema
+-- QVault online libSQL/Turso schema
 
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
@@ -103,20 +103,6 @@ CREATE TABLE IF NOT EXISTS master_verifiers (
   payload TEXT NOT NULL,
   iv TEXT NOT NULL,
   updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS webauthn_credentials (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  credential_id TEXT NOT NULL,
-  public_key TEXT NOT NULL,
-  encrypted_unlock_key TEXT,
-  unlock_iv TEXT,
-  label TEXT NOT NULL DEFAULT 'Passkey',
-  sign_count INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now')),
-  UNIQUE(user_id, credential_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
