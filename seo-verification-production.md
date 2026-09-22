@@ -39,16 +39,17 @@ Le déploiement contient bien les derniers commits (les guides sont en ligne).
 - **sitemap.xml** : 21 URLs, **5 URLs de guides**, un seul hôte (`qvault.hqmerchant.xyz`).
 - **robots.txt** : `Allow: /`, `Disallow` sur `/api/`, `/auth/`, `/dashboard/`, et `Sitemap:` correct.
 
-## Point à corriger
+## Redirection de l'ancien domaine — décision
 
-**Aucune redirection depuis l'ancien domaine.** `https://bitlock.hqmerchant.xyz/`
-échoue en TLS (`000`, pas de certificat). Il n'y a donc pas de 301 vers le
-nouveau domaine. À faire dans Vercel :
+`https://bitlock.hqmerchant.xyz/` échoue en TLS (`000`, pas de certificat) : il
+n'y a donc aucune redirection 301 vers le nouveau domaine.
 
-1. Ajouter `bitlock.hqmerchant.xyz` au projet.
-2. Le configurer en **Redirect 301** permanent vers `https://qvault.hqmerchant.xyz`.
-3. Vérifier que le certificat est bien émis, puis tester
-   `curl -I https://bitlock.hqmerchant.xyz/` (attendu : 301 vers qvault).
+**Décision (propriétaire) : pas de redirection.** L'ancien domaine n'est pas
+connu, n'a jamais été communiqué et ne reçoit aucun lien entrant : une 301
+n'apporterait rien. Aucun impact SEO attendu (pas de duplication, pas de trafic
+à récupérer).
+
+À revoir uniquement si l'ancien domaine venait à être référencé ou indexé.
 
 ## Search Console (à faire côté propriétaire)
 
