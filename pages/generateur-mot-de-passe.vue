@@ -34,6 +34,8 @@
           <p v-if="copied" role="status" class="text-sm text-emerald-700">{{ t('generator.copied') }}</p>
         </div>
 
+        <ContentArticleBody :sections="tool.sections" :faq="tool.faq" :faq-title="toolUi.faqTitle" />
+
         <section class="mt-6 space-y-4" :aria-label="t('generator.relatedTitle')">
           <h2 class="text-xl font-semibold">{{ t('generator.relatedTitle') }}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -73,14 +75,33 @@
 
 <script setup lang="ts">
 import { useLang } from '~/composables/useI18n'
+import { toolContent, toolContentUi } from '~/utils/tool-content'
 
 definePageMeta({
   layout: 'default',
   hideFloatingBrand: true,
 })
-const { t } = useLang()
+const { t, locale } = useLang()
 const { loggedIn } = useUserSession()
 useSeoMeta({ title: t('generator.seoTitle'), description: t('generator.seoDesc') })
+
+const tool = toolContent.passwordGenerator[locale.value === 'en' ? 'en' : 'fr']
+const toolUi = toolContentUi[locale.value === 'en' ? 'en' : 'fr']
+const siteUrl = String(useRuntimeConfig().public.siteUrl || '').replace(/\/+$/, '')
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: tool.faq.map(item => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    }),
+  }],
+})
 const { generatePassword, entropy } = usePasswordGenerator()
 const { copySecurely } = useSecureClipboard()
 const options = reactive({ length: 24, uppercase: true, lowercase: true, numbers: true, symbols: true, avoidAmbiguous: true })

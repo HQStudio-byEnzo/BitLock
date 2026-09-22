@@ -54,6 +54,8 @@
             </div>
           </div>
         </div>
+
+        <ContentArticleBody :sections="tool.sections" :faq="tool.faq" :faq-title="toolUi.faqTitle" />
       </section>
 
       <aside class="glass-panel p-5 md:p-6 h-fit space-y-4">
@@ -71,18 +73,37 @@
 
 <script setup lang="ts">
 import { useLang } from '~/composables/useI18n'
+import { toolContent, toolContentUi } from '~/utils/tool-content'
 
 definePageMeta({
   layout: 'default',
   hideFloatingBrand: true,
 })
 
-const { t } = useLang()
+const { t, locale } = useLang()
 const { loggedIn } = useUserSession()
 
 useSeoMeta({
   title: t('audit.toolSeoTitle'),
   description: t('audit.toolSeoDesc'),
+})
+
+const tool = toolContent.passwordAudit[locale.value === 'en' ? 'en' : 'fr']
+const toolUi = toolContentUi[locale.value === 'en' ? 'en' : 'fr']
+const siteUrl = String(useRuntimeConfig().public.siteUrl || '').replace(/\/+$/, '')
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: tool.faq.map(item => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    }),
+  }],
 })
 
 const password = ref('')
