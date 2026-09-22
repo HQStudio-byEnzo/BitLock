@@ -1,5 +1,5 @@
-import { MASTER_VERIFIER_TEXT } from '~/utils/brand'
 import { MIN_MASTER_PASSWORD_LENGTH } from '~/utils/security-policy'
+import { MASTER_VERIFIER_TEXT } from '~/utils/brand'
 
 interface MasterVerifierResponse {
   configured: boolean
@@ -10,7 +10,10 @@ interface MasterVerifierResponse {
 export function useMasterPassword() {
   const masterPassword = useState<string | null>('qvault-master-password', () => null)
   const verifying = useState('qvault-master-password-verifying', () => false)
+  // null = unknown, true = a master verifier exists for this account.
+  const masterConfigured = useState<boolean | null>('qvault-master-configured', () => null)
   const { encrypt, decrypt, serializeEncryptedPayload, parseEncryptedPayload } = useCrypto()
+  const requestFetch = useRequestFetch()
 
   const isUnlocked = computed(() => !!masterPassword.value)
 
@@ -22,6 +25,22 @@ export function useMasterPassword() {
     masterPassword.value = null
   }
 
+  /**
+   * Whether this account already has a master verifier. Cached so the route
+   * guard does not hit the API on every navigation.
+   */
+  async function loadMasterState(force = false) {
+    if (masterConfigured.value !== null && !force) return masterConfigured.value
+    try {
+      const state = await requestFetch<MasterVerifierResponse>('/api/security/master-verifier')
+      masterConfigured.value = Boolean(state?.configured || state?.probe)
+    } catch {
+      // On error, do not lock the user out of their dashboard.
+      masterConfigured.value = false
+    }
+    return masterConfigured.value
+  }
+
   async function writeVerifier(value: string) {
     const encrypted = await encrypt(MASTER_VERIFIER_TEXT, value)
     await $fetch('/api/security/master-verifier', {
@@ -31,6 +50,7 @@ export function useMasterPassword() {
         iv: encrypted.iv,
       },
     })
+    masterConfigured.value = true
   }
 
   async function initializeMasterPassword(value: string) {
@@ -61,6 +81,7 @@ export function useMasterPassword() {
         await writeVerifier(value)
       }
 
+      masterConfigured.value = true
       setMasterPassword(value)
       return true
     } catch (error: any) {
@@ -76,6 +97,8 @@ export function useMasterPassword() {
     masterPassword,
     isUnlocked,
     verifying,
+    masterConfigured,
+    loadMasterState,
     setMasterPassword,
     clearMasterPassword,
     initializeMasterPassword,

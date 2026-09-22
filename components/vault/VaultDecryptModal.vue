@@ -79,8 +79,45 @@
             </div>
 
             <div v-else-if="editing" class="space-y-3">
-              <input v-model="editLabel" class="input-field" :placeholder="t('vault.labelField')" :aria-label="t('vault.labelField')" />
-              <textarea v-model="editValue" rows="8" class="input-field resize-y font-mono text-sm" :aria-label="t('vault.decryptedContent')" />
+              <div>
+                <label class="block text-xs text-surface-500 mb-1">{{ t('vault.labelField') }}</label>
+                <input v-model="editLabel" class="input-field" :placeholder="t('vault.labelField')" :aria-label="t('vault.labelField')" />
+              </div>
+
+              <template v-if="item.type === 'password'">
+                <div>
+                  <label class="block text-xs text-surface-500 mb-1">{{ t('vault.websiteUrl') }}</label>
+                  <input v-model="editUrl" type="url" class="input-field" :placeholder="t('generator.websiteUrlPlaceholder')" :aria-label="t('vault.websiteUrl')" />
+                </div>
+                <div>
+                  <label class="block text-xs text-surface-500 mb-1">{{ t('vault.username') }}</label>
+                  <input v-model="editUsername" class="input-field" autocomplete="off" spellcheck="false" :aria-label="t('vault.username')" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-surface-500 mb-1">{{ t('vault.loginEmail') }}</label>
+                    <input v-model="editEmail" type="email" class="input-field" autocomplete="off" :aria-label="t('vault.loginEmail')" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-surface-500 mb-1">{{ t('vault.phone') }}</label>
+                    <input v-model="editPhone" type="tel" class="input-field" autocomplete="off" :aria-label="t('vault.phone')" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs text-surface-500 mb-1">{{ t('vault.passwordValue') }}</label>
+                  <div class="flex gap-2">
+                    <input v-model="editPassword" :type="showEditPassword ? 'text' : 'password'" class="input-field font-mono min-w-0" autocomplete="new-password" :aria-label="t('vault.passwordValue')" />
+                    <button type="button" class="btn-secondary shrink-0" :aria-label="t('vault.generatePassword')" @click="generateEditPassword">
+                      <Icon name="hugeicons:sparkles" class="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <div v-else>
+                <label class="block text-xs text-surface-500 mb-1">{{ t('vault.decryptedContent') }}</label>
+                <textarea v-model="editValue" rows="8" class="input-field resize-y font-mono text-sm" :aria-label="t('vault.decryptedContent')" />
+              </div>
             </div>
             <p v-else class="text-sm text-surface-100 font-mono break-all whitespace-pre-wrap">{{ decryptedValue }}</p>
           </div>
@@ -91,7 +128,7 @@
               {{ copied ? t('vault.copied') : passwordEntry ? t('vault.copyPassword') : t('vault.copy') }}
             </button>
             <button v-if="!editing" type="button" @click="startEditing" class="btn-secondary flex-1"><Icon name="hugeicons:pencil" class="w-4 h-4" />{{ t('vault.edit') }}</button>
-            <button v-if="editing" type="button" @click="saveEdit" :disabled="saving" class="btn-primary flex-1"><Icon name="hugeicons:save" class="w-4 h-4" />{{ saving ? t('vault.saving') : t('vault.save') }}</button>
+            <button v-if="editing" type="button" @click="saveEdit" :disabled="saving || !canSave" class="btn-primary flex-1"><Icon name="hugeicons:save" class="w-4 h-4" />{{ saving ? t('vault.saving') : t('vault.save') }}</button>
             <button type="button" @click="editing ? cancelEdit() : $emit('close')" class="btn-secondary flex-1">
               {{ editing ? t('settings.cancel') : t('vault.close') }}
             </button>
@@ -110,7 +147,7 @@
 <script setup lang="ts">
 import { useLang } from '~/composables/useI18n'
 import type { VaultItem } from '~/composables/useVault'
-import { parsePasswordEntry } from '~/utils/password-entry'
+import { parsePasswordEntry, serializePasswordEntry } from '~/utils/password-entry'
 
 const props = defineProps<{
   item: VaultItem
@@ -137,9 +174,19 @@ const copied = ref(false)
 const editing = ref(false)
 const editLabel = ref('')
 const editValue = ref('')
+const editUrl = ref('')
+const editUsername = ref('')
+const editEmail = ref('')
+const editPhone = ref('')
+const editPassword = ref('')
+const showEditPassword = ref(false)
 const saving = ref(false)
 const editMessage = ref('')
 const editFailed = ref(false)
+
+const { generatePassword } = usePasswordGenerator()
+
+const canSave = computed(() => props.item.type !== 'password' || Boolean(editPassword.value))
 
 const passwordEntry = computed(() => {
   if (!decryptedValue.value || props.item.type !== 'password') return null
@@ -172,15 +219,56 @@ async function copyDecrypted() {
   }
 }
 
-function startEditing() { editing.value = true; editLabel.value = props.item.label; editValue.value = decryptedValue.value; editMessage.value = '' }
-function cancelEdit() { editing.value = false; editValue.value = decryptedValue.value; editLabel.value = props.item.label }
+function startEditing() {
+  editing.value = true
+  editMessage.value = ''
+  editLabel.value = props.item.label
+  editValue.value = decryptedValue.value
+  editUrl.value = props.item.url || ''
+  if (props.item.type === 'password' && passwordEntry.value) {
+    editUsername.value = passwordEntry.value.username || ''
+    editEmail.value = passwordEntry.value.email || ''
+    editPhone.value = passwordEntry.value.phone || ''
+    editPassword.value = passwordEntry.value.password || ''
+  }
+}
+function cancelEdit() {
+  editing.value = false
+  editValue.value = decryptedValue.value
+  editLabel.value = props.item.label
+  editUsername.value = ''
+  editEmail.value = ''
+  editPhone.value = ''
+  editPassword.value = ''
+  showEditPassword.value = false
+}
+function generateEditPassword() {
+  editPassword.value = generatePassword({ length: 24, uppercase: true, lowercase: true, numbers: true, symbols: true, avoidAmbiguous: true })
+  showEditPassword.value = true
+  setTimeout(() => { showEditPassword.value = false }, 4000)
+}
 async function saveEdit() {
   if (!sessionMaster.value) return
   saving.value = true; editMessage.value = ''; editFailed.value = false
   try {
-    const encrypted = await encrypt(editValue.value, sessionMaster.value)
-    await updateItem(props.item.id, { label: editLabel.value, payload: serializeEncryptedPayload(encrypted), iv: encrypted.iv, is_encrypted: true })
-    decryptedValue.value = editValue.value; editing.value = false; editMessage.value = t('vault.saved')
+    const payload = props.item.type === 'password'
+      ? serializePasswordEntry({
+        password: editPassword.value,
+        username: editUsername.value,
+        email: editEmail.value,
+        phone: editPhone.value,
+      })
+      : editValue.value
+    const encrypted = await encrypt(payload, sessionMaster.value)
+    const data: Record<string, unknown> = {
+      label: editLabel.value,
+      payload: serializeEncryptedPayload(encrypted),
+      iv: encrypted.iv,
+      is_encrypted: true,
+    }
+    if (props.item.type === 'password') data.url = editUrl.value.trim()
+    await updateItem(props.item.id, data as any)
+    decryptedValue.value = payload; editing.value = false; editMessage.value = t('vault.saved')
   } catch { editFailed.value = true; editMessage.value = t('vault.saveFailed') }
   finally { saving.value = false }
 }
