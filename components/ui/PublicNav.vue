@@ -8,6 +8,7 @@
 
       <nav class="pnav__links" :aria-label="t('landing.navLabel')">
         <NuxtLink to="/features">{{ t('nav.features') }}</NuxtLink>
+        <NuxtLink to="/guides">{{ t('nav.guides') }}</NuxtLink>
         <NuxtLink to="/#how">{{ t('nav.how') }}</NuxtLink>
         <NuxtLink to="/#tools">{{ t('nav.tools') }}</NuxtLink>
         <NuxtLink to="/support">{{ t('sidebar.support') }}</NuxtLink>

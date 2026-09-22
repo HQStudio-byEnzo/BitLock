@@ -82,6 +82,7 @@
       <p>QVault · {{ copy.voluntary }}</p>
       <nav aria-label="Liens de pied de page">
         <NuxtLink to="/">{{ copy.home }}</NuxtLink>
+        <NuxtLink to="/guides">{{ t('nav.guides') }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
         <a
           href="https://github.com/HQStudio-byEnzo/BitLock"

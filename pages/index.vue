@@ -171,6 +171,7 @@
       <nav class="lp-footer__links" :aria-label="t('landing.footerLabel')">
         <NuxtLink to="/support">{{ t('sidebar.support') }}</NuxtLink>
         <NuxtLink to="/features">{{ t('nav.features') }}</NuxtLink>
+        <NuxtLink to="/guides">{{ t('nav.guides') }}</NuxtLink>
         <NuxtLink to="/legal/cgu">{{ t('footer.terms') }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
       </nav>
