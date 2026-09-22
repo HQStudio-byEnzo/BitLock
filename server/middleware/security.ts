@@ -33,7 +33,8 @@ function allowedOrigins(event: H3Event) {
 
 export default defineEventHandler((event) => {
   removeResponseHeader(event, 'x-powered-by')
-  if (getRequestURL(event).pathname.startsWith('/api/')) {
+  const path = getRequestURL(event).pathname
+  if (path.startsWith('/api/')) {
     setResponseHeaders(event, {
       'Cache-Control': 'no-store, max-age=0',
       Pragma: 'no-cache',
@@ -43,6 +44,12 @@ export default defineEventHandler((event) => {
 
   const method = getMethod(event).toUpperCase()
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return
+
+  // The extension endpoints authenticate with a bearer token, not cookies, so
+  // the cookie-focused CSRF checks do not apply. Browser extensions send an
+  // Origin of chrome-extension://<id>, which is not a web origin. These routes
+  // are rate limited separately.
+  if (path.startsWith('/api/extension/')) return
 
   const fetchSite = getRequestHeader(event, 'sec-fetch-site')
   if (fetchSite === 'cross-site') {
