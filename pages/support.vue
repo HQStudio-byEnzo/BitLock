@@ -109,6 +109,8 @@ const entries = computed(() => data.value?.entries || [])
 
 const copy = computed(() => locale.value === 'fr' ? {
   navLabel: 'Navigation Support',
+  seoTitle: 'Soutenir QVault',
+  seoDesc: 'Soutenez QVault via un contenu sponsorisé ou un lien affilié, ouvert uniquement sur votre action. Le coffre reste isolé et vos secrets ne sont jamais exposés.',
   title: 'Soutenir QVault sans entrer dans votre coffre.',
   subtitle: 'Regardez un contenu sponsorisé ou utilisez un lien affilié seulement si vous le souhaitez. Le coffre reste isolé de cette page.',
   noVault: 'Aucun accès aux secrets',
@@ -131,6 +133,8 @@ const copy = computed(() => locale.value === 'fr' ? {
   home: 'Accueil',
 } : {
   navLabel: 'Support navigation',
+  seoTitle: 'Support QVault',
+  seoDesc: 'Support QVault through sponsored content or an affiliate link, opened only when you choose. The vault stays isolated and your secrets are never exposed.',
   title: 'Support QVault without entering your vault.',
   subtitle: 'Watch sponsored content or use an affiliate link only when you choose to. The vault stays isolated from this page.',
   noVault: 'No access to secrets',
@@ -151,6 +155,11 @@ const copy = computed(() => locale.value === 'fr' ? {
   ruleTwo: 'No automatic opening, forced playback, or hidden redirect.',
   ruleThree: 'Any potential commission is disclosed before the click.',
   home: 'Home',
+})
+
+useSeoMeta({
+  title: () => copy.value.seoTitle,
+  description: () => copy.value.seoDesc,
 })
 </script>
 

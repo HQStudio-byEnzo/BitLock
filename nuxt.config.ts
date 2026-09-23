@@ -176,12 +176,12 @@ export default defineNuxtConfig({
     layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       htmlAttrs: { lang: 'fr', class: 'dark' },
-      title: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto',
+      title: 'Coffre-fort numérique gratuit : mots de passe',
       titleTemplate: '%s | QVault',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
-        { name: 'description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
+        { name: 'description', content: 'Mots de passe, notes et clés crypto chiffrés dans votre navigateur. Gratuit, sans abonnement, zero-knowledge. Créez votre coffre-fort sécurisé dès maintenant.' },
         { name: 'keywords', content: 'gestionnaire mots de passe gratuit, coffre fort numérique, password manager gratuit, chiffrement zero-knowledge, stockage mots de passe sécurisé, stockage seed phrase, sauvegarde clé privée, coffre fort crypto, protection wallet, BIP39 seed phrase, stockage clés crypto sécurisé, protection données personnelles, password manager open source, gestionnaire mots de passe français, coffre fort numerique gratuit, proteger mots de passe' },
         { name: 'robots', content: 'index, follow' },
         { name: 'theme-color', content: '#0a0f0c' },
@@ -189,14 +189,14 @@ export default defineNuxtConfig({
         // Open Graph
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'QVault' },
-        { property: 'og:title', content: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto' },
-        { property: 'og:description', content: 'QVault - Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge. AES-256-GCM, open source, gratuit.' },
+        { property: 'og:title', content: 'Coffre-fort numérique gratuit : mots de passe' },
+        { property: 'og:description', content: 'Mots de passe, notes et clés crypto chiffrés dans votre navigateur. Gratuit, sans abonnement, zero-knowledge. Créez votre coffre-fort sécurisé dès maintenant.' },
         { property: 'og:locale', content: 'fr_FR' },
         { property: 'og:locale:alternate', content: 'en_US' },
         // Twitter
         { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:title', content: 'Coffre-fort numérique gratuit : mots de passe, notes et clés crypto' },
-        { name: 'twitter:description', content: 'Coffre-fort numérique gratuit. Stockez mots de passe, liens et clés crypto en toute sécurité avec chiffrement zero-knowledge.' },
+        { name: 'twitter:title', content: 'Coffre-fort numérique gratuit : mots de passe' },
+        { name: 'twitter:description', content: 'Mots de passe, notes et clés crypto chiffrés dans votre navigateur. Gratuit, sans abonnement, zero-knowledge. Créez votre coffre-fort sécurisé dès maintenant.' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/qvault-icon-48.png?v=3' },

@@ -48,5 +48,5 @@ import { useLang } from '~/composables/useI18n'
 definePageMeta({ layout: 'default' })
 
 const { t } = useLang()
-useSeoMeta({ title: t('legal.privacy.titlePage') })
+useSeoMeta({ title: t('legal.privacy.titlePage'), description: t('legal.privacy.seoDesc') })
 </script>

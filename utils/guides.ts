@@ -50,6 +50,7 @@ export const guideUi = {
     ctaDesc: 'Chiffrement dans votre navigateur, sans abonnement. Vos secrets restent privés.',
     ctaButton: 'Créer mon coffre-fort',
     indexTitle: 'Guides QVault',
+    indexSeoTitle: 'Guides : mots de passe et crypto',
     indexSubtitle: 'Des réponses claires sur la gestion des mots de passe et la protection de vos clés crypto.',
     indexEyebrow: 'Ressources',
   },
@@ -65,6 +66,7 @@ export const guideUi = {
     ctaDesc: 'Encrypted in your browser, no subscription. Your secrets stay private.',
     ctaButton: 'Create my vault',
     indexTitle: 'QVault guides',
+    indexSeoTitle: 'Guides: passwords and crypto',
     indexSubtitle: 'Clear answers on managing passwords and protecting your crypto keys.',
     indexEyebrow: 'Resources',
   },
@@ -246,7 +248,7 @@ export const guides: Guide[] = [
     icon: 'hugeicons:key-round',
     accent: 'amber',
     fr: {
-      title: 'Comment gérer et stocker ses mots de passe (gratuit)',
+      title: 'Gérer et stocker ses mots de passe gratuitement',
       description: 'Comment stocker et gérer ses mots de passe gratuitement : méthodes, gestionnaire gratuit, mots de passe uniques, double authentification et bonnes pratiques.',
       eyebrow: 'Guide mots de passe',
       h1: 'Comment gérer et stocker ses mots de passe (gratuitement)',
@@ -406,7 +408,7 @@ export const guides: Guide[] = [
     icon: 'hugeicons:refresh',
     accent: 'blue',
     fr: {
-      title: 'Alternative à Bitwarden : comment choisir (gratuit, français, local)',
+      title: 'Alternative à Bitwarden : gratuite et française',
       description: 'Vous cherchez une alternative à Bitwarden ? Les critères qui comptent (chiffrement, hébergement, gratuité, open source) et où se situe QVault.',
       eyebrow: 'Comparatif',
       h1: 'Choisir une alternative à Bitwarden',
@@ -482,7 +484,7 @@ export const guides: Guide[] = [
       ],
     },
     en: {
-      title: 'Bitwarden alternative: how to choose (free, French, local)',
+      title: 'Bitwarden alternative: a free French vault',
       description: 'Looking for a Bitwarden alternative? The criteria that matter (encryption, hosting, free tier, open source) and where QVault stands.',
       eyebrow: 'Comparison',
       h1: 'Choosing a Bitwarden alternative',
@@ -566,7 +568,7 @@ export const guides: Guide[] = [
     icon: 'hugeicons:chart',
     accent: 'emerald',
     fr: {
-      title: 'Comparatif des coffres-forts de mots de passe (critères 2026)',
+      title: 'Comparatif des coffres-forts de mots de passe 2026',
       description: 'Comparer les coffres-forts de mots de passe : chiffrement, gratuité, open source, hébergement. La grille de critères et où se situe QVault.',
       eyebrow: 'Comparatif',
       h1: 'Comparatif des coffres-forts de mots de passe',

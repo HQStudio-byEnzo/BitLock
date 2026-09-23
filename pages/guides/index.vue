@@ -48,7 +48,7 @@ const list = getGuides().map(guide => ({
 }))
 
 useSeoMeta({
-  title: ui.indexTitle,
+  title: ui.indexSeoTitle,
   description: ui.indexSubtitle,
 })
 </script>
