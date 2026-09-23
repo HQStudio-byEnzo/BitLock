@@ -27,10 +27,10 @@ const structuredData = computed(() => JSON.stringify({
   description: 'Coffre-fort numérique gratuit avec chiffrement zero-knowledge. Stockez mots de passe, liens et clés crypto en toute sécurité.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   author: { '@type': 'Organization', name: 'HQ Studio' },
-  license: 'https://github.com/HQStudio-byEnzo/BitLock/blob/main/LICENSE.md',
+  license: 'https://github.com/HQStudio-byEnzo/qvault/blob/main/LICENSE.md',
   // Links the product to its own profiles so search engines and AI models can
   // tell it apart from unrelated projects that share the name.
-  sameAs: ['https://github.com/HQStudio-byEnzo/BitLock'],
+  sameAs: ['https://github.com/HQStudio-byEnzo/qvault'],
   featureList: [
     'Chiffrement AES-256-GCM dans le navigateur',
     'Mots de passe, notes, liens et codes TOTP',

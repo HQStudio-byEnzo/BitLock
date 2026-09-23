@@ -85,7 +85,7 @@
         <NuxtLink to="/guides">{{ t('nav.guides') }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
         <a
-          href="https://github.com/HQStudio-byEnzo/BitLock"
+          href="https://github.com/HQStudio-byEnzo/qvault"
           target="_blank"
           rel="noopener noreferrer"
         >

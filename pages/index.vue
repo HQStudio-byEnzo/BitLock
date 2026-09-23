@@ -180,7 +180,7 @@
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5"
         >
-          {{ t('landing.sourceCode') }}
+          {{ t('footer.sourceCode') }}
           <Icon name="hugeicons:arrow-up-right-01" class="h-3.5 w-3.5" />
         </a>
       </nav>
@@ -198,7 +198,7 @@ const { t, locale } = useLang()
 const { loggedIn } = useUserSession()
 const { features } = useFeatureCatalog()
 
-const SOURCE_CODE_URL = 'https://github.com/HQStudio-byEnzo/BitLock'
+const SOURCE_CODE_URL = 'https://github.com/HQStudio-byEnzo/qvault'
 
 // Single source of truth: the visible FAQ and its structured data stay in sync.
 const faqItems = computed(() => Array.from({ length: 6 }, (_, index) => ({
