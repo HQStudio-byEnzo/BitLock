@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   if (user && Number(user.email_verified) !== 1) {
     const email = String(user.email)
     // Accounts with the internal placeholder cannot receive email.
-    if (!email.endsWith('@qvault.invalid') && !email.endsWith('@bitlock.invalid')) {
+    if (!isPlaceholderEmail(email)) {
       try {
         const token = await issueVerificationToken(db, String(user.id), email)
         await sendVerificationEmail({ email, username: String(user.username), token, locale })

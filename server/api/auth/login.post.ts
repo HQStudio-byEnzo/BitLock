@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useDB()
   const result = await db.execute({
-    sql: 'SELECT id, username, password, session_version, created_at, email_verified FROM users WHERE username = ? OR lower(email) = ?',
+    sql: 'SELECT id, username, password, session_version, created_at, email, email_verified FROM users WHERE username = ? OR lower(email) = ?',
     args: [identifier, identifier],
   })
 
@@ -30,7 +30,12 @@ export default defineEventHandler(async (event) => {
   const valid = await verifyUserPassword(password, user.password)
   if (!valid) return rejectLogin()
 
-  if (Number(user.email_verified) !== 1) {
+  // Accounts created before email verification carry no usable address. They
+  // may sign in so they can supply one, but the route middleware confines them
+  // to /auth/complete-email until the new address is confirmed.
+  const needsEmail = isPlaceholderEmail(user.email)
+
+  if (!needsEmail && Number(user.email_verified) !== 1) {
     // Distinct status code (401 = bad credentials, 403 = valid but unverified)
     // so the client can offer to resend the confirmation email.
     throw createError({
@@ -45,8 +50,9 @@ export default defineEventHandler(async (event) => {
       username: user.username,
       sessionVersion: Number(user.session_version) || 0,
       created_at: user.created_at,
+      needsEmail,
     },
   })
 
-  return { user: { id: user.id, username: user.username } }
+  return { user: { id: user.id, username: user.username }, needsEmail }
 })

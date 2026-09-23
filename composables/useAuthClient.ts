@@ -29,7 +29,7 @@ export function useAuthClient() {
    * Connexion
    */
   async function signIn(data: { username: string; password: string }) {
-    const response: { user: any } = await $fetch('/api/auth/login', {
+    const response: { user: any; needsEmail?: boolean } = await $fetch('/api/auth/login', {
       method: 'POST',
       body: data,
     })

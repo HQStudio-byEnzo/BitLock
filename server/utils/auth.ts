@@ -51,6 +51,8 @@ export async function requireAuth(event: H3Event) {
         username,
         sessionVersion,
         created_at: session.user.created_at,
+        // Preserved on purpose: dropping it would lift the email gate.
+        needsEmail: session.user.needsEmail,
       },
     }
     await setUserSession(event, hydratedSession)

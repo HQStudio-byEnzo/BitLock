@@ -31,7 +31,10 @@
             <h2 class="text-xl font-semibold text-foreground">{{ t('auth.verify.successTitle') }}</h2>
             <p class="text-sm text-surface-300 leading-relaxed">{{ t('auth.verify.successDesc') }}</p>
           </div>
-          <NuxtLink to="/auth/login" class="btn-primary w-full py-2.5 justify-center">
+          <NuxtLink v-if="canEnterVault" to="/dashboard" class="btn-primary w-full py-2.5 justify-center">
+            {{ t('auth.verify.toVault') }}
+          </NuxtLink>
+          <NuxtLink v-else to="/auth/login" class="btn-primary w-full py-2.5 justify-center">
             {{ t('auth.verify.cta') }}
           </NuxtLink>
         </div>
@@ -67,9 +70,12 @@ definePageMeta({
 
 const { t } = useLang()
 const route = useRoute()
+const { loggedIn } = useUserSession()
+const { fetchSession } = useAuthClient()
 
 const state = ref<'loading' | 'success' | 'error'>('loading')
 const errorMsg = ref('')
+const canEnterVault = ref(false)
 
 onMounted(async () => {
   const token = typeof route.query.token === 'string' ? route.query.token : ''
@@ -86,6 +92,14 @@ onMounted(async () => {
       body: { token },
     })
     state.value = 'success'
+
+    // A signed-in account that was waiting on this address is let in directly.
+    if (loggedIn.value) {
+      await $fetch('/api/auth/refresh-email-state', { method: 'POST' }).catch(() => null)
+      // Refresh the client session so the route middleware sees the new state.
+      await fetchSession()
+      canEnterVault.value = true
+    }
   } catch (err: any) {
     state.value = 'error'
     errorMsg.value = err.data?.message || t('auth.verify.errorTitle')

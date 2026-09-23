@@ -4,6 +4,27 @@ import { sendMail, verificationEmail } from './mailer'
 
 const TOKEN_TTL_MINUTES = 24 * 60
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{40,64}$/
+const PLACEHOLDER_EMAIL_SUFFIXES = ['@qvault.invalid', '@bitlock.invalid']
+
+/**
+ * Accounts created before email verification carry an internal placeholder
+ * address. They are treated as verified by the migration so their owners keep
+ * access, but they still have to supply a real address.
+ */
+export function isPlaceholderEmail(email: unknown) {
+  const value = String(email ?? '').trim().toLowerCase()
+  if (!value) return true
+  return PLACEHOLDER_EMAIL_SUFFIXES.some(suffix => value.endsWith(suffix))
+}
+
+/**
+ * True while the account must still complete the email step: it either has no
+ * real address yet, or the address it has was never confirmed. Supplying an
+ * address is not enough, opening the link is what clears this.
+ */
+export function needsEmailCompletion(email: unknown, emailVerified: unknown) {
+  return isPlaceholderEmail(email) || Number(emailVerified) !== 1
+}
 
 function hashToken(token: string) {
   return createHash('sha256').update(token).digest('hex')

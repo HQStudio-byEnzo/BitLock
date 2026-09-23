@@ -4,6 +4,11 @@ declare module '#auth-utils' {
     username: string
     created_at?: string
     sessionVersion?: number
+    /**
+     * True while the account has no usable address (accounts created before
+     * email verification). Route middleware confines it to /auth/complete-email.
+     */
+    needsEmail?: boolean
   }
 
   interface UserSession {

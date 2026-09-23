@@ -35,6 +35,13 @@ async function request(path, options = {}) {
   return result
 }
 
+async function withDb(fn) {
+  const url = process.env.SMOKE_DB_URL || process.env.TURSO_DB_URL || 'file:./qvault-dev.db'
+  const authToken = process.env.TURSO_DB_TOKEN || ''
+  const db = createClient(authToken ? { url, authToken } : { url })
+  try { return await fn(db, url) } finally { await db.close() }
+}
+
 async function cleanup() {
   const url = process.env.SMOKE_DB_URL || process.env.TURSO_DB_URL || 'file:./qvault-dev.db'
   const authToken = process.env.TURSO_DB_TOKEN || ''
@@ -135,6 +142,46 @@ try {
   })
   const session = (await request('/api/auth/session')).data
   assert(session.user?.username === username, 'Username login did not create the expected session')
+
+  // Legacy accounts, created before email verification: they keep a valid
+  // password but no usable address. They must be asked for one, and stay
+  // gated until that address is confirmed.
+  await withDb(db => db.execute({
+    sql: 'UPDATE users SET email = ?, email_verified = 1 WHERE id = ?',
+    args: [`legacy-${Date.now()}@qvault.invalid`, registration.data.user.id],
+  }))
+  await request('/api/auth/logout', { method: 'POST' })
+
+  const legacyLogin = await request('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  })
+  assert(legacyLogin.data?.needsEmail === true, 'A legacy account was not asked for an email')
+  const legacySession = (await request('/api/auth/session')).data
+  assert(legacySession.user?.needsEmail === true, 'The email gate was not carried by the session')
+
+  const claimed = await request('/api/auth/claim-email', {
+    method: 'POST',
+    body: JSON.stringify({ email: `smoke-legacy-${Date.now()}@example.com` }),
+  })
+  assert(claimed.data?.ok === true, 'Saving an address for a legacy account failed')
+  const claimToken = new URL(claimed.data.devVerificationUrl).searchParams.get('token')
+  assert(claimToken, 'The claim did not produce a verification token')
+
+  const stillGated = await request('/api/auth/refresh-email-state', { method: 'POST' })
+  assert(stillGated.data?.needsEmail === true, 'An unconfirmed address lifted the gate too early')
+
+  const twice = await request('/api/auth/claim-email', {
+    method: 'POST',
+    body: JSON.stringify({ email: `smoke-other-${Date.now()}@example.com` }),
+  })
+  assert(twice.data?.alreadySet === true, 'Claiming an address twice was not idempotent')
+
+  await request('/api/auth/verify-email', { method: 'POST', body: JSON.stringify({ token: claimToken }) })
+  const released = await request('/api/auth/refresh-email-state', { method: 'POST' })
+  assert(released.data?.needsEmail === false, 'A confirmed address did not lift the gate')
+  assert(released.data?.verified === true, 'The confirmed address was not marked as verified')
+
   const organization = (await request('/api/organization')).data
   assert(organization.vaults.length === 1, 'Default vault was not created')
   const vaultId = organization.vaults[0].id
@@ -225,6 +272,7 @@ try {
     ok: true,
     usernameAuth: true,
     emailVerification: true,
+    legacyEmailGate: true,
     passwordHintsDisabled: true,
     defaultVault: true,
     notes: 1,

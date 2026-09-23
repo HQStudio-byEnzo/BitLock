@@ -124,8 +124,9 @@ async function handleLogin() {
   resendMsg.value = ''
 
   try {
-    await signIn({ username: form.username, password: form.password })
-    navigateTo('/dashboard')
+    const response = await signIn({ username: form.username, password: form.password })
+    // Accounts without a usable address go through the email step first.
+    navigateTo(response?.needsEmail ? '/auth/complete-email' : '/dashboard')
   } catch (err: any) {
     const status = err.statusCode ?? err.status
     if (status === 403) {
