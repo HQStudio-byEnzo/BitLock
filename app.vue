@@ -28,6 +28,19 @@ const structuredData = computed(() => JSON.stringify({
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   author: { '@type': 'Organization', name: 'HQ Studio' },
   license: 'https://github.com/HQStudio-byEnzo/BitLock/blob/main/LICENSE.md',
+  // Links the product to its own profiles so search engines and AI models can
+  // tell it apart from unrelated projects that share the name.
+  sameAs: ['https://github.com/HQStudio-byEnzo/BitLock'],
+  featureList: [
+    'Chiffrement AES-256-GCM dans le navigateur',
+    'Mots de passe, notes, liens et codes TOTP',
+    'Seed phrases et clés privées crypto',
+    'Codes de récupération',
+    'Générateur de mot de passe',
+    'Audit de robustesse des mots de passe',
+    'Extension navigateur',
+    'Import et export chiffrés',
+  ],
 }))
 
 useHead({

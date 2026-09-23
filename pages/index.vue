@@ -148,9 +148,9 @@
         <h2>{{ t('faq.title') }}</h2>
       </header>
       <div class="lp-faq">
-        <details v-for="index in 4" :key="index">
-          <summary>{{ t(`faq.q${index}`) }} <Icon name="hugeicons:plus" class="h-4 w-4" /></summary>
-          <p>{{ t(`faq.a${index}`) }}</p>
+        <details v-for="(item, index) in faqItems" :key="index">
+          <summary>{{ item.question }} <Icon name="hugeicons:plus" class="h-4 w-4" /></summary>
+          <p>{{ item.answer }}</p>
         </details>
       </div>
     </section>
@@ -174,6 +174,15 @@
         <NuxtLink to="/guides">{{ t('nav.guides') }}</NuxtLink>
         <NuxtLink to="/legal/cgu">{{ t('footer.terms') }}</NuxtLink>
         <NuxtLink to="/legal/confidentialite">{{ t('footer.privacy') }}</NuxtLink>
+        <a
+          :href="SOURCE_CODE_URL"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5"
+        >
+          {{ t('landing.sourceCode') }}
+          <Icon name="hugeicons:arrow-up-right-01" class="h-3.5 w-3.5" />
+        </a>
       </nav>
       <p class="lp-footer__note">{{ t('landing.footerNote') }}</p>
     </footer>
@@ -185,9 +194,33 @@ import { useLang } from '~/composables/useI18n'
 
 definePageMeta({ layout: 'default' })
 
-const { t } = useLang()
+const { t, locale } = useLang()
 const { loggedIn } = useUserSession()
 const { features } = useFeatureCatalog()
+
+const SOURCE_CODE_URL = 'https://github.com/HQStudio-byEnzo/BitLock'
+
+// Single source of truth: the visible FAQ and its structured data stay in sync.
+const faqItems = computed(() => Array.from({ length: 6 }, (_, index) => ({
+  question: t(`faq.q${index + 1}`),
+  answer: t(`faq.a${index + 1}`),
+})))
+
+useHead(() => ({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: locale.value,
+      mainEntity: faqItems.value.map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    }),
+  }],
+}))
 
 const previewRows = [
   { icon: 'hugeicons:key-round', label: 'Gmail', value: '••••••••' },
