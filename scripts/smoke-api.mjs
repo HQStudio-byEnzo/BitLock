@@ -2,6 +2,7 @@ import { createClient } from '@libsql/client'
 
 const baseURL = process.env.SMOKE_BASE_URL || 'http://localhost:3000'
 const username = `smoke_${Date.now()}`
+const email = `smoke-${Date.now()}@example.com`
 let password = 'Smoke-Test-2026!'
 let cookie = ''
 
@@ -40,7 +41,7 @@ async function cleanup() {
   const db = createClient(authToken ? { url, authToken } : { url })
   try {
     const users = await db.execute({
-      sql: "SELECT id FROM users WHERE username = ? OR username LIKE 'smoke_%' OR username LIKE 'session_probe_%' OR email LIKE 'smoke-%@bitlock.local' OR email LIKE 'session-probe-%@bitlock.local' OR email LIKE 'smoke-%@qvault.invalid' OR email LIKE 'session-probe-%@qvault.invalid'",
+      sql: "SELECT id FROM users WHERE username = ? OR username LIKE 'smoke_%' OR username LIKE 'session_probe_%' OR email LIKE 'smoke-%@example.com' OR email LIKE 'session-probe-%@example.com' OR email LIKE 'smoke-%@qvault.invalid' OR email LIKE 'session-probe-%@qvault.invalid'",
       args: [username],
     })
     for (const row of users.rows) {
@@ -54,9 +55,14 @@ async function cleanup() {
         { sql: 'DELETE FROM vaults WHERE user_id = ?', args: [userId] },
         { sql: 'DELETE FROM master_verifiers WHERE user_id = ?', args: [userId] },
         { sql: 'DELETE FROM extension_tokens WHERE user_id = ?', args: [userId] },
+        { sql: 'DELETE FROM email_verification_tokens WHERE user_id = ?', args: [userId] },
         { sql: 'DELETE FROM accepted_terms WHERE user_id = ?', args: [userId] },
         { sql: 'DELETE FROM users WHERE id = ?', args: [userId] },
       ], 'write')
+    }
+    // Local development only: keep repeated smoke runs below the rate limits.
+    if (url.startsWith('file:')) {
+      await db.execute({ sql: 'DELETE FROM rate_limits' })
     }
   } finally { await db.close() }
 }
@@ -66,13 +72,58 @@ try {
     method: 'POST',
     body: JSON.stringify({
       username,
+      email,
       password,
       acceptedTerms: true,
     }),
   })
   assert(registration.response.status === 200, 'Registration failed')
-  assert(cookie.startsWith('nuxt-session='), 'Registration did not set a session cookie')
-  await request('/api/auth/logout', { method: 'POST' })
+  assert(registration.data?.verificationRequired === true, 'Registration did not require email verification')
+  assert(!cookie.startsWith('nuxt-session='), 'Registration opened a session before email verification')
+
+  const blockedLogin = await requestRaw('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  })
+  assert(blockedLogin.response.status === 403, `Unverified account could sign in (${blockedLogin.response.status})`)
+
+  const devVerificationUrl = registration.data?.devVerificationUrl
+  assert(devVerificationUrl, 'Registration did not expose a dev verification link')
+  const registrationToken = new URL(devVerificationUrl).searchParams.get('token')
+  assert(registrationToken, 'Dev verification link is missing a token')
+
+  const resend = await request('/api/auth/resend-verification', {
+    method: 'POST',
+    body: JSON.stringify({ identifier: email }),
+  })
+  assert(resend.data?.ok === true, 'Resend did not acknowledge the request')
+  const resendToken = new URL(resend.data.devVerificationUrl).searchParams.get('token')
+  assert(resendToken && resendToken !== registrationToken, 'Resend did not issue a new token')
+
+  const superseded = await requestRaw('/api/auth/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ token: registrationToken }),
+  })
+  assert(superseded.response.status === 410, 'A resent link did not invalidate the previous token')
+
+  const verification = await request('/api/auth/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ token: resendToken }),
+  })
+  assert(verification.data?.ok === true, 'Email verification failed')
+
+  const replay = await requestRaw('/api/auth/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ token: resendToken }),
+  })
+  assert(replay.response.status === 410, 'A verification token could be replayed')
+
+  const unknownResend = await request('/api/auth/resend-verification', {
+    method: 'POST',
+    body: JSON.stringify({ identifier: `missing-${Date.now()}@example.com` }),
+  })
+  assert(unknownResend.data?.ok === true, 'Resend leaked account existence')
+
   const rejectedLogin = await requestRaw('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({ username, password: 'incorrect-password' }),
@@ -173,6 +224,7 @@ try {
   console.log(JSON.stringify({
     ok: true,
     usernameAuth: true,
+    emailVerification: true,
     passwordHintsDisabled: true,
     defaultVault: true,
     notes: 1,

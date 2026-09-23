@@ -7,7 +7,8 @@ required to operate the account.
 
 ## Features
 
-- Username-based accounts with legacy email sign-in compatibility
+- Accounts with a username and a verified email address (legacy identifiers still sign in)
+- Email confirmation link required before the first sign-in
 - AES-256-GCM encryption with a PBKDF2-derived key
 - Passwords, links, encrypted notes, TOTP, crypto secrets, and recovery codes
 - Multiple vaults, folders, tags, favorites, search, and item history
@@ -44,6 +45,9 @@ NUXT_SESSION_PASSWORD=replace-with-a-long-random-secret
 TURSO_DB_URL=libsql://your-database.turso.io
 TURSO_DB_TOKEN=your-token
 APP_URL=http://localhost:3000
+# Transactional email (Resend). Without a key, emails are logged instead.
+RESEND_API_KEY=re_your_key
+RESEND_FROM=QVault <noreply@your-verified-domain.com>
 # Optional: set [] to hide the public partner catalogue.
 SUPPORT_CATALOG_JSON=[]
 ```
@@ -82,7 +86,23 @@ bun run db:migrate
 
 The runtime also performs idempotent compatibility migrations. Existing hosted
 accounts keep their original email identifier for sign-in while receiving a
-unique username. New accounts are username-only.
+unique username, and are treated as verified. New accounts require a valid
+email address: the account stays inactive until the single-use confirmation
+link (valid 24 hours) is opened.
+
+## Email verification
+
+Registration sends a confirmation email through Resend. Configure:
+
+- `RESEND_API_KEY` — a Resend API key (`re_…`).
+- `RESEND_FROM` — a sender on a domain verified in Resend, for example
+  `QVault <noreply@qvault.hqmerchant.xyz>`.
+- `APP_URL` — used to build the confirmation link, so it must be the public
+  origin in production.
+
+When `RESEND_API_KEY` is empty, messages are written to the server log instead
+of being sent, and the registration response includes a `devVerificationUrl`
+outside production so the flow can be tested locally.
 
 ## Validation
 
@@ -99,8 +119,9 @@ bun run test:smoke
 
 ## Deployment
 
-Set `NUXT_SESSION_PASSWORD`, `TURSO_DB_URL`, `TURSO_DB_TOKEN`, and `APP_URL` in
-Vercel, then deploy. `SUPPORT_CATALOG_JSON` is optional.
+Set `NUXT_SESSION_PASSWORD`, `TURSO_DB_URL`, `TURSO_DB_TOKEN`, `APP_URL`,
+`RESEND_API_KEY`, and `RESEND_FROM` in Vercel, then deploy.
+`SUPPORT_CATALOG_JSON` is optional.
 
 ## License
 

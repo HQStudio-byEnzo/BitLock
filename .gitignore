@@ -24,6 +24,9 @@ dev.pid
 .idea
 *.sw?
 
+# Browser automation artifacts
+.playwright-mcp
+
 # Environment
 .env
 .env.*

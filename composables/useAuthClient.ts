@@ -7,14 +7,20 @@ export function useAuthClient() {
   const { clearMasterPassword } = useMasterPassword()
 
   /**
-   * Inscription
+   * Inscription : crée le compte et envoie le lien de vérification.
+   * Aucune session n'est ouverte tant que l'e-mail n'est pas confirmé.
    */
-  async function signUp(data: { username: string; password: string; acceptedTerms: boolean }) {
-    const response: { user: any } = await $fetch('/api/auth/register', {
+  async function signUp(data: {
+    username: string
+    email: string
+    password: string
+    acceptedTerms: boolean
+    locale?: string
+  }) {
+    const response = await $fetch('/api/auth/register', {
       method: 'POST',
       body: data,
     })
-    await fetchSession()
     clearMasterPassword()
     return response
   }

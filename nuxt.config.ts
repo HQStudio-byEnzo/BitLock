@@ -49,6 +49,9 @@ export default defineNuxtConfig({
     // Base de données Turso
     tursoDbUrl: process.env.TURSO_DB_URL || '',
     tursoDbToken: process.env.TURSO_DB_TOKEN || '',
+    // Emails transactionnels (Resend)
+    resendApiKey: process.env.RESEND_API_KEY || '',
+    resendFrom: process.env.RESEND_FROM || 'QVault <noreply@qvault.hqmerchant.xyz>',
     // App URL
     appUrl: siteUrl,
     // Publicly disclosed partner links. Set SUPPORT_CATALOG_JSON=[] to disable

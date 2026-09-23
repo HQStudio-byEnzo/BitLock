@@ -13,7 +13,43 @@
         <p class="text-sm text-surface-400 mt-3">{{ t('auth.register.subtitle') }}</p>
       </header>
 
-      <div class="glass-panel auth-card">
+      <!-- Étape 2 : compte créé, en attente de confirmation de l'e-mail -->
+      <div v-if="registered" class="glass-panel auth-card" role="status" aria-live="polite">
+        <div class="flex flex-col items-center text-center gap-4 py-2">
+          <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/15 text-accent-text">
+            <Icon name="hugeicons:mail-01" class="h-7 w-7" />
+          </span>
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold text-foreground">{{ t('auth.register.doneTitle') }}</h2>
+            <p class="text-sm text-surface-300 leading-relaxed">
+              {{ t('auth.register.doneDesc').replace('{email}', registeredEmail) }}
+            </p>
+            <p class="text-xs text-surface-500 leading-relaxed">{{ t('auth.register.doneHint') }}</p>
+          </div>
+
+          <div v-if="resendMsg" class="w-full rounded-xl border border-accent-500/20 bg-accent-500/10 p-3 text-sm text-accent-text" role="status">
+            {{ resendMsg }}
+          </div>
+
+          <div v-if="devVerificationUrl" class="w-full rounded-xl border border-surface-700 bg-surface-900/60 p-3 text-left">
+            <p class="text-xs uppercase tracking-[0.14em] text-surface-500">{{ t('auth.register.devLink') }}</p>
+            <NuxtLink :to="devVerificationUrl.replace(/^https?:\/\/[^/]+/, '')" class="mt-1 block text-xs text-accent-text underline break-all">
+              {{ devVerificationUrl }}
+            </NuxtLink>
+          </div>
+
+          <button type="button" class="btn-secondary w-full py-2.5" :disabled="isResending" @click="handleResend">
+            <Icon :name="isResending ? 'hugeicons:loader-circle' : 'hugeicons:refresh'" class="h-4 w-4" :class="{ 'animate-spin': isResending }" />
+            {{ isResending ? t('auth.register.resending') : t('auth.register.resend') }}
+          </button>
+
+          <NuxtLink to="/auth/login" class="text-sm font-medium text-accent-text hover:text-accent-text-strong underline">
+            {{ t('auth.register.login') }}
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div v-else class="glass-panel auth-card">
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
           <label for="username" class="block text-sm font-medium text-surface-300 mb-1">{{ t('auth.register.username') }}</label>
@@ -28,10 +64,27 @@
             autocomplete="username"
             autocapitalize="none"
             spellcheck="false"
-            pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,31}"
+            pattern="[A-Za-z0-9][A-Za-z0-9._\-]{2,31}"
             :placeholder="t('auth.register.usernamePlaceholder')"
           />
           <p class="mt-1 text-xs text-surface-500">{{ t('auth.register.usernameDesc') }}</p>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-surface-300 mb-1">{{ t('auth.register.email') }}</label>
+          <input
+            id="email"
+            v-model="form.email"
+            type="email"
+            required
+            maxlength="254"
+            class="input-field"
+            autocomplete="email"
+            autocapitalize="none"
+            spellcheck="false"
+            :placeholder="t('auth.register.emailPlaceholder')"
+          />
+          <p class="mt-1 text-xs text-surface-500">{{ t('auth.register.emailDesc') }}</p>
         </div>
 
         <div>
@@ -121,11 +174,12 @@ definePageMeta({
   hideFloatingBrand: true,
 })
 
-const { t } = useLang()
+const { t, locale } = useLang()
 const { signUp } = useAuthClient()
 
  const form = reactive({
    username: '',
+   email: '',
    password: '',
    confirmPassword: '',
    acceptedTerms: false,
@@ -133,6 +187,12 @@ const { signUp } = useAuthClient()
 
 const isLoading = ref(false)
 const errorMsg = ref('')
+
+const registered = ref(false)
+const registeredEmail = ref('')
+const devVerificationUrl = ref('')
+const isResending = ref(false)
+const resendMsg = ref('')
 
 async function handleRegister() {
   isLoading.value = true
@@ -151,16 +211,36 @@ async function handleRegister() {
   }
 
   try {
-    await signUp({
+    const response = await signUp({
       username: form.username,
+      email: form.email,
       password: form.password,
       acceptedTerms: form.acceptedTerms,
+      locale: locale.value,
     })
-    navigateTo('/dashboard')
+    registeredEmail.value = form.email
+    devVerificationUrl.value = response?.devVerificationUrl || ''
+    registered.value = true
   } catch (err: any) {
     errorMsg.value = err.data?.message || t('auth.register.error')
   } finally {
     isLoading.value = false
+  }
+}
+
+async function handleResend() {
+  isResending.value = true
+  resendMsg.value = ''
+  try {
+    await $fetch('/api/auth/resend-verification', {
+      method: 'POST',
+      body: { identifier: registeredEmail.value, locale: locale.value },
+    })
+    resendMsg.value = t('auth.register.resent')
+  } catch {
+    resendMsg.value = t('auth.register.resendFailed')
+  } finally {
+    isResending.value = false
   }
 }
 </script>

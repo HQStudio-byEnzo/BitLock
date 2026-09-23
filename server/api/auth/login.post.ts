@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useDB()
   const result = await db.execute({
-    sql: 'SELECT id, username, password, session_version, created_at FROM users WHERE username = ? OR lower(email) = ?',
+    sql: 'SELECT id, username, password, session_version, created_at, email_verified FROM users WHERE username = ? OR lower(email) = ?',
     args: [identifier, identifier],
   })
 
@@ -29,6 +29,15 @@ export default defineEventHandler(async (event) => {
   const user = result.rows[0] as any
   const valid = await verifyUserPassword(password, user.password)
   if (!valid) return rejectLogin()
+
+  if (Number(user.email_verified) !== 1) {
+    // Distinct status code (401 = bad credentials, 403 = valid but unverified)
+    // so the client can offer to resend the confirmation email.
+    throw createError({
+      statusCode: 403,
+      message: 'Confirmez votre adresse e-mail pour activer votre compte.',
+    })
+  }
 
   await setUserSession(event, {
     user: {

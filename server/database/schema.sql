@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
+  email_verified INTEGER NOT NULL DEFAULT 0,
   password TEXT NOT NULL,
   password_hint TEXT,
   session_version INTEGER NOT NULL DEFAULT 0,
@@ -141,3 +142,17 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   reset_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_rate_limits_reset_at ON rate_limits(reset_at);
+
+-- Single-use, short-lived tokens that confirm ownership of an email address.
+-- Only the hash is stored; the plaintext token only lives in the email link.
+CREATE TABLE IF NOT EXISTS email_verification_tokens (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_email_verification_user ON email_verification_tokens(user_id);

@@ -40,6 +40,14 @@ export function normalizeUsername(value: unknown) {
   return username
 }
 
+export function normalizeEmail(value: unknown) {
+  const email = requireString(value, 'Email', { min: 5, max: 254 }).toLowerCase()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    throw createError({ statusCode: 400, message: 'Adresse e-mail invalide.' })
+  }
+  return email
+}
+
 export function normalizeLoginIdentifier(value: unknown) {
   const identifier = requireString(value, 'Username', { min: 3, max: 254 }).toLowerCase()
   if (identifier.includes('@')) {

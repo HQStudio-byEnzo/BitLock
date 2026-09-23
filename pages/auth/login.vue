@@ -27,7 +27,7 @@
             autocapitalize="none"
             spellcheck="false"
             :aria-invalid="errorMsg ? 'true' : undefined"
-            aria-describedby="loginError"
+            :aria-describedby="unverified ? 'loginUnverified' : (errorMsg ? 'loginError' : undefined)"
             :placeholder="t('auth.login.usernamePlaceholder')"
           />
         </div>
@@ -42,14 +42,27 @@
             class="input-field"
             autocomplete="current-password"
             :aria-invalid="errorMsg ? 'true' : undefined"
-            aria-describedby="loginError"
+            :aria-describedby="unverified ? 'loginUnverified' : (errorMsg ? 'loginError' : undefined)"
             placeholder="••••••••"
           />
         </div>
 
         <!-- Error message -->
-        <div v-if="errorMsg" id="loginError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600" role="alert">
+        <div v-if="errorMsg && !unverified" id="loginError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-600" role="alert">
           {{ errorMsg }}
+        </div>
+
+        <!-- E-mail non confirmé : proposer un nouveau lien -->
+        <div v-if="unverified" id="loginUnverified" class="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-sm text-amber-700 space-y-3" role="status">
+          <p class="flex items-start gap-2">
+            <Icon name="hugeicons:mail-01" class="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{{ t('auth.login.unverified') }}</span>
+          </p>
+          <button type="button" class="btn-secondary w-full py-2" :disabled="isResending" @click="handleResend">
+            <Icon :name="isResending ? 'hugeicons:loader-circle' : 'hugeicons:refresh'" class="h-4 w-4" :class="{ 'animate-spin': isResending }" />
+            {{ isResending ? t('auth.login.resending') : t('auth.login.resend') }}
+          </button>
+          <p v-if="resendMsg" class="text-xs text-amber-700">{{ resendMsg }}</p>
         </div>
 
         <button
@@ -90,7 +103,7 @@ definePageMeta({
   hideFloatingBrand: true,
 })
 
-const { t } = useLang()
+const { t, locale } = useLang()
 const { signIn } = useAuthClient()
 
 const form = reactive({
@@ -100,18 +113,45 @@ const form = reactive({
 
 const isLoading = ref(false)
 const errorMsg = ref('')
+const unverified = ref(false)
+const isResending = ref(false)
+const resendMsg = ref('')
 
 async function handleLogin() {
   isLoading.value = true
   errorMsg.value = ''
+  unverified.value = false
+  resendMsg.value = ''
 
   try {
     await signIn({ username: form.username, password: form.password })
     navigateTo('/dashboard')
   } catch (err: any) {
-    errorMsg.value = err.data?.message || t('auth.login.error')
+    const status = err.statusCode ?? err.status
+    if (status === 403) {
+      unverified.value = true
+      errorMsg.value = err.data?.message || t('auth.login.unverified')
+    } else {
+      errorMsg.value = err.data?.message || t('auth.login.error')
+    }
   } finally {
     isLoading.value = false
+  }
+}
+
+async function handleResend() {
+  isResending.value = true
+  resendMsg.value = ''
+  try {
+    await $fetch('/api/auth/resend-verification', {
+      method: 'POST',
+      body: { identifier: form.username, locale: locale.value },
+    })
+    resendMsg.value = t('auth.login.resent')
+  } catch {
+    resendMsg.value = t('auth.login.resendFailed')
+  } finally {
+    isResending.value = false
   }
 }
 </script>
